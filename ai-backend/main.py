@@ -1,0 +1,1 @@
+# 대충 flask 랑 langchain올거임

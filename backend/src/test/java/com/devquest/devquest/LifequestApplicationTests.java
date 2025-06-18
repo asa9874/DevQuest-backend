@@ -1,10 +1,10 @@
-package com.lifequest.lifequest;
+package com.devquest.devquest;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LifequestApplicationTests {
+class devQuestApplicationTests {
 
 	@Test
 	void contextLoads() {

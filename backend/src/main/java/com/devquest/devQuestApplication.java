@@ -1,13 +1,13 @@
-package com.lifequest.lifequest;
+package com.devquest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LifequestApplication {
+public class devQuestApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LifequestApplication.class, args);
+		SpringApplication.run(devQuestApplication.class, args);
 	}
 
 }

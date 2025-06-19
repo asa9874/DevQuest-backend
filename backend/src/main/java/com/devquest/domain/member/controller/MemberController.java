@@ -3,7 +3,9 @@ package com.devquest.domain.member.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,14 +17,32 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/member")
-public class MemberController {
+@RequestMapping("/api/members/me")
+public class MemberController implements MemberApi {
     private final Memberservice memberService;
 
-    @GetMapping("/me")
+    @Override
+    @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<MemberResponseDto> getMyInfo(@AuthenticationPrincipal CustomUserDetails member) {
+    public ResponseEntity<MemberResponseDto> getMyProfile(@AuthenticationPrincipal CustomUserDetails member) {
         MemberResponseDto responseDto = memberService.getMember(member.getId());
         return ResponseEntity.ok().body(responseDto);
     }
+
+    @Override
+    @PutMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<MemberResponseDto> updateMyProfile(@AuthenticationPrincipal CustomUserDetails member) {
+        MemberResponseDto responseDto = memberService.updateMember(member.getId());
+        return ResponseEntity.ok().body(responseDto);
+    }
+
+    @Override
+    @DeleteMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteMyAccount(@AuthenticationPrincipal CustomUserDetails member) {
+        memberService.deleteMember(member.getId());
+        return ResponseEntity.noContent().build();
+    }
+
 }

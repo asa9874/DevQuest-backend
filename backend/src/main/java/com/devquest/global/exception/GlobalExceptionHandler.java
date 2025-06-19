@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.Hidden;
 
 
@@ -26,4 +27,11 @@ public class GlobalExceptionHandler {
         String apiResponse = "Unexpected error: " + ex.getMessage();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
     }   
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<String> handleJwtException(JwtException ex) {
+        log.error("JWT error: {}", ex.getMessage());
+        String apiResponse = "JWT error: " + ex.getMessage();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiResponse);
+    }
 }

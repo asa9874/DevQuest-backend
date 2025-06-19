@@ -1,5 +1,8 @@
 package com.devquest.domain.auth.service;
 
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final StringRedisTemplate redisTemplate;
+
 
     public void register(AuthRegisterRequestDto requestDto) {
         if(memberRepository.existsByEmail(requestDto.email())) {
@@ -46,5 +51,16 @@ public class AuthService {
 
         String token = jwtTokenProvider.createToken(member.getEmail(), member.getRole().name(), member.getId());
         return new AuthLoginResponseDto(token);
+    }
+
+    public void logout(String token) {
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new RuntimeException("Token이 유효하지 않습니다.");
+        }
+
+        redisTemplate.opsForValue().set("blacklist:" + token, "blacklisted", 1, TimeUnit.HOURS); // TTL 1시간
     }
 }

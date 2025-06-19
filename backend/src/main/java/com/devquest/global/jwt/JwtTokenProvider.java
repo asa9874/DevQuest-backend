@@ -5,8 +5,8 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
-
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -19,10 +19,11 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
-    
-    //TODO: 나중에 환경변수로 변경
+
+    // TODO: 나중에 환경변수로 변경
     private static final String SECRET_KEY = "qw2312qseee123qwe21q124q2wqqeqweqeqweqweqweqweqweqweqweqweqweqweqweqweqweqweqweqwe";
     private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1시간
+    private final StringRedisTemplate redisTemplate;
 
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
@@ -41,6 +42,9 @@ public class JwtTokenProvider {
     // JWT 토큰 검증
     public boolean validateToken(String token) {
         try {
+            if (redisTemplate.hasKey("blacklist:" + token)) {
+                throw new JwtException("블랙리스트된 토큰입니다.");
+            }
             Jwts.parser()
                     .verifyWith(key)
                     .build()

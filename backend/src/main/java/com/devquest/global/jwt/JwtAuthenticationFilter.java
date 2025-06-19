@@ -35,7 +35,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain chain) throws ServletException, IOException {
         String token = getTokenFromRequest(request);
-
         if (StringUtils.hasText(token)) {
             try {
                 // JWT 검증
@@ -45,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     String role = jwtTokenProvider.getRoleFromToken(token);
                     List<GrantedAuthority> authorities = Collections
                             .singletonList(new SimpleGrantedAuthority("ROLE_" + role));
+                    System.out.println("JWT 검증 성공: " + email + ", " + id + ", " + role);
                     UserDetails userDetails = new CustomUserDetails(id, email, "", authorities);
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             userDetails,

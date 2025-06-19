@@ -26,7 +26,6 @@ public class MemberController implements MemberApi {
 
     @Override
     @GetMapping
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<MemberResponseDto> getMyProfile(@AuthenticationPrincipal CustomUserDetails member) {
         MemberResponseDto responseDto = memberService.getMember(member.getId());
         return ResponseEntity.ok().body(responseDto);
@@ -34,7 +33,6 @@ public class MemberController implements MemberApi {
 
     @Override
     @PutMapping
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<MemberResponseDto> updateMember(
             @AuthenticationPrincipal CustomUserDetails member,
             @RequestBody MemberUpdateRequestDto requestDto) {
@@ -44,7 +42,6 @@ public class MemberController implements MemberApi {
 
     @Override
     @DeleteMapping
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Void> deleteMyAccount(@AuthenticationPrincipal CustomUserDetails member) {
         memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
@@ -52,7 +49,6 @@ public class MemberController implements MemberApi {
 
     @Override
     @PutMapping("/password")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Void> updateMyPassword(@AuthenticationPrincipal CustomUserDetails member,
             @RequestBody MemberUpdatePassswordRequetsDto requestDto) {
         memberService.updatePassword(member.getId(),requestDto);

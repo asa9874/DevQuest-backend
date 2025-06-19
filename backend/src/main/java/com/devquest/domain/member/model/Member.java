@@ -32,4 +32,15 @@ public class Member {
         this.password = password;
         this.role = role;
     }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updatePassword(String password) {
+        if (password == null || password.isBlank()|| password.length() < 6) {
+            throw new IllegalArgumentException("비밀번호가 유효하지않습니다.");
+        }
+        this.password = password;
+    }
 }

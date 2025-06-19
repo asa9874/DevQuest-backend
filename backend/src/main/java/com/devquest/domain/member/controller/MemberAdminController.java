@@ -31,7 +31,7 @@ public class MemberAdminController implements MemberAdminApi {
     @Override
     @GetMapping("/{memberId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<MemberResponseDto> getMemberById(@PathVariable Long memberId) {
+    public ResponseEntity<MemberResponseDto> getMemberById(@PathVariable(name = "memberId") Long memberId) {
         MemberResponseDto responseDto = memberService.getMember(memberId);
         return ResponseEntity.ok().body(responseDto);
     }

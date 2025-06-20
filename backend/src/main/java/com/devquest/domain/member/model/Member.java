@@ -6,6 +6,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,13 +20,24 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @Size(max = 50)
     private String name;
+
+    @NotNull
+    @Size(max = 100)
     private String email;
+
+    @NotNull
+    @Size(min = 6, max = 100)
     private String password;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @NotNull
     private String provider = "local";
 
     @Builder

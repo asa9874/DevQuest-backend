@@ -18,58 +18,52 @@ import com.devquest.domain.quest.dto.requestDto.QuestUpdateRequestDto;
 import com.devquest.domain.quest.dto.responseDto.QuestResponseDto;
 import com.devquest.global.jwt.CustomUserDetails;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+
 public interface QuestApi {
-
-    @PostMapping
+    @Operation(summary = "퀘스트 생성 (자기자신)", description = "새로운 퀘스트를 생성합니다.")
     ResponseEntity<Void> createQuest(
-            @RequestBody QuestCreateRequestDto requestDto,
-            @AuthenticationPrincipal CustomUserDetails member);
+            @Parameter(description = "퀘스트 생성 요청 DTO") @RequestBody QuestCreateRequestDto requestDto,
+            @Parameter(description = "로그인 사용자 정보", hidden = true) @AuthenticationPrincipal CustomUserDetails member);
 
-    @GetMapping
+    @Operation(summary = "전체 퀘스트 목록 조회 (어드민)", description = "모든 퀘스트 목록을 조회합니다.")
     ResponseEntity<List<QuestResponseDto>> getAllQuests();
 
-    @GetMapping("/{questId}")
+    @Operation(summary = "퀘스트 조회 (전체 공개)", description = "특정 퀘스트의 상세 정보를 조회합니다.")
     ResponseEntity<QuestResponseDto> getQuest(
-            @PathVariable(name = "questId") Long questId);
+            @Parameter(description = "퀘스트 ID", example = "1") @PathVariable(name = "questId") Long questId);
 
-    @GetMapping("/search")
+    @Operation(summary = "퀘스트 검색 (전체 공개)", description = "조건에 따라 퀘스트를 검색합니다.")
     ResponseEntity<Page<QuestResponseDto>> searchQuests(
-            @RequestParam(required = false, name = "title") String title,
-            @RequestParam(required = false, name = "creatorName") String creatorName,
+            @Parameter(description = "퀘스트 제목") @RequestParam(required = false, name = "title") String title,
+            @Parameter(description = "생성자 닉네임") @RequestParam(required = false, name = "creatorName") String creatorName,
             Pageable pageable);
 
-    @GetMapping("/member/{memberId}")
+    @Operation(summary = "회원별 퀘스트 목록 조회 (자기자신 or 어드민)", description = "특정 회원이 생성/참여한 퀘스트 목록을 조회합니다.")
     ResponseEntity<List<QuestResponseDto>> getQuestsByMemberId(
-            @PathVariable(name = "memberId") Long memberId,
-            @RequestParam(required = false) Boolean completed,
-            @RequestParam(required = false) Boolean liked,
-            @RequestParam(required = false) String title,
+            @Parameter(description = "회원 ID", example = "1") @PathVariable(name = "memberId") Long memberId,
+            @Parameter(description = "완료 여부") @RequestParam(required = false) Boolean completed,
+            @Parameter(description = "좋아요 여부") @RequestParam(required = false) Boolean liked,
+            @Parameter(description = "퀘스트 제목") @RequestParam(required = false) String title,
             Pageable pageable);
 
-    @GetMapping("/member/{memberId}/completed")
+    @Operation(summary = "회원별 퀘스트 완료상태 수정 (자기자신 or 어드민)", description = "특정 회원의 완료 퀘스트 정보를 수정합니다.")
     ResponseEntity<QuestResponseDto> updateQuest(
-            @PathVariable(name = "questId") Long questId,
-            @RequestBody QuestUpdateRequestDto requestDto);
+            @Parameter(description = "퀘스트 ID", example = "1") @PathVariable(name = "questId") Long questId,
+            @Parameter(description = "퀘스트 수정 요청 DTO") @RequestBody QuestUpdateRequestDto requestDto);
 
-    @DeleteMapping("/{questId}")
+    @Operation(summary = "퀘스트 삭제 (자기자신 or 어드민)", description = "특정 퀘스트를 삭제합니다.")
     ResponseEntity<Void> deleteQuest(
-            @PathVariable(name = "questId") Long questId);
+            @Parameter(description = "퀘스트 ID", example = "1") @PathVariable(name = "questId") Long questId);
 
-    @PostMapping("/{questId}/complete")
-    ResponseEntity<Void> completeQuest(
-            @PathVariable(name = "questId") Long questId);
-
-    @PostMapping("/{questId}/like")
+    @Operation(summary = "퀘스트 좋아요 (자기자신)", description = "특정 퀘스트에 좋아요를 누릅니다.")
     ResponseEntity<Void> likeQuest(
-            @PathVariable(name = "questId") Long questId,
-            @AuthenticationPrincipal CustomUserDetails member);
+            @Parameter(description = "퀘스트 ID", example = "1") @PathVariable(name = "questId") Long questId,
+            @Parameter(description = "로그인 사용자 정보", hidden = true) @AuthenticationPrincipal CustomUserDetails member);
 
-    @DeleteMapping("/{questId}/like")
+    @Operation(summary = "퀘스트 좋아요 취소 (자기자신)", description = "특정 퀘스트의 좋아요를 취소합니다.")
     ResponseEntity<Void> unlikeQuest(
-            @PathVariable(name = "questId") Long questId,
-            @AuthenticationPrincipal CustomUserDetails member);
-
-    @GetMapping("/liked")
-    ResponseEntity<List<QuestResponseDto>> getLikedQuests(
-            @AuthenticationPrincipal CustomUserDetails member);
+            @Parameter(description = "퀘스트 ID", example = "1") @PathVariable(name = "questId") Long questId,
+            @Parameter(description = "로그인 사용자 정보", hidden = true) @AuthenticationPrincipal CustomUserDetails member);
 }

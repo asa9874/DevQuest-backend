@@ -41,24 +41,6 @@ public class Member {
     private String provider = "local";
 
     @Builder
-    public Member(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = Role.USER;
-        this.provider = "local";
-    }
-
-    @Builder
-    public Member(String name, String email, String password, Role role) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.provider = "local";
-    }
-
-    @Builder
     public Member(String name, String email, String password, Role role, String provider) {
         this.name = name;
         this.email = email;

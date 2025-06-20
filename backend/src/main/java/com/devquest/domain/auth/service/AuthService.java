@@ -37,6 +37,7 @@ public class AuthService {
                 .password(passwordEncoder.encode(requestDto.password()))
                 .name(requestDto.name())
                 .role(Role.USER)
+                .provider("local")
                 .build();
         memberRepository.save(member);
     }

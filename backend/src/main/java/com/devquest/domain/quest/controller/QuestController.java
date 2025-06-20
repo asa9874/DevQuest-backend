@@ -40,17 +40,18 @@ public class QuestController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<QuestResponseDto>> getAllQuests(
             @AuthenticationPrincipal CustomUserDetails member){
-        return ResponseEntity.ok(null);
+        List<QuestResponseDto> responseDtos = questService.getAllQuests();
+        return ResponseEntity.ok(responseDtos);
     }
 
     @GetMapping("/{questId}")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<QuestResponseDto> getQuest(
             @PathVariable(name = "questId") Long questId){
-        return ResponseEntity.ok(null);
+        QuestResponseDto questResponseDto = questService.getQuest(questId);
+        return ResponseEntity.ok(questResponseDto);
     }
 
     @GetMapping("/search")

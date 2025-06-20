@@ -32,6 +32,7 @@ class devQuestApplicationTests {
 					.password(passwordEncoder.encode("tester" + i))
 					.email("tester" + i)
 					.role(Role.USER)
+					.provider("local")
 					.build();
 			memberRepository.save(member);
 		}
@@ -41,6 +42,7 @@ class devQuestApplicationTests {
 					.password(passwordEncoder.encode("admin123"))
 					.email("admin")
 					.role(Role.ADMIN)
+					.provider("local")
 					.build();
 			memberRepository.save(member);
 		}

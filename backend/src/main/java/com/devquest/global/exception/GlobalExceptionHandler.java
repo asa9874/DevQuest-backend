@@ -6,6 +6,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -33,5 +34,10 @@ public class GlobalExceptionHandler {
         log.error("JWT error: {}", ex.getMessage());
         String apiResponse = "JWT error: " + ex.getMessage();
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiResponse);
+    }
+    
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> handleAccessDenied(AccessDeniedException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("접근 권한이 없습니다.");
     }
 }

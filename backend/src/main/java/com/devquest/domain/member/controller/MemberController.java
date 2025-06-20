@@ -1,6 +1,7 @@
 package com.devquest.domain.member.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,7 @@ public class MemberController implements MemberApi {
 
     @Override
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MemberResponseDto> getMyProfile(@AuthenticationPrincipal CustomUserDetails member) {
         MemberResponseDto responseDto = memberService.getMember(member.getId());
         return ResponseEntity.ok().body(responseDto);
@@ -32,6 +34,7 @@ public class MemberController implements MemberApi {
 
     @Override
     @PutMapping
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MemberResponseDto> updateMember(
             @AuthenticationPrincipal CustomUserDetails member,
             @RequestBody MemberUpdateRequestDto requestDto) {
@@ -41,6 +44,7 @@ public class MemberController implements MemberApi {
 
     @Override
     @DeleteMapping
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteMyAccount(@AuthenticationPrincipal CustomUserDetails member) {
         memberService.deleteMember(member.getId());
         return ResponseEntity.noContent().build();
@@ -48,6 +52,7 @@ public class MemberController implements MemberApi {
 
     @Override
     @PutMapping("/password")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> updateMyPassword(@AuthenticationPrincipal CustomUserDetails member,
             @RequestBody MemberUpdatePassswordRequetsDto requestDto) {
         memberService.updatePassword(member.getId(),requestDto);

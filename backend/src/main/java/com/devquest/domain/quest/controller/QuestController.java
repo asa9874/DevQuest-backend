@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ public class QuestController {
     private final QuestService questService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> createQuest(
             @RequestBody QuestCreateRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails member) {
@@ -38,18 +40,21 @@ public class QuestController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<QuestResponseDto>> getAllQuests(
             @AuthenticationPrincipal CustomUserDetails member){
         return ResponseEntity.ok(null);
     }
 
     @GetMapping("/{questId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<QuestResponseDto> getQuest(
             @PathVariable(name = "questId") Long questId){
         return ResponseEntity.ok(null);
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<QuestResponseDto>> searchQuests(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) Long creatorId,
@@ -58,6 +63,7 @@ public class QuestController {
     }
 
     @GetMapping("/member/{memberId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<QuestResponseDto>> getQuestsByMemberId(
             @PathVariable(name = "memberId") Long memberId,
             @RequestParam(required = false) Boolean completed,
@@ -66,6 +72,7 @@ public class QuestController {
     }
 
     @GetMapping("/member/{memberId}/completed")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<QuestResponseDto> updateQuest(
             @PathVariable(name = "questId") Long questId,
             @RequestBody QuestCreateRequestDto requestDto,
@@ -74,6 +81,7 @@ public class QuestController {
     }
 
     @DeleteMapping("/{questId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteQuest(
             @PathVariable(name = "questId") Long questId,
             @AuthenticationPrincipal CustomUserDetails member){
@@ -81,6 +89,7 @@ public class QuestController {
     }
 
     @PostMapping("/{questId}/complete")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> completeQuest(
             @PathVariable(name = "questId") Long questId,
             @AuthenticationPrincipal CustomUserDetails member){
@@ -88,6 +97,7 @@ public class QuestController {
     }
 
     @PostMapping("/{questId}/like")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> likeQuest(
             @PathVariable(name = "questId") Long questId,
             @AuthenticationPrincipal CustomUserDetails member){
@@ -95,6 +105,7 @@ public class QuestController {
     }
 
     @DeleteMapping("/{questId}/like")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> unlikeQuest(
             @PathVariable(name = "questId") Long questId,
             @AuthenticationPrincipal CustomUserDetails member){
@@ -102,6 +113,7 @@ public class QuestController {
     }
 
     @GetMapping("/liked")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<QuestResponseDto>> getLikedQuests(
             @AuthenticationPrincipal CustomUserDetails member){
         return ResponseEntity.ok(null);

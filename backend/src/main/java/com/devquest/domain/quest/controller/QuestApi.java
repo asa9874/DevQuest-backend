@@ -14,63 +14,62 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.devquest.domain.quest.dto.requestDto.QuestCreateRequestDto;
+import com.devquest.domain.quest.dto.requestDto.QuestUpdateRequestDto;
 import com.devquest.domain.quest.dto.responseDto.QuestResponseDto;
 import com.devquest.global.jwt.CustomUserDetails;
 
 public interface QuestApi {
 
     @PostMapping
-    public ResponseEntity<Void> createQuest(
+    ResponseEntity<Void> createQuest(
             @RequestBody QuestCreateRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails member);
 
     @GetMapping
-    public ResponseEntity<List<QuestResponseDto>> getAllQuests(
-            @AuthenticationPrincipal CustomUserDetails member);
+    ResponseEntity<List<QuestResponseDto>> getAllQuests();
 
     @GetMapping("/{questId}")
-    public ResponseEntity<QuestResponseDto> getQuest(
+    ResponseEntity<QuestResponseDto> getQuest(
             @PathVariable(name = "questId") Long questId);
 
     @GetMapping("/search")
-    public ResponseEntity<Page<QuestResponseDto>> searchQuests(
-            @RequestParam(required = false,name = "title") String title,
-            @RequestParam(required = false,name = "creatorName") String creatorName,
+    ResponseEntity<Page<QuestResponseDto>> searchQuests(
+            @RequestParam(required = false, name = "title") String title,
+            @RequestParam(required = false, name = "creatorName") String creatorName,
             Pageable pageable);
 
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<List<QuestResponseDto>> getQuestsByMemberId(
+    ResponseEntity<List<QuestResponseDto>> getQuestsByMemberId(
             @PathVariable(name = "memberId") Long memberId,
             @RequestParam(required = false) Boolean completed,
-            @AuthenticationPrincipal CustomUserDetails member);
+            @RequestParam(required = false) Boolean liked,
+            @RequestParam(required = false) String title,
+            Pageable pageable);
 
     @GetMapping("/member/{memberId}/completed")
-    public ResponseEntity<QuestResponseDto> updateQuest(
+    ResponseEntity<QuestResponseDto> updateQuest(
             @PathVariable(name = "questId") Long questId,
-            @RequestBody QuestCreateRequestDto requestDto,
-            @AuthenticationPrincipal CustomUserDetails member);
+            @RequestBody QuestUpdateRequestDto requestDto);
 
     @DeleteMapping("/{questId}")
-    public ResponseEntity<Void> deleteQuest(
-            @PathVariable(name = "questId") Long questId,
-            @AuthenticationPrincipal CustomUserDetails member);
+    ResponseEntity<Void> deleteQuest(
+            @PathVariable(name = "questId") Long questId);
 
     @PostMapping("/{questId}/complete")
-    public ResponseEntity<Void> completeQuest(
-            @PathVariable(name = "questId") Long questId,
-            @AuthenticationPrincipal CustomUserDetails member);
+    ResponseEntity<Void> completeQuest(
+            @PathVariable(name = "questId") Long questId);
 
     @PostMapping("/{questId}/like")
-    public ResponseEntity<Void> likeQuest(
+    ResponseEntity<Void> likeQuest(
             @PathVariable(name = "questId") Long questId,
             @AuthenticationPrincipal CustomUserDetails member);
 
     @DeleteMapping("/{questId}/like")
-    public ResponseEntity<Void> unlikeQuest(
+    ResponseEntity<Void> unlikeQuest(
             @PathVariable(name = "questId") Long questId,
             @AuthenticationPrincipal CustomUserDetails member);
 
     @GetMapping("/liked")
-    public ResponseEntity<List<QuestResponseDto>> getLikedQuests(
+    ResponseEntity<List<QuestResponseDto>> getLikedQuests(
             @AuthenticationPrincipal CustomUserDetails member);
 }

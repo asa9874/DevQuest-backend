@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devquest.domain.quest.dto.requestDto.QuestCreateRequestDto;
+import com.devquest.domain.quest.dto.requestDto.QuestUpdateRequestDto;
 import com.devquest.domain.quest.dto.responseDto.QuestResponseDto;
 import com.devquest.domain.quest.service.QuestService;
 import com.devquest.global.jwt.CustomUserDetails;
@@ -41,8 +42,7 @@ public class QuestController implements QuestApi{
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<QuestResponseDto>> getAllQuests(
-            @AuthenticationPrincipal CustomUserDetails member){
+    public ResponseEntity<List<QuestResponseDto>> getAllQuests(){
         List<QuestResponseDto> responseDtos = questService.getAllQuests();
         return ResponseEntity.ok(responseDtos);
     }
@@ -68,7 +68,9 @@ public class QuestController implements QuestApi{
     public ResponseEntity<List<QuestResponseDto>> getQuestsByMemberId(
             @PathVariable(name = "memberId") Long memberId,
             @RequestParam(required = false) Boolean completed,
-            @AuthenticationPrincipal CustomUserDetails member){
+            @RequestParam(required = false) Boolean liked,
+            @RequestParam(required = false) String title,
+            Pageable pageable){
         return ResponseEntity.ok(null);
     }
 
@@ -76,24 +78,21 @@ public class QuestController implements QuestApi{
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<QuestResponseDto> updateQuest(
             @PathVariable(name = "questId") Long questId,
-            @RequestBody QuestCreateRequestDto requestDto,
-            @AuthenticationPrincipal CustomUserDetails member){
+            @RequestBody QuestUpdateRequestDto requestDto){
         return ResponseEntity.ok(null);
     }
 
     @DeleteMapping("/{questId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteQuest(
-            @PathVariable(name = "questId") Long questId,
-            @AuthenticationPrincipal CustomUserDetails member){
+            @PathVariable(name = "questId") Long questId){
         return ResponseEntity.ok(null);
     }
 
     @PostMapping("/{questId}/complete")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> completeQuest(
-            @PathVariable(name = "questId") Long questId,
-            @AuthenticationPrincipal CustomUserDetails member){
+            @PathVariable(name = "questId") Long questId){
         return ResponseEntity.ok(null);
     }
 

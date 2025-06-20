@@ -1,10 +1,13 @@
 package com.devquest.domain.member.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,38 +27,51 @@ import lombok.RequiredArgsConstructor;
 public class MemberController implements MemberApi {
     private final Memberservice memberService;
 
-    @Override
-    @GetMapping
+    @GetMapping("/me")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MemberResponseDto> getMyProfile(@AuthenticationPrincipal CustomUserDetails member) {
         MemberResponseDto responseDto = memberService.getMember(member.getId());
         return ResponseEntity.ok().body(responseDto);
     }
 
-    @Override
-    @PutMapping
+    @PutMapping("/{memberId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MemberResponseDto> updateMember(
-            @AuthenticationPrincipal CustomUserDetails member,
+            @PathVariable(name = "memberId") Long memberId,
             @RequestBody MemberUpdateRequestDto requestDto) {
-        MemberResponseDto responseDto = memberService.updateMember(member.getId(), requestDto);
+        MemberResponseDto responseDto = memberService.updateMember(memberId, requestDto);
         return ResponseEntity.ok().body(responseDto);
     }
 
-    @Override
-    @DeleteMapping
+    @DeleteMapping("/{memberId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> deleteMyAccount(@AuthenticationPrincipal CustomUserDetails member) {
-        memberService.deleteMember(member.getId());
+    public ResponseEntity<Void> deleteMyAccount(
+            @PathVariable(name = "memberId") Long memberId) {
+        memberService.deleteMember(memberId);
         return ResponseEntity.noContent().build();
     }
 
-    @Override
     @PutMapping("/password")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> updateMyPassword(@AuthenticationPrincipal CustomUserDetails member,
+    public ResponseEntity<Void> updatePassword(
+            @AuthenticationPrincipal CustomUserDetails member,
             @RequestBody MemberUpdatePassswordRequetsDto requestDto) {
-        memberService.updatePassword(member.getId(),requestDto);
+        memberService.updatePassword(member.getId(), requestDto);
         return ResponseEntity.noContent().build();
+    }
+
+    // 관리자 전용 API
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<MemberResponseDto>> getAllMembers() {
+        List<MemberResponseDto> responseDtos = memberService.getAllMembers();
+        return ResponseEntity.ok().body(responseDtos);
+    }
+
+    @GetMapping("/{memberId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<MemberResponseDto> getMemberById(@PathVariable(name = "memberId") Long memberId) {
+        MemberResponseDto responseDto = memberService.getMember(memberId);
+        return ResponseEntity.ok().body(responseDto);
     }
 }

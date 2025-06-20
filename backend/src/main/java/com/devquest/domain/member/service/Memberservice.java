@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.devquest.domain.auth.util.AuthUtil;
 import com.devquest.domain.member.dto.requestDto.MemberUpdatePassswordRequetsDto;
 import com.devquest.domain.member.dto.requestDto.MemberUpdateRequestDto;
 import com.devquest.domain.member.dto.responseDto.MemberResponseDto;
@@ -33,6 +34,9 @@ public class Memberservice {
     }
 
     public MemberResponseDto updateMember(Long memberId, MemberUpdateRequestDto requestDto) {
+        if(!AuthUtil.isAdminOrEqualMember(memberId)) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
         member.updateName(requestDto.name());
@@ -41,6 +45,9 @@ public class Memberservice {
     }
 
     public void deleteMember(Long memberId) {
+        if(!AuthUtil.isAdminOrEqualMember(memberId)) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
         memberRepository.delete(member);

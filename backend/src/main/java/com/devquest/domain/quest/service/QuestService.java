@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.devquest.domain.auth.util.AuthUtil;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.repository.MemberRepository;
 import com.devquest.domain.quest.dto.requestDto.QuestCreateRequestDto;
@@ -54,4 +55,18 @@ public class QuestService {
         Page<QuestResponseDto> responseDtos = questRepository.searchQuests(title, creatorName, pageable);
         return responseDtos;
     }
+
+    public Page<QuestResponseDto> getQuestsByMemberId(
+            Long memberId,
+            Boolean isCompleted,
+            Boolean liked,
+            String title,
+            Pageable pageable
+            ) {
+        if(!AuthUtil.isAdminOrEqualMember(memberId)) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+        return null;
+    }
+
 }

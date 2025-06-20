@@ -2,8 +2,6 @@ package com.devquest.domain.quest.model;
 
 import java.time.LocalDateTime;
 
-import org.springframework.cglib.core.Local;
-
 import com.devquest.domain.member.model.Member;
 
 import jakarta.persistence.Entity;

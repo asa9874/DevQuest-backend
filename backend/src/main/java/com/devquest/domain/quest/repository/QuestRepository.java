@@ -34,21 +34,20 @@ public interface QuestRepository extends JpaRepository<Quest, Long> {
             """)
     List<QuestResponseDto> findAllWithLikeCount();
 
-   @Query("""
-    SELECT new com.devquest.domain.quest.dto.responseDto.QuestResponseDto(
-        q.id, q.title, q.description, q.creater.name, q.creater.id, COUNT(ql), q.createdAt
-    )
-    FROM Quest q
-    LEFT JOIN QuestLike ql ON q.id = ql.quest.id
-    WHERE (:title IS NULL OR q.title LIKE CONCAT('%', :title, '%'))
-      AND (:creatorName IS NULL OR q.creater.name LIKE CONCAT('%', :creatorName, '%'))
-    GROUP BY q.id, q.title, q.description, q.creater.name, q.creater.id, q.createdAt
-    ORDER BY q.createdAt ASC
-""")
-Page<QuestResponseDto> searchQuests(
-        @Param("title") String title,
-        @Param("creatorName") String creatorName,
-        Pageable pageable
-);
+    @Query("""
+            SELECT new com.devquest.domain.quest.dto.responseDto.QuestResponseDto(
+                q.id, q.title, q.description, q.creater.name, q.creater.id, COUNT(ql), q.createdAt
+            )
+            FROM Quest q
+            LEFT JOIN QuestLike ql ON q.id = ql.quest.id
+            WHERE (:title IS NULL OR q.title LIKE CONCAT('%', :title, '%'))
+              AND (:creatorName IS NULL OR q.creater.name LIKE CONCAT('%', :creatorName, '%'))
+            GROUP BY q.id, q.title, q.description, q.creater.name, q.creater.id, q.createdAt
+            ORDER BY q.createdAt ASC
+            """)
+    Page<QuestResponseDto> searchQuests(
+            @Param("title") String title,
+            @Param("creatorName") String creatorName,
+            Pageable pageable);
 
 }

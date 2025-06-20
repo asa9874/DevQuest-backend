@@ -12,6 +12,8 @@ import com.devquest.domain.member.repository.MemberRepository;
 import com.devquest.domain.quest.dto.requestDto.QuestCreateRequestDto;
 import com.devquest.domain.quest.dto.responseDto.QuestResponseDto;
 import com.devquest.domain.quest.model.Quest;
+import com.devquest.domain.quest.model.QuestLike;
+import com.devquest.domain.quest.repository.QuestLikeRepository;
 import com.devquest.domain.quest.repository.QuestRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class QuestService {
     private final QuestRepository questRepository;
+    private final QuestLikeRepository questLikeRepository;
     private final MemberRepository memberRepository;
 
     public void createQuest(
@@ -69,4 +72,28 @@ public class QuestService {
         return null;
     }
 
+    public void likeQuest(Long questId, Long memberId) {
+        if(questLikeRepository.existsByMemberIdAndQuestId(memberId, questId)) {
+            throw new IllegalArgumentException("이미 좋아요를 누른 퀘스트입니다");
+        }
+        Quest quest = questRepository.findById(questId)
+                .orElseThrow(() -> new IllegalArgumentException("퀘스트를 찾을 수 없습니다"));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다"));
+        QuestLike questLike = QuestLike.builder()
+                .quest(quest)
+                .member(member)
+                .build();
+        questLikeRepository.save(questLike);
+    }
+
+    public void unlikeQuest(Long questId, Long memberId) {
+        Quest quest = questRepository.findById(questId)
+                .orElseThrow(() -> new IllegalArgumentException("퀘스트를 찾을 수 없습니다"));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다"));
+        QuestLike questLike = questLikeRepository.findByMemberIdAndQuestId(memberId, questId)
+                .orElseThrow(() -> new IllegalArgumentException("퀘스트 좋아요를 찾을 수 없습니다"));
+        questLikeRepository.delete(questLike);
+    }
 }

@@ -64,6 +64,7 @@ public class QuestController implements QuestApi{
         return ResponseEntity.ok(responseDtos);
     }
 
+    //TODO
     @GetMapping("/member/{memberId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<QuestResponseDto>> getQuestsByMemberId(
@@ -75,6 +76,7 @@ public class QuestController implements QuestApi{
         return ResponseEntity.ok(null);
     }
 
+    //TODO
     @PutMapping("/member/{memberId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<QuestResponseDto> updateQuest(
@@ -83,6 +85,7 @@ public class QuestController implements QuestApi{
         return ResponseEntity.ok(null);
     }
 
+    //TODO
     @DeleteMapping("/{questId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteQuest(
@@ -95,6 +98,7 @@ public class QuestController implements QuestApi{
     public ResponseEntity<Void> likeQuest(
             @PathVariable(name = "questId") Long questId,
             @AuthenticationPrincipal CustomUserDetails member){
+        questService.likeQuest(questId, member.getId());
         return ResponseEntity.ok(null);
     }
 
@@ -103,6 +107,7 @@ public class QuestController implements QuestApi{
     public ResponseEntity<Void> unlikeQuest(
             @PathVariable(name = "questId") Long questId,
             @AuthenticationPrincipal CustomUserDetails member){
+        questService.unlikeQuest(questId, member.getId());
         return ResponseEntity.ok(null);
     }
 }

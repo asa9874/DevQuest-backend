@@ -59,6 +59,13 @@ public class MemberController implements MemberApi {
         memberService.updatePassword(member.getId(), requestDto);
         return ResponseEntity.noContent().build();
     }
+    
+    @GetMapping("/public/{memberId}")
+    public ResponseEntity<MemberResponseDto> getPublicMemberProfile(
+            @PathVariable(name = "memberId") Long memberId) {
+        MemberResponseDto responseDto = memberService.getMember(memberId);
+        return ResponseEntity.ok().body(responseDto);
+    }
 
     // 관리자 전용 API
     @GetMapping

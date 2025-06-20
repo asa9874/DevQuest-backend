@@ -2,6 +2,8 @@ package com.devquest.domain.quest.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.member.model.Member;
@@ -42,6 +44,14 @@ public class QuestService {
 
     public List<QuestResponseDto> getAllQuests() {
         List<QuestResponseDto> responseDtos = questRepository.findAllWithLikeCount();
+        return responseDtos;
+    }
+
+    public Page<QuestResponseDto> search(
+            String title,
+            String creatorName,
+            Pageable pageable) {
+        Page<QuestResponseDto> responseDtos = questRepository.searchQuests(title, creatorName, pageable);
         return responseDtos;
     }
 }

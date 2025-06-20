@@ -2,6 +2,8 @@ package com.devquest.domain.quest.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +20,7 @@ import com.devquest.global.jwt.CustomUserDetails;
 public interface QuestApi {
 
     @PostMapping
-    public ResponseEntity<QuestResponseDto> createQuest(
+    public ResponseEntity<Void> createQuest(
             @RequestBody QuestCreateRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails member);
 
@@ -31,10 +33,10 @@ public interface QuestApi {
             @PathVariable(name = "questId") Long questId);
 
     @GetMapping("/search")
-    public ResponseEntity<List<QuestResponseDto>> searchQuests(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) Long creatorId,
-            @RequestParam(required = false) Boolean completed);
+    public ResponseEntity<Page<QuestResponseDto>> searchQuests(
+            @RequestParam(required = false,name = "title") String title,
+            @RequestParam(required = false,name = "creatorName") String creatorName,
+            Pageable pageable);
 
     @GetMapping("/member/{memberId}")
     public ResponseEntity<List<QuestResponseDto>> getQuestsByMemberId(

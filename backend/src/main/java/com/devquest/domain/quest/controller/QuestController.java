@@ -1,9 +1,9 @@
 package com.devquest.domain.quest.controller;
 
-import java.net.http.HttpClient;
 import java.util.List;
 
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/quests")
-public class QuestController {
+public class QuestController implements QuestApi{
     private final QuestService questService;
 
     @PostMapping
@@ -55,12 +55,12 @@ public class QuestController {
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<QuestResponseDto>> searchQuests(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) Long creatorId,
-            @RequestParam(required = false) Boolean completed){
-        return ResponseEntity.ok(null);
+    public ResponseEntity<Page<QuestResponseDto>> searchQuests(
+            @RequestParam(required = false,name = "title") String title,
+            @RequestParam(required = false,name = "creatorName") String creatorName,
+            Pageable pageable){
+        Page<QuestResponseDto> responseDtos = questService.search(title, creatorName, pageable);
+        return ResponseEntity.ok(responseDtos);
     }
 
     @GetMapping("/member/{memberId}")

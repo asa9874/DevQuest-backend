@@ -40,15 +40,7 @@ public interface QuestApi {
             @Parameter(description = "생성자 닉네임") @RequestParam(required = false, name = "creatorName") String creatorName,
             Pageable pageable);
 
-    @Operation(summary = "회원별 퀘스트 목록 조회 (자기자신 or 어드민)", description = "특정 회원이 생성/참여한 퀘스트 목록을 조회합니다.")
-    ResponseEntity<List<QuestResponseDto>> getQuestsByMemberId(
-            @Parameter(description = "회원 ID", example = "1") @PathVariable(name = "memberId") Long memberId,
-            @Parameter(description = "완료 여부") @RequestParam(required = false) Boolean completed,
-            @Parameter(description = "좋아요 여부") @RequestParam(required = false) Boolean liked,
-            @Parameter(description = "퀘스트 제목") @RequestParam(required = false) String title,
-            Pageable pageable);
-
-    @Operation(summary = "회원별 퀘스트 완료상태 수정 (자기자신 or 어드민)", description = "특정 회원의 완료 퀘스트 정보를 수정합니다.")
+    @Operation(summary = "퀘스트 수정 (자기자신 or 어드민)", description = "퀘스트 정보를 수정합니다.")
     ResponseEntity<QuestResponseDto> updateQuest(
             @Parameter(description = "퀘스트 ID", example = "1") @PathVariable(name = "questId") Long questId,
             @Parameter(description = "퀘스트 수정 요청 DTO") @RequestBody QuestUpdateRequestDto requestDto);
@@ -66,4 +58,5 @@ public interface QuestApi {
     ResponseEntity<Void> unlikeQuest(
             @Parameter(description = "퀘스트 ID", example = "1") @PathVariable(name = "questId") Long questId,
             @Parameter(description = "로그인 사용자 정보", hidden = true) @AuthenticationPrincipal CustomUserDetails member);
+
 }

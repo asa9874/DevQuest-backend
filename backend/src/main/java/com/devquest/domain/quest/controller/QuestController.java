@@ -54,7 +54,7 @@ public class QuestController implements QuestApi{
         QuestResponseDto questResponseDto = questService.getQuest(questId);
         return ResponseEntity.ok(questResponseDto);
     }
-
+    
     @GetMapping("/search")
     public ResponseEntity<Page<QuestResponseDto>> searchQuests(
             @RequestParam(required = false,name = "title") String title,
@@ -64,20 +64,9 @@ public class QuestController implements QuestApi{
         return ResponseEntity.ok(responseDtos);
     }
 
+    
     //TODO
-    @GetMapping("/member/{memberId}")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<QuestResponseDto>> getQuestsByMemberId(
-            @PathVariable(name = "memberId") Long memberId,
-            @RequestParam(required = false) Boolean completed,
-            @RequestParam(required = false) Boolean liked,
-            @RequestParam(required = false) String title,
-            Pageable pageable){
-        return ResponseEntity.ok(null);
-    }
-
-    //TODO
-    @PutMapping("/member/{memberId}")
+    @PutMapping("/{questId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<QuestResponseDto> updateQuest(
             @PathVariable(name = "questId") Long questId,
@@ -93,6 +82,7 @@ public class QuestController implements QuestApi{
         return ResponseEntity.ok(null);
     }
 
+    //좋아요
     @PostMapping("/{questId}/like")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> likeQuest(
@@ -110,4 +100,5 @@ public class QuestController implements QuestApi{
         questService.unlikeQuest(questId, member.getId());
         return ResponseEntity.ok(null);
     }
+
 }

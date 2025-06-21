@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.devquest.domain.quest.dto.requestDto.QuestChallengeCreateRequestDto;
 import com.devquest.domain.quest.dto.responseDto.QuestChallengeResponseDto;
+import com.devquest.domain.quest.model.QuestStatus;
 import com.devquest.domain.quest.service.QuestChallengeService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,6 @@ public class QuestChallengeController implements QuestChallengeApi {
     private final QuestChallengeService questChallengeService;
 
 
-    // TODO
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> createQuestChallenge(
@@ -36,34 +36,37 @@ public class QuestChallengeController implements QuestChallengeApi {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // TODO
     @GetMapping("/member/{memberId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<QuestChallengeResponseDto>> getQuestChallengesByMemberId(
             @PathVariable(name = "memberId") Long memberId,
-            @RequestParam(required = false) Boolean completed,
-            @RequestParam(required = false) Boolean liked,
-            @RequestParam(required = false) String title,
+            @RequestParam(required = false,name = "status") String status,
+            @RequestParam(required = false, name = "title") String title,
             Pageable pageable) {
-        return ResponseEntity.ok(null);
+        QuestStatus questStatus = (status == null || status.isBlank()) ? null : QuestStatus.valueOf(status);
+        List<QuestChallengeResponseDto> questChallenges = questChallengeService.getQuestChallengesByMemberId(
+                memberId, questStatus, title, pageable);
+        return ResponseEntity.ok(questChallenges);
     }
 
-    // TODO
     @GetMapping("/quest/{questId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<QuestChallengeResponseDto>> getQuestChallengesByQuestId(
             @PathVariable(name = "questId") Long questId,
-            @RequestParam(required = false) Boolean completed,
+            @RequestParam(required = false, name="status") String status,
             Pageable pageable) {
-        return ResponseEntity.ok(null);
+        QuestStatus questStatus = (status == null || status.isBlank()) ? null : QuestStatus.valueOf(status);
+        List<QuestChallengeResponseDto> questChallenges = questChallengeService.getQuestChallengesByQuestId(
+                questId, questStatus, pageable);
+        return ResponseEntity.ok(questChallenges);
     }
 
-    // TODO
     @GetMapping("/{questChallengeId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<QuestChallengeResponseDto> getQuestChallengeById(
             @PathVariable(name = "questChallengeId") Long questChallengeId) {
-        return ResponseEntity.ok(null);
+        QuestChallengeResponseDto questChallengeResponseDto = questChallengeService.getQuestChallenge(questChallengeId);
+        return ResponseEntity.ok(questChallengeResponseDto);
     }
 
     // TODO

@@ -1,7 +1,9 @@
 package com.devquest.domain.quest.service;
 
-import java.nio.file.AccessDeniedException;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
@@ -42,6 +44,32 @@ public class QuestChallengeService {
                 .member(member)
                 .build();
         questChallengeRepository.save(questChallenge);
+    }
+
+    public QuestChallengeResponseDto getQuestChallenge(Long questChallengeId) {
+        QuestChallenge questChallenge = questChallengeRepository.findById(questChallengeId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 챌린지입니다"));
+        if (!AuthUtil.isAdminOrEqualMember(questChallenge.getMember().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+        return QuestChallengeResponseDto.from(questChallenge);
+    }
+    public List<QuestChallengeResponseDto> getQuestChallengesByMemberId(
+            Long memberId, QuestStatus status, String title, Pageable pageable) {
+        if (!AuthUtil.isAdminOrEqualMember(memberId)) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+        return questChallengeRepository.findDtoByMemberIdWithFilter(memberId, status, title, pageable);
+    }
+
+    public List<QuestChallengeResponseDto> getQuestChallengesByQuestId(
+            Long questId, QuestStatus status, Pageable pageable) {
+        Quest quest = questRepository.findById(questId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 퀘스트입니다"));
+        if (!AuthUtil.isAdminOrEqualMember(quest.getCreater().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+        return questChallengeRepository.findDtoByQuestIdWithFilter(questId, status, pageable);
     }
 
 }

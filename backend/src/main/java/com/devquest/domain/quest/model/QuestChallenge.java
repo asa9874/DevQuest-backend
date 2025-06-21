@@ -43,7 +43,7 @@ public class QuestChallenge {
     @NotNull
     private LocalDateTime startedAt;
 
-    private LocalDateTime EndAt;
+    private LocalDateTime endAt;
 
     @Builder
     public QuestChallenge(Quest quest, Member member) {
@@ -51,17 +51,17 @@ public class QuestChallenge {
         this.member = member;
         this.status = QuestStatus.IN_PROGRESS;
         this.startedAt = LocalDateTime.now();
-        this.EndAt = null;
+        this.endAt = null;
     }
 
     public void complete() {
         this.status = QuestStatus.COMPLETED;
-        this.EndAt = LocalDateTime.now();
+        this.endAt = LocalDateTime.now();
     }
 
     public void fail() {
         this.status = QuestStatus.FAILED;
-        this.EndAt = LocalDateTime.now();
+        this.endAt = LocalDateTime.now();
     }
 
     public boolean isInProgress() {

@@ -22,11 +22,11 @@ public class Member {
     private Long id;
 
     @NotNull
-    @Size(max = 50)
+    @Size(min = 2, max = 50)
     private String name;
 
     @NotNull
-    @Size(max = 100)
+    @Size(min = 5, max = 100)
     private String email;
 
     @NotNull
@@ -54,7 +54,7 @@ public class Member {
     }
 
     public void updatePassword(String password) {
-        if (password == null || password.isBlank()|| password.length() < 6) {
+        if (password == null || password.isBlank() || password.length() < 6) {
             throw new IllegalArgumentException("비밀번호가 유효하지않습니다.");
         }
         this.password = password;

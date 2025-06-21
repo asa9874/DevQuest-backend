@@ -26,11 +26,11 @@ public class Quest {
     private Long id;
 
     @NotNull
-    @Size(max = 100)
+    @Size(min = 2, max = 100)
     private String title;
 
     @NotNull
-    @Size(max = 500)
+    @Size(min = 5, max = 500)
     private String description;
 
     @NotNull

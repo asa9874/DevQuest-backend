@@ -15,13 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.devquest.domain.quest.dto.requestDto.QuestChallengeCreateRequestDto;
 import com.devquest.domain.quest.dto.responseDto.QuestChallengeResponseDto;
+import com.devquest.domain.quest.service.QuestChallengeService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/quests/challenges")
 @RequiredArgsConstructor
-public class QuestChallengeController {
+public class QuestChallengeController implements QuestChallengeApi {
+    private final QuestChallengeService questChallengeService;
+
 
     // TODO
     @GetMapping("/member/{memberId}")

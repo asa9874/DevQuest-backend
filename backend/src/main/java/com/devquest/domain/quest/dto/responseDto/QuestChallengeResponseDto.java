@@ -12,15 +12,36 @@ public record QuestChallengeResponseDto(
         String status,
         String createrName,
         Long createrId,
+        String ChallengerName,
+        Long ChallengerId,
         String startedAt,
         String EndAt
 
 ) {
-    public QuestChallengeResponseDto(Long id, Long questId, String title, String description, String status,
-            String createrName, Long createrId, LocalDateTime startedAt, LocalDateTime EndAt) {
-        this(id, questId, title, description, status, createrName, createrId,
-                startedAt.toString(),
-                EndAt != null ? EndAt.toString() : "");
+    public QuestChallengeResponseDto(
+            Long id,
+            Long questId,
+            String title,
+            String description,
+            String status,
+            String createrName,
+            Long createrId,
+            String challengerName,
+            Long challengerId,
+            LocalDateTime startedAt,
+            LocalDateTime endAt) {
+        this(
+                id,
+                questId,
+                title,
+                description,
+                status,
+                createrName,
+                createrId,
+                challengerName,
+                challengerId,
+                startedAt != null ? startedAt.toString() : null,
+                endAt != null ? endAt.toString() : null);
     }
 
     public static QuestChallengeResponseDto from(QuestChallenge questChallenge) {
@@ -32,7 +53,10 @@ public record QuestChallengeResponseDto(
                 questChallenge.getStatus().name(),
                 questChallenge.getQuest().getCreater().getName(),
                 questChallenge.getQuest().getCreater().getId(),
+                questChallenge.getMember() != null ? questChallenge.getMember().getName() : null,
+                questChallenge.getMember() != null ? questChallenge.getMember().getId() : null,
                 questChallenge.getStartedAt(),
-                questChallenge.getEndAt());
+                questChallenge.getEndAt()
+        );
     }
 }

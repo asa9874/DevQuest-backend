@@ -80,7 +80,7 @@ public class QuestController implements QuestApi{
     public ResponseEntity<Void> deleteQuest(
             @PathVariable(name = "questId") Long questId){
         questService.deleteQuest(questId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     //좋아요
@@ -99,7 +99,7 @@ public class QuestController implements QuestApi{
             @PathVariable(name = "questId") Long questId,
             @AuthenticationPrincipal CustomUserDetails member){
         questService.unlikeQuest(questId, member.getId());
-        return ResponseEntity.ok(null);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

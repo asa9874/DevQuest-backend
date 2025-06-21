@@ -2,6 +2,7 @@ package com.devquest.domain.member.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,7 +49,7 @@ public class MemberController implements MemberApi {
     public ResponseEntity<Void> deleteMyAccount(
             @PathVariable(name = "memberId") Long memberId) {
         memberService.deleteMember(memberId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping("/password")

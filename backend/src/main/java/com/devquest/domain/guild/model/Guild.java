@@ -24,8 +24,12 @@ public class Guild {
     private Long id;
 
     @NotNull
-    @Size(min = 2, max = 50)
+    @Size(min = 2, max = 20)
     private String name;
+
+    @NotNull
+    @Size(min = 5, max = 100)
+    private String description;
 
     @NotNull
     @ManyToOne
@@ -33,8 +37,9 @@ public class Guild {
     private Member leader;
 
     @Builder
-    public Guild(String name, Member leader) {
+    public Guild(String name, String description, Member leader) {
         this.name = name;
+        this.description = description;
         this.leader = leader;
     }
 }

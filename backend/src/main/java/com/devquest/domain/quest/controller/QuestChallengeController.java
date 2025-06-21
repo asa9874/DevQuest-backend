@@ -3,6 +3,7 @@ package com.devquest.domain.quest.controller;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,15 @@ import lombok.RequiredArgsConstructor;
 public class QuestChallengeController implements QuestChallengeApi {
     private final QuestChallengeService questChallengeService;
 
+
+    // TODO
+    @PostMapping
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Void> createQuestChallenge(
+            @RequestBody QuestChallengeCreateRequestDto requestDto) {
+        questChallengeService.createQuestChallenge(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
     // TODO
     @GetMapping("/member/{memberId}")
@@ -53,14 +63,6 @@ public class QuestChallengeController implements QuestChallengeApi {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<QuestChallengeResponseDto> getQuestChallengeById(
             @PathVariable(name = "questChallengeId") Long questChallengeId) {
-        return ResponseEntity.ok(null);
-    }
-
-    // TODO
-    @PostMapping
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<QuestChallengeResponseDto> createQuestChallenge(
-            @RequestBody QuestChallengeCreateRequestDto requestDto) {
         return ResponseEntity.ok(null);
     }
 

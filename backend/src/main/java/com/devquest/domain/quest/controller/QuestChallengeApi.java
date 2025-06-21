@@ -34,7 +34,7 @@ public interface QuestChallengeApi {
             @Parameter(description = "퀘스트 챌린지 ID", example = "1") @PathVariable(name = "questChallengeId") Long questChallengeId);
 
     @Operation(summary = "퀘스트 챌린지 생성 (자기자신 or 어드민)", description = "새로운 퀘스트 챌린지를 생성합니다.")
-    ResponseEntity<QuestChallengeResponseDto> createQuestChallenge(
+    ResponseEntity<Void> createQuestChallenge(
             @Parameter(description = "퀘스트 챌린지 생성 요청 DTO") @RequestBody QuestChallengeCreateRequestDto requestDto);
 
     @Operation(summary = "퀘스트 챌린지 완료 처리 (자기자신 or 어드민)", description = "특정 퀘스트 챌린지를 완료 처리합니다.")

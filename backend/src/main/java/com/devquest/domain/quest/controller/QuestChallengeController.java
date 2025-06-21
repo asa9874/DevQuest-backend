@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -69,19 +70,19 @@ public class QuestChallengeController implements QuestChallengeApi {
         return ResponseEntity.ok(questChallengeResponseDto);
     }
 
-    // TODO
-    @PostMapping("/{questChallengeId}/complete")
+    @PutMapping("/{questChallengeId}/complete")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<QuestChallengeResponseDto> completeQuestChallenge(
+    public ResponseEntity<Void> completeQuestChallenge(
             @PathVariable(name = "questChallengeId") Long questChallengeId) {
+        questChallengeService.completeQuestChallenge(questChallengeId);
         return ResponseEntity.ok(null);
     }
 
-    // TODO
-    @PostMapping("/{questChallengeId}/fail")
+    @PutMapping("/{questChallengeId}/fail")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<QuestChallengeResponseDto> failQuestChallenge(
+    public ResponseEntity<Void> failQuestChallenge(
             @PathVariable(name = "questChallengeId") Long questChallengeId) {
+        questChallengeService.failQuestChallenge(questChallengeId);
         return ResponseEntity.ok(null);
     }
 

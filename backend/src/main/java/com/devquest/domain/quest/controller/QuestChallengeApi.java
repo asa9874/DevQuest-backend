@@ -22,7 +22,7 @@ public interface QuestChallengeApi {
             @Parameter(description = "퀘스트 제목") @RequestParam(required = false) String title,
             Pageable pageable);
 
-    @Operation(summary = "퀘스트별 챌린지 목록 조회 (자기자신 or 어드민)", description = "특정 퀘스트에 대한 챌린지 목록을 조회합니다.")
+    @Operation(summary = "퀘스트별 챌린지 목록 조회 (자기자신퀘스트 or 어드민)", description = "특정 퀘스트에 대한 챌린지 목록을 조회합니다.")
     ResponseEntity<List<QuestChallengeResponseDto>> getQuestChallengesByQuestId(
             @Parameter(description = "퀘스트 ID", example = "1") @PathVariable(name = "questId") Long questId,
             @Parameter(description = "완료 여부") @RequestParam(required = false) String status,
@@ -37,10 +37,10 @@ public interface QuestChallengeApi {
             @Parameter(description = "퀘스트 챌린지 생성 요청 DTO") @RequestBody QuestChallengeCreateRequestDto requestDto);
 
     @Operation(summary = "퀘스트 챌린지 완료 처리 (자기자신 or 어드민)", description = "특정 퀘스트 챌린지를 완료 처리합니다.")
-    ResponseEntity<QuestChallengeResponseDto> completeQuestChallenge(
+    ResponseEntity<Void> completeQuestChallenge(
             @Parameter(description = "퀘스트 챌린지 ID", example = "1") @PathVariable(name = "questChallengeId") Long questChallengeId);
 
     @Operation(summary = "퀘스트 챌린지 실패 처리 (자기자신 or 어드민)", description = "특정 퀘스트 챌린지를 실패 처리합니다.")
-    ResponseEntity<QuestChallengeResponseDto> failQuestChallenge(
+    ResponseEntity<Void> failQuestChallenge(
             @Parameter(description = "퀘스트 챌린지 ID", example = "1") @PathVariable(name = "questChallengeId") Long questChallengeId);
 }

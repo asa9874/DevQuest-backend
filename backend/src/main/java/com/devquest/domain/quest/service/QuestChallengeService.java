@@ -1,6 +1,5 @@
 package com.devquest.domain.quest.service;
 
-
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -54,6 +53,7 @@ public class QuestChallengeService {
         }
         return QuestChallengeResponseDto.from(questChallenge);
     }
+
     public List<QuestChallengeResponseDto> getQuestChallengesByMemberId(
             Long memberId, QuestStatus status, String title, Pageable pageable) {
         if (!AuthUtil.isAdminOrEqualMember(memberId)) {
@@ -70,6 +70,32 @@ public class QuestChallengeService {
             throw new IllegalArgumentException("권한이 없습니다");
         }
         return questChallengeRepository.findDtoByQuestIdWithFilter(questId, status, pageable);
+    }
+
+    public void completeQuestChallenge(Long questChallengeId) {
+        QuestChallenge questChallenge = questChallengeRepository.findById(questChallengeId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 챌린지입니다"));
+        if (!questChallenge.isInProgress()) {
+            throw new IllegalArgumentException("진행중인 챌린지가 아닙니다");
+        }
+        if (!AuthUtil.isAdminOrEqualMember(questChallenge.getMember().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+        questChallenge.complete();
+        questChallengeRepository.save(questChallenge);
+    }
+
+    public void failQuestChallenge(Long questChallengeId) {
+        QuestChallenge questChallenge = questChallengeRepository.findById(questChallengeId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 챌린지입니다"));
+        if (!questChallenge.isInProgress()) {
+            throw new IllegalArgumentException("진행중인 챌린지가 아닙니다");
+        }
+        if (!AuthUtil.isAdminOrEqualMember(questChallenge.getMember().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+        questChallenge.fail();
+        questChallengeRepository.save(questChallenge);
     }
 
 }

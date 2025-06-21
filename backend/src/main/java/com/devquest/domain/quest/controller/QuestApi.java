@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.devquest.domain.quest.dto.requestDto.QuestCreateRequestDto;
 import com.devquest.domain.quest.dto.requestDto.QuestUpdateRequestDto;
 import com.devquest.domain.quest.dto.responseDto.QuestResponseDto;
+import com.devquest.domain.quest.dto.responseDto.QuestWithLikeResponseDto;
 import com.devquest.global.jwt.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,14 +29,14 @@ public interface QuestApi {
             @Parameter(description = "로그인 사용자 정보", hidden = true) @AuthenticationPrincipal CustomUserDetails member);
 
     @Operation(summary = "전체 퀘스트 목록 조회 (어드민)", description = "모든 퀘스트 목록을 조회합니다.")
-    ResponseEntity<List<QuestResponseDto>> getAllQuests();
+    ResponseEntity<List<QuestWithLikeResponseDto>> getAllQuests();
 
     @Operation(summary = "퀘스트 조회 (전체 공개)", description = "특정 퀘스트의 상세 정보를 조회합니다.")
-    ResponseEntity<QuestResponseDto> getQuest(
+    ResponseEntity<QuestWithLikeResponseDto> getQuest(
             @Parameter(description = "퀘스트 ID", example = "1") @PathVariable(name = "questId") Long questId);
 
     @Operation(summary = "퀘스트 검색 (전체 공개)", description = "조건에 따라 퀘스트를 검색합니다.")
-    ResponseEntity<Page<QuestResponseDto>> searchQuests(
+    ResponseEntity<Page<QuestWithLikeResponseDto>> searchQuests(
             @Parameter(description = "퀘스트 제목") @RequestParam(required = false, name = "title") String title,
             @Parameter(description = "생성자 닉네임") @RequestParam(required = false, name = "creatorName") String creatorName,
             Pageable pageable);

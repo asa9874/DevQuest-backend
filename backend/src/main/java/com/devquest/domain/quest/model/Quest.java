@@ -48,4 +48,9 @@ public class Quest {
         this.creater = creater;
         this.createdAt = LocalDateTime.now();
     }
+
+    public void update(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
 }

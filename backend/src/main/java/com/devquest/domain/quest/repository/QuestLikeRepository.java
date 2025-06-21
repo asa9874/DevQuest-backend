@@ -9,4 +9,7 @@ import com.devquest.domain.quest.model.QuestLike;
 public interface QuestLikeRepository extends JpaRepository<QuestLike, Long> {
     Optional<QuestLike> findByMemberIdAndQuestId(Long memberId, Long questId);
     boolean existsByMemberIdAndQuestId(Long memberId, Long questId);
+    long countByQuestId(Long questId);
+    void deleteByMemberId(Long memberId);
+    void deleteByQuestId(Long questId);
 }

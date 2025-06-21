@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.devquest.domain.quest.dto.responseDto.QuestResponseDto;
+import com.devquest.domain.quest.dto.responseDto.QuestWithLikeResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +23,7 @@ public class QuestChallengeController {
     //TODO
     @GetMapping("/member/{memberId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<QuestResponseDto>> getQuestsByMemberId(
+    public ResponseEntity<List<QuestWithLikeResponseDto>> getQuestsByMemberId(
             @PathVariable(name = "memberId") Long memberId,
             @RequestParam(required = false) Boolean completed,
             @RequestParam(required = false) Boolean liked,

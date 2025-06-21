@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.devquest.domain.quest.dto.requestDto.QuestCreateRequestDto;
 import com.devquest.domain.quest.dto.requestDto.QuestUpdateRequestDto;
 import com.devquest.domain.quest.dto.responseDto.QuestResponseDto;
+import com.devquest.domain.quest.dto.responseDto.QuestWithLikeResponseDto;
 import com.devquest.domain.quest.service.QuestService;
 import com.devquest.global.jwt.CustomUserDetails;
 
@@ -43,43 +44,43 @@ public class QuestController implements QuestApi{
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<QuestResponseDto>> getAllQuests(){
-        List<QuestResponseDto> responseDtos = questService.getAllQuests();
+    public ResponseEntity<List<QuestWithLikeResponseDto>> getAllQuests(){
+        List<QuestWithLikeResponseDto> responseDtos = questService.getAllQuests();
         return ResponseEntity.ok(responseDtos);
     }
 
     @GetMapping("/{questId}")
-    public ResponseEntity<QuestResponseDto> getQuest(
+    public ResponseEntity<QuestWithLikeResponseDto> getQuest(
             @PathVariable(name = "questId") Long questId){
-        QuestResponseDto questResponseDto = questService.getQuest(questId);
+        QuestWithLikeResponseDto questResponseDto = questService.getQuest(questId);
         return ResponseEntity.ok(questResponseDto);
     }
     
     @GetMapping("/search")
-    public ResponseEntity<Page<QuestResponseDto>> searchQuests(
+    public ResponseEntity<Page<QuestWithLikeResponseDto>> searchQuests(
             @RequestParam(required = false,name = "title") String title,
             @RequestParam(required = false,name = "creatorName") String creatorName,
             Pageable pageable){
-        Page<QuestResponseDto> responseDtos = questService.search(title, creatorName, pageable);
+        Page<QuestWithLikeResponseDto> responseDtos = questService.search(title, creatorName, pageable);
         return ResponseEntity.ok(responseDtos);
     }
 
     
-    //TODO
     @PutMapping("/{questId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<QuestResponseDto> updateQuest(
             @PathVariable(name = "questId") Long questId,
             @RequestBody QuestUpdateRequestDto requestDto){
-        return ResponseEntity.ok(null);
+        QuestResponseDto responseDto = questService.updateQuest(questId, requestDto);
+        return ResponseEntity.ok(responseDto);
     }
 
-    //TODO
     @DeleteMapping("/{questId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteQuest(
             @PathVariable(name = "questId") Long questId){
-        return ResponseEntity.ok(null);
+        questService.deleteQuest(questId);
+        return ResponseEntity.noContent().build();
     }
 
     //좋아요

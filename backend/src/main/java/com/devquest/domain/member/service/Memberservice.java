@@ -12,6 +12,8 @@ import com.devquest.domain.member.dto.requestDto.MemberUpdateRequestDto;
 import com.devquest.domain.member.dto.responseDto.MemberResponseDto;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.repository.MemberRepository;
+import com.devquest.domain.quest.repository.QuestChallengeRepository;
+import com.devquest.domain.quest.repository.QuestLikeRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 public class Memberservice {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final QuestLikeRepository questLikeRepository;
+    private final QuestChallengeRepository questChallengeRepository;
 
     public List<MemberResponseDto> getAllMembers() {
         return memberRepository.findAll().stream()
@@ -50,6 +54,8 @@ public class Memberservice {
         }
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        questChallengeRepository.deleteByMemberId(memberId);
+        questLikeRepository.deleteByMemberId(memberId);
         memberRepository.delete(member);
     }
 

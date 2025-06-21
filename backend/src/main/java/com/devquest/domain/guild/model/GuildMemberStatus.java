@@ -1,4 +1,4 @@
-package com.devquest.domain.guild.guild.model;
+package com.devquest.domain.guild.model;
 
 public enum GuildMemberStatus {
     MEMBER, 

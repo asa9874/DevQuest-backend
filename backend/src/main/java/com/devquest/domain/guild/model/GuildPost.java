@@ -1,4 +1,4 @@
-package com.devquest.domain.guild.guildpost.model;
+package com.devquest.domain.guild.model;
 
 import java.time.LocalDateTime;
 
@@ -20,31 +20,37 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GuildPostComment {
+public class GuildPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Size(min = 1, max = 500)
+    @Size(min = 2, max = 100)
+    private String title;
+
+    @NotNull
+    @Size(min = 5, max = 500)
     private String content;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "guild_post_id")
-    private GuildPost guildPost;
+    @JoinColumn(name = "guild_id")
+    private Guild guild;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member author;
 
+    @NotNull
     private LocalDateTime createdAt;
 
     @Builder
-    public GuildPostComment(String content, GuildPost guildPost, Member author) {
+    public GuildPost(String title, String content, Guild guild, Member author) {
+        this.title = title;
         this.content = content;
-        this.guildPost = guildPost;
+        this.guild = guild;
         this.author = author;
         this.createdAt = LocalDateTime.now();
     }

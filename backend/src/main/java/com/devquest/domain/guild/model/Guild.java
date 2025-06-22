@@ -42,4 +42,9 @@ public class Guild {
         this.description = description;
         this.leader = leader;
     }
+
+    public void updateGuild(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 }

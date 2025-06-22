@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 
 public interface QuestApi {
-    @Operation(summary = "퀘스트 생성 (자기자신)", description = "새로운 퀘스트를 생성합니다.")
+    @Operation(summary = "퀘스트 생성 (유저)", description = "새로운 퀘스트를 생성합니다.")
     ResponseEntity<Void> createQuest(
             @Parameter(description = "퀘스트 생성 요청 DTO") @RequestBody QuestCreateRequestDto requestDto,
             @Parameter(description = "로그인 사용자 정보", hidden = true) @AuthenticationPrincipal CustomUserDetails member);
@@ -38,12 +38,12 @@ public interface QuestApi {
             @Parameter(description = "생성자 닉네임") @RequestParam(required = false, name = "creatorName") String creatorName,
             Pageable pageable);
 
-    @Operation(summary = "퀘스트 수정 (자기자신 or 어드민)", description = "퀘스트 정보를 수정합니다.")
+    @Operation(summary = "퀘스트 수정 (퀘스트주인/어드민)", description = "퀘스트 정보를 수정합니다.")
     ResponseEntity<QuestResponseDto> updateQuest(
             @Parameter(description = "퀘스트 ID", example = "1") @PathVariable(name = "questId") Long questId,
             @Parameter(description = "퀘스트 수정 요청 DTO") @RequestBody QuestUpdateRequestDto requestDto);
 
-    @Operation(summary = "퀘스트 삭제 (자기자신 or 어드민)", description = "특정 퀘스트를 삭제합니다.")
+    @Operation(summary = "퀘스트 삭제 (퀘스트주인/어드민)", description = "특정 퀘스트를 삭제합니다.")
     ResponseEntity<Void> deleteQuest(
             @Parameter(description = "퀘스트 ID", example = "1") @PathVariable(name = "questId") Long questId);
 

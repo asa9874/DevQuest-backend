@@ -7,7 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.devquest.domain.auth.util.AuthUtil;
 import com.devquest.domain.guild.dto.requestDto.GuildCreateRequestDto;
+import com.devquest.domain.guild.dto.requestDto.GuildUpdateRequestDto;
 import com.devquest.domain.guild.dto.responseDto.GuildResponseDto;
 import com.devquest.domain.guild.model.Guild;
 import com.devquest.domain.guild.repository.GuildRepository;
@@ -55,5 +57,31 @@ public class GuildService {
         return guilds.map(GuildResponseDto::from);
     }
 
+    public GuildResponseDto updateGuild(
+            Long guildId, GuildUpdateRequestDto requestDto) {
+        Guild guild = guildRepository.findById(guildId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드입니다."));
 
+        if (!AuthUtil.isAdminOrEqualMember(guild.getLeader().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
+        if (guildRepository.existsByName(requestDto.name())) {
+            throw new IllegalArgumentException("이미 존재하는 길드 이름입니다.");
+        }
+
+        guild.updateGuild(requestDto.name(), requestDto.description());
+        guildRepository.save(guild);
+        return GuildResponseDto.from(guild);
+    }
+
+    //TODO:중간 테이블 삭제 처리 추후 추가
+    public void deleteGuild(Long guildId) {
+        Guild guild = guildRepository.findById(guildId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드입니다."));
+        if (!AuthUtil.isAdminOrEqualMember(guild.getLeader().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+        guildRepository.delete(guild);
+    }
 }

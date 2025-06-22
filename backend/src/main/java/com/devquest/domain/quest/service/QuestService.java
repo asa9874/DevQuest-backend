@@ -106,7 +106,9 @@ public class QuestService {
             QuestUpdateRequestDto requestDto) {
         Quest quest = questRepository.findById(questId)
                 .orElseThrow(() -> new IllegalArgumentException("퀘스트를 찾을 수 없습니다"));
-        
+        if (!AuthUtil.isAdminOrEqualMember(quest.getCreater().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
         quest.update(requestDto.title(), requestDto.description());
         questRepository.save(quest);
         return QuestResponseDto.from(quest);
@@ -115,6 +117,9 @@ public class QuestService {
     public void deleteQuest(Long questId) {
         Quest quest = questRepository.findById(questId)
                 .orElseThrow(() -> new IllegalArgumentException("퀘스트를 찾을 수 없습니다"));
+        if (!AuthUtil.isAdminOrEqualMember(quest.getCreater().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
         questChallengeRepository.deleteByQuestId(questId);
         questLikeRepository.deleteByQuestId(questId);
         questRepository.delete(quest);

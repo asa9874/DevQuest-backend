@@ -2,6 +2,8 @@ package com.devquest.domain.guild.model;
 
 import java.time.LocalDateTime;
 
+import javax.management.relation.Role;
+
 import org.springframework.cglib.core.Local;
 
 import com.devquest.domain.member.model.Member;
@@ -40,13 +42,21 @@ public class GuildMember {
     private GuildMemberStatus status;
 
     @NotNull
+    private GuildMemberRole role = GuildMemberRole.MEMBER;
+
+    @NotNull
     private LocalDateTime joinedAt;
 
+    private LocalDateTime leftAt;
+
     @Builder
-    public GuildMember(Guild guild, Member member, GuildMemberStatus status) {
+    public GuildMember(Guild guild, Member member,
+            GuildMemberStatus status, GuildMemberRole role) {
         this.guild = guild;
         this.member = member;
         this.status = status;
+        this.role = role;
         this.joinedAt = LocalDateTime.now();
+        this.leftAt = null;
     }
 }

@@ -2,8 +2,11 @@ package com.devquest.domain.guild.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +32,7 @@ public class GuildController {
     private final GuildService guildService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> createGuild(
             @RequestBody GuildCreateRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails member) {
@@ -36,28 +40,31 @@ public class GuildController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // TODO
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<GuildResponseDto>> getAllGuilds() {
-        return ResponseEntity.ok().body(null);
+        List<GuildResponseDto> guilds = guildService.getAllGuilds();
+        return ResponseEntity.ok().body(guilds);
     }
 
-    // TODO
     @GetMapping("/search")
-    public ResponseEntity<List<GuildResponseDto>> searchGuilds(
-            @RequestParam(required = false, name = "name") String name) {
-        return ResponseEntity.ok().body(null);
+    public ResponseEntity<Page<GuildResponseDto>> searchGuilds(
+            @RequestParam(required = false, name = "name") String name,
+            Pageable pageable
+            ) {
+        Page<GuildResponseDto> guilds = guildService.searchGuilds(name, pageable);
+        return ResponseEntity.ok().body(guilds);
     }
 
-    // TODO
     @GetMapping("/{guildId}")
     public ResponseEntity<GuildResponseDto> getGuildById(
             @PathVariable(name = "guildId") Long guildId) {
-        return ResponseEntity.ok().body(null);
-    }
+        GuildResponseDto guild = guildService.getGuildById(guildId);
+        return ResponseEntity.ok().body(guild);}
 
     // TODO
     @PutMapping("/{guildId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<GuildResponseDto> updateGuild(
             @RequestBody GuildCreateRequestDto requestDto,
             @PathVariable(name = "guildId") Long guildId) {
@@ -66,6 +73,7 @@ public class GuildController {
 
     // TODO
     @DeleteMapping("/{guildId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteGuild(
             @PathVariable(name = "guildId") Long guildId) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

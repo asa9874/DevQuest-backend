@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.devquest.domain.guild.model.Guild;
+import com.devquest.domain.guild.repository.GuildRepository;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.model.Role;
 import com.devquest.domain.member.repository.MemberRepository;
@@ -30,6 +32,8 @@ class devQuestApplicationTests {
     private QuestChallengeRepository questChallengeRepository;
     @Autowired
     private QuestLikeRepository questLikeRepository;
+    @Autowired
+    private GuildRepository guildRepository;
     
 
 	@Test
@@ -88,6 +92,19 @@ class devQuestApplicationTests {
 				questLikeRepository.save(like);
 			}
 		}
+
+
+        for (int i = 0; i < 5; i++) {
+            if (!guildRepository.existsByName("길드" + i)) {
+                Member leader = allMembers.get(i % allMembers.size());
+                Guild guild = Guild.builder()
+                        .name("길드" + i)
+                        .description("길드 설명" + i)
+                        .leader(leader)
+                        .build();
+                guildRepository.save(guild);
+            }
+        }
 	}
 
 }

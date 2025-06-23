@@ -92,10 +92,6 @@ public class QuestService {
     }
 
     public void unlikeQuest(Long questId, Long memberId) {
-        Quest quest = questRepository.findById(questId)
-                .orElseThrow(() -> new IllegalArgumentException("퀘스트를 찾을 수 없습니다"));
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다"));
         QuestLike questLike = questLikeRepository.findByMemberIdAndQuestId(memberId, questId)
                 .orElseThrow(() -> new IllegalArgumentException("퀘스트 좋아요를 찾을 수 없습니다"));
         questLikeRepository.delete(questLike);

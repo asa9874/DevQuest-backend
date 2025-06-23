@@ -1,14 +1,11 @@
 package com.devquest.domain.guild.model;
 
 import java.time.LocalDateTime;
-
-import javax.management.relation.Role;
-
-import org.springframework.cglib.core.Local;
-
 import com.devquest.domain.member.model.Member;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,9 +36,11 @@ public class GuildMember {
     private Member member;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private GuildMemberStatus status;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private GuildMemberRole role = GuildMemberRole.MEMBER;
 
     @NotNull

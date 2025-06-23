@@ -8,6 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.devquest.domain.guild.model.Guild;
+import com.devquest.domain.guild.model.GuildMember;
+import com.devquest.domain.guild.model.GuildMemberRole;
+import com.devquest.domain.guild.model.GuildMemberStatus;
+import com.devquest.domain.guild.repository.GuildMemberRepository;
 import com.devquest.domain.guild.repository.GuildRepository;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.model.Role;
@@ -34,6 +38,8 @@ class devQuestApplicationTests {
     private QuestLikeRepository questLikeRepository;
     @Autowired
     private GuildRepository guildRepository;
+    @Autowired
+    private GuildMemberRepository guildMemberRepository;
     
 
 	@Test
@@ -105,6 +111,25 @@ class devQuestApplicationTests {
                 guildRepository.save(guild);
             }
         }
+        List<Guild> allGuilds = guildRepository.findAll();
+        for (Guild guild : allGuilds) {
+            for (int i = 0; i < allMembers.size(); i++) {
+                Member member = allMembers.get(i);
+                boolean exists = guildMemberRepository.findAll().stream()
+                    .anyMatch(gm -> gm.getGuild().getId().equals(guild.getId()) && gm.getMember().getId().equals(member.getId()));
+                if (exists) continue;
+                GuildMemberRole role = (i % 10 == 0) ? GuildMemberRole.OWNER : (i % 5 == 0) ? GuildMemberRole.ADMIN : GuildMemberRole.MEMBER;
+                GuildMemberStatus status = (i % 7 == 0) ? GuildMemberStatus.BANNED : (i % 4 == 0) ? GuildMemberStatus.LEAVED : GuildMemberStatus.ACTIVE;
+                GuildMember guildMember = GuildMember.builder()
+                        .guild(guild)
+                        .member(member)
+                        .role(role)
+                        .status(status)
+                        .build();
+                guildMemberRepository.save(guildMember);
+            }
+        }
 	}
 
 }
+//TODO: 메모용 copy con local3.mv.db 

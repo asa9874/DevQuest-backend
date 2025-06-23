@@ -15,4 +15,6 @@ public interface GuildRepository extends JpaRepository<Guild, Long> {
     Page<Guild> findByNameContaining(
             @Param("name") String name,
             Pageable pageable);
+
+    
 }

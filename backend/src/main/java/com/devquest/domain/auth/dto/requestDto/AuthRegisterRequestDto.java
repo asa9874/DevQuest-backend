@@ -1,25 +1,18 @@
 package com.devquest.domain.auth.dto.requestDto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public record AuthRegisterRequestDto(
-        String name,
-        String email,
-        String password
-) {
-    public AuthRegisterRequestDto {
-        if (name == null || name.isBlank()) {
-                throw new IllegalArgumentException("이름은 비어 있을 수 없습니다.");
-        }
-        if (name.length() < 2 || name.length() > 50) {
-                throw new IllegalArgumentException("이름은 2자 이상 50자 이하이어야 합니다.");
-        }
-        if (email == null ) {
-                throw new IllegalArgumentException("이메일이 비어 있을 수 없습니다.");
-        }
-        if (email.length() > 100 || email.length() < 5) {
-                throw new IllegalArgumentException("이메일은 최소 5자 이상, 최대 100자 이하여야 합니다.");
-        }
-        if (password == null || password.length() < 6 || password.length() > 100) {
-                throw new IllegalArgumentException("비밀번호는 최소 6자 이상, 최대 100자 이하여야 합니다.");
-        }
-    }
-}
+    @NotBlank(message = "이름은 비어 있을 수 없습니다.")
+    @Size(min = 2, max = 50, message = "이름은 2자 이상 50자 이하이어야 합니다.")
+    String name,
+    @NotBlank(message = "이메일은 비어 있을 수 없습니다.")
+    @Email(message = "이메일 형식이 올바르지 않습니다.")
+    @Size(min = 5, max = 100, message = "이메일은 5자 이상 100자 이하이어야 합니다.")
+    String email,
+    @NotBlank(message = "비밀번호는 비어 있을 수 없습니다.")
+    @Size(min = 6, max = 100, message = "비밀번호는 6자 이상 100자 이하이어야 합니다.")
+    String password
+) {}

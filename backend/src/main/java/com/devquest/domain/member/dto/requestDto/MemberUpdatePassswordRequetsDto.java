@@ -1,20 +1,16 @@
 package com.devquest.domain.member.dto.requestDto;
 
-public record MemberUpdatePassswordRequetsDto(
-    String currentPassword,
-    String newPassword,
-    String confirmNewPassword
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-) {
-    public MemberUpdatePassswordRequetsDto {
-        if (currentPassword == null || currentPassword.isBlank() || currentPassword.length() < 6 || currentPassword.length() > 100) {
-            throw new IllegalArgumentException("현재 비밀번호가 유효하지 않습니다.");
-        }
-        if (newPassword == null || newPassword.isBlank() || newPassword.length() < 6 || newPassword.length() > 100) {
-            throw new IllegalArgumentException("새 비밀번호가 유효하지 않습니다.");
-        }
-        if (confirmNewPassword == null || confirmNewPassword.isBlank() || confirmNewPassword.length() < 6 || confirmNewPassword.length() > 100) {
-            throw new IllegalArgumentException("확인 비밀번호가 유효하지 않습니다.");
-        }
-    }
-}
+public record MemberUpdatePassswordRequetsDto(
+    @NotBlank(message = "현재 비밀번호가 유효하지 않습니다.")
+    @Size(min = 6, max = 100, message = "현재 비밀번호는 6자 이상 100자 이하이어야 합니다.")
+    String currentPassword,
+    @NotBlank(message = "새 비밀번호가 유효하지 않습니다.")
+    @Size(min = 6, max = 100, message = "새 비밀번호는 6자 이상 100자 이하이어야 합니다.")
+    String newPassword,
+    @NotBlank(message = "확인 비밀번호가 유효하지 않습니다.")
+    @Size(min = 6, max = 100, message = "확인 비밀번호는 6자 이상 100자 이하이어야 합니다.")
+    String confirmNewPassword
+) {}

@@ -17,21 +17,25 @@ import com.devquest.domain.guild.dto.requestDto.GuildPostCreateRequestDto;
 import com.devquest.domain.guild.dto.requestDto.GuildPostUpdateRequestDto;
 import com.devquest.domain.guild.dto.responseDto.GuildPostResponseDto;
 import com.devquest.domain.guild.dto.responseDto.GuildResponseDto;
+import com.devquest.domain.guild.service.GuildPostService;
 import com.devquest.global.jwt.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/guilds")
 @RequiredArgsConstructor
 public class GuildPostController {
+    private final GuildPostService guildPostService;
 
     // TODO
     @PostMapping("/posts")
     public ResponseEntity<Void> createGuildPost(
-            @RequestBody GuildPostCreateRequestDto requestDto,
+            @Valid @RequestBody GuildPostCreateRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails member) {
+        guildPostService.createGuildPost(requestDto, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

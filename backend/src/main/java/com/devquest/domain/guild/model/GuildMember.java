@@ -66,6 +66,7 @@ public class GuildMember {
 
     public void resign() {
         this.status = GuildMemberStatus.ACTIVE;
+        this.role = GuildMemberRole.MEMBER;
         this.joinedAt = LocalDateTime.now();
         this.leftAt = null;
     }

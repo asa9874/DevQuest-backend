@@ -67,7 +67,8 @@ public class GuildMemberService {
         }
 
         if (guildMemberRepository.existsByMemberIdAndStatus(memberId, GuildMemberStatus.LEAVED)) {
-            GuildMember guildmember = guildMemberRepository.findByGuildIdAndMemberId(guildId, memberId);
+            GuildMember guildmember = guildMemberRepository.findByGuildIdAndMemberId(guildId, memberId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드 멤버입니다"));
             guildmember.resign();
             return;
         }
@@ -78,6 +79,25 @@ public class GuildMemberService {
                 .status(GuildMemberStatus.ACTIVE)
                 .role(GuildMemberRole.MEMBER)
                 .build();
+        guildMemberRepository.save(guildMember);
+    }
+
+    public void leaveGuild(
+            Long guildId,
+            Long memberId,
+            Long requestMemberId) {
+        if (!AuthUtil.isAdminOrEqualMember(requestMemberId)) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+        GuildMember guildMember = guildMemberRepository.findByGuildIdAndMemberId(guildId, memberId).
+                orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드 멤버입니다"));
+        if (guildMember.getStatus() != GuildMemberStatus.ACTIVE) {
+            throw new IllegalArgumentException("이미 탈퇴한 길드입니다");
+        }
+        if (guildMember.getRole() == GuildMemberRole.OWNER) {
+            throw new IllegalArgumentException("길드장은 탈퇴할 수 없습니다");
+        }
+        guildMember.leave();
         guildMemberRepository.save(guildMember);
     }
 }

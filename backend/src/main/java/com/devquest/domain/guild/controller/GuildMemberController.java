@@ -71,6 +71,16 @@ public class GuildMemberController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PutMapping("/{guildId}/members/{memberId}/leave")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Void> leaveGuild(
+            @PathVariable(name = "guildId") Long guildId,
+            @PathVariable(name = "memberId") Long memberId,
+            @AuthenticationPrincipal CustomUserDetails member) {
+        guildMemberService.leaveGuild(guildId, memberId, member.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     // TODO
     @PutMapping("/{guildId}/members/{memberId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")

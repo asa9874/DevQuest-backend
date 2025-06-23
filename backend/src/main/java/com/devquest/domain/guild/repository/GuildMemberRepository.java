@@ -1,6 +1,7 @@
 package com.devquest.domain.guild.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -56,6 +57,6 @@ public interface GuildMemberRepository extends JpaRepository<GuildMember, Long> 
     Boolean existsByMemberIdAndStatus(Long memberId, GuildMemberStatus status);
     Boolean existsByGuildIdAndMemberId(Long guildId, Long memberId);
     boolean existsByGuildIdAndMemberIdAndStatus(Long guildId, Long memberId, GuildMemberStatus status);
-    GuildMember findByGuildIdAndMemberId(Long guildId, Long memberId);
+    Optional<GuildMember> findByGuildIdAndMemberId(Long guildId, Long memberId);
     void deleteAllByGuildId(Long guildId);
 }

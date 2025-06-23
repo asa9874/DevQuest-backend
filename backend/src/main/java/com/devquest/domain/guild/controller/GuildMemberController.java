@@ -82,7 +82,7 @@ public class GuildMemberController {
     }
 
     // TODO
-    @PutMapping("/{guildId}/members/{memberId}")
+    @PutMapping("/{guildId}/members/{memberId}/role")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> changeGuildMemberRole(
             @PathVariable(name = "guildId") Long guildId,
@@ -91,7 +91,8 @@ public class GuildMemberController {
             @AuthenticationPrincipal CustomUserDetails member) {
         GuildMemberRole guildMemberRole = (role == null || role.isBlank()) ? null
                 : GuildMemberRole.valueOf(role);
-        return null;
+        guildMemberService.changeGuildMemberRole(guildId, memberId, guildMemberRole, member.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     // TODO

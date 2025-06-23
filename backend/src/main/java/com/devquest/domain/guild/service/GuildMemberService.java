@@ -89,8 +89,8 @@ public class GuildMemberService {
         if (!AuthUtil.isAdminOrEqualMember(requestMemberId)) {
             throw new IllegalArgumentException("권한이 없습니다");
         }
-        GuildMember guildMember = guildMemberRepository.findByGuildIdAndMemberId(guildId, memberId).
-                orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드 멤버입니다"));
+        GuildMember guildMember = guildMemberRepository.findByGuildIdAndMemberId(guildId, memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드 멤버입니다"));
         if (guildMember.getStatus() != GuildMemberStatus.ACTIVE) {
             throw new IllegalArgumentException("이미 탈퇴한 길드입니다");
         }
@@ -98,6 +98,61 @@ public class GuildMemberService {
             throw new IllegalArgumentException("길드장은 탈퇴할 수 없습니다");
         }
         guildMember.leave();
+        guildMemberRepository.save(guildMember);
+    }
+
+    public void changeGuildMemberRole(
+            Long guildId,
+            Long memberId,
+            GuildMemberRole role,
+            Long requestMemberId) {
+        if (!AuthUtil.isAdminOrEqualMember(requestMemberId)) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+        GuildMember requestMember = guildMemberRepository.findByGuildIdAndMemberId(guildId, requestMemberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 요청자 멤버입니다"));
+
+        GuildMember guildMember = guildMemberRepository.findByGuildIdAndMemberId(guildId, memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드 멤버입니다"));
+        if (guildMember.getRole() == role) {
+            throw new IllegalArgumentException("이미 해당 역할입니다");
+        }
+        if(AuthUtil.isAdmin()){ //관리자면 아래 다 무시하고 그냥;
+            guildMember.changeRole(role);
+            guildMemberRepository.save(guildMember);
+            return;
+        }
+
+        if (requestMember.getRole() != GuildMemberRole.ADMIN
+                && requestMember.getRole() != GuildMemberRole.OWNER) {
+            throw new IllegalArgumentException("어드민 권한이 없습니다");
+        }
+
+        if (guildMember.getStatus() != GuildMemberStatus.ACTIVE) {
+            throw new IllegalArgumentException("활동 중인 길드 멤버가 아닙니다");
+        }
+
+        if (guildMember.getRole() == GuildMemberRole.OWNER) {
+            throw new IllegalArgumentException("길드장은 역할을 변경할 수 없습니다");
+        }
+
+        if (guildMember.getRole() == GuildMemberRole.ADMIN && requestMember.getRole() != GuildMemberRole.OWNER) {
+            throw new IllegalArgumentException("관리자유저는 오직 길드장만 변경할 수 있습니다");
+        }
+
+        if (role == null) {
+            throw new IllegalArgumentException("변경할 역할을 지정해야 합니다");
+        }
+
+        if (role == GuildMemberRole.OWNER) {
+            throw new IllegalArgumentException("길드장은 역할을 변경할 수 없습니다");
+        }
+
+        if (role == GuildMemberRole.ADMIN && requestMember.getRole() != GuildMemberRole.OWNER) {
+            throw new IllegalArgumentException("관리자 권한은 오직 길드장만 부여할 수 있습니다");
+        }
+
+        guildMember.changeRole(role);
         guildMemberRepository.save(guildMember);
     }
 }

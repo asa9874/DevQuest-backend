@@ -18,7 +18,9 @@ import com.devquest.global.jwt.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "퀘스트 API", description = "퀘스트 관련 API")
 public interface QuestApi {
     @Operation(summary = "퀘스트 생성 (유저)", description = "새로운 퀘스트를 생성합니다.")
     ResponseEntity<Void> createQuest(

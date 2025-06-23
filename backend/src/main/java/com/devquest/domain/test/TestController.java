@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/test")
-public class TestController {
+public class TestController implements TestApi {
     private final TestService testService;
 
     @GetMapping("/redistest")

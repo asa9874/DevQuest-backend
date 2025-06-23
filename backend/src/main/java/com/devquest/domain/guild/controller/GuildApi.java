@@ -17,7 +17,9 @@ import com.devquest.global.jwt.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "길드 API", description = "길드 관련 API")
 public interface GuildApi {
     @Operation(summary = "길드 생성 (유저/어드민)", description = "새로운 길드를 생성합니다. (로그인 필요)")
     ResponseEntity<Void> createGuild(

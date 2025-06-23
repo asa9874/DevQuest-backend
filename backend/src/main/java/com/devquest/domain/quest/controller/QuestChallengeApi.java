@@ -13,7 +13,9 @@ import com.devquest.domain.quest.dto.responseDto.QuestChallengeResponseDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "퀘스트 챌린지 API", description = "퀘스트 챌린지 관련 API")
 public interface QuestChallengeApi {
     @Operation(summary = "회원별 퀘스트 챌린지 목록 조회 (자기자신/어드민)", description = "특정 회원이 참여한 퀘스트 챌린지 목록을 조회합니다.")
     ResponseEntity<List<QuestChallengeResponseDto>> getQuestChallengesByMemberId(

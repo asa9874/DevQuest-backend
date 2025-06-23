@@ -14,7 +14,9 @@ import com.devquest.global.jwt.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "회원 API", description = "회원 관련 API")
 public interface MemberApi {
     @Operation(summary = "내 프로필 조회 (자기자신)", description = "로그인한 사용자의 프로필 정보를 조회합니다.")
     ResponseEntity<MemberResponseDto> getMyProfile(

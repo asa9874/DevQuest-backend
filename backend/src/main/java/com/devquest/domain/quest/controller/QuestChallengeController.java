@@ -2,6 +2,8 @@ package com.devquest.domain.quest.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +34,7 @@ public class QuestChallengeController implements QuestChallengeApi {
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> createQuestChallenge(
-            @RequestBody QuestChallengeCreateRequestDto requestDto) {
+            @Valid @RequestBody QuestChallengeCreateRequestDto requestDto) {
         questChallengeService.createQuestChallenge(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

@@ -2,6 +2,8 @@ package com.devquest.domain.quest.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -36,7 +38,7 @@ public class QuestController implements QuestApi{
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> createQuest(
-            @RequestBody QuestCreateRequestDto requestDto,
+            @Valid @RequestBody QuestCreateRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails member) {
         questService.createQuest(requestDto, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -70,7 +72,7 @@ public class QuestController implements QuestApi{
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<QuestResponseDto> updateQuest(
             @PathVariable(name = "questId") Long questId,
-            @RequestBody QuestUpdateRequestDto requestDto){
+            @Valid @RequestBody QuestUpdateRequestDto requestDto){
         QuestResponseDto responseDto = questService.updateQuest(questId, requestDto);
         return ResponseEntity.ok(responseDto);
     }

@@ -2,6 +2,8 @@ package com.devquest.domain.guild.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -35,7 +37,7 @@ public class GuildController implements GuildApi {
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> createGuild(
-            @RequestBody GuildCreateRequestDto requestDto,
+            @Valid @RequestBody GuildCreateRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails member) {
         guildService.createGuild(requestDto, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -66,7 +68,7 @@ public class GuildController implements GuildApi {
     @PutMapping("/{guildId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<GuildResponseDto> updateGuild(
-            @RequestBody GuildUpdateRequestDto requestDto,
+            @Valid @RequestBody GuildUpdateRequestDto requestDto,
             @PathVariable(name = "guildId") Long guildId) {
         GuildResponseDto responseDto = guildService.updateGuild(guildId, requestDto);
         return ResponseEntity.ok().body(responseDto);

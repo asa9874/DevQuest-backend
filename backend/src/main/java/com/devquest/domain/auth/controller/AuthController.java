@@ -15,6 +15,8 @@ import com.devquest.domain.auth.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
@@ -23,13 +25,13 @@ public class AuthController implements AuthApi {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthLoginResponseDto> login(@RequestBody AuthLoginRequestDto requestDto) {
+    public ResponseEntity<AuthLoginResponseDto> login(@Valid @RequestBody AuthLoginRequestDto requestDto) {
         AuthLoginResponseDto responseDto = authService.login(requestDto);
         return ResponseEntity.ok().body(responseDto);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody AuthRegisterRequestDto requestDto) {
+    public ResponseEntity<Void> register(@Valid @RequestBody AuthRegisterRequestDto requestDto) {
         authService.register(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

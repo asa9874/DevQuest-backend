@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +21,6 @@ import com.devquest.domain.guild.dto.responseDto.GuildResponseDto;
 import com.devquest.domain.guild.service.GuildPostService;
 import com.devquest.global.jwt.CustomUserDetails;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -56,7 +56,7 @@ public class GuildPostController {
     @PutMapping("/posts/{postId}")
     public ResponseEntity<Void> updateGuildPost(
             @PathVariable(name = "postId") Long postId,
-            @RequestBody GuildPostUpdateRequestDto requestDto) {
+            @Valid @RequestBody GuildPostUpdateRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

@@ -2,6 +2,8 @@ package com.devquest.domain.member.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,7 +41,7 @@ public class MemberController implements MemberApi {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MemberResponseDto> updateMember(
             @PathVariable(name = "memberId") Long memberId,
-            @RequestBody MemberUpdateRequestDto requestDto) {
+            @Valid @RequestBody MemberUpdateRequestDto requestDto) {
         MemberResponseDto responseDto = memberService.updateMember(memberId, requestDto);
         return ResponseEntity.ok().body(responseDto);
     }
@@ -56,7 +58,7 @@ public class MemberController implements MemberApi {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> updatePassword(
             @AuthenticationPrincipal CustomUserDetails member,
-            @RequestBody MemberUpdatePassswordRequetsDto requestDto) {
+            @Valid @RequestBody MemberUpdatePassswordRequetsDto requestDto) {
         memberService.updatePassword(member.getId(), requestDto);
         return ResponseEntity.noContent().build();
     }

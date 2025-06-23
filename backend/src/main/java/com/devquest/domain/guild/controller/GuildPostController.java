@@ -30,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 public class GuildPostController {
     private final GuildPostService guildPostService;
 
-    // TODO
     @PostMapping("/posts")
     public ResponseEntity<Void> createGuildPost(
             @Valid @RequestBody GuildPostCreateRequestDto requestDto,

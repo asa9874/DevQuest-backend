@@ -1,13 +1,12 @@
 package com.devquest.domain.member.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,23 +20,20 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Size(min = 2, max = 50)
+    @Column(nullable = false, length = 50)
     private String name;
 
-    @NotNull
-    @Size(min = 5, max = 100)
+    @Column(nullable = false, length = 100)
     private String email;
 
-    @NotNull
-    @Size(min = 6, max = 100)
+    @Column(nullable = false, length = 100)
     private String password;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private Role role;
 
-    @NotNull
+    @Column(nullable = false, length = 20)
     private String provider = "local";
 
     @Builder

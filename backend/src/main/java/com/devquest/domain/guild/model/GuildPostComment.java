@@ -4,14 +4,13 @@ import java.time.LocalDateTime;
 
 import com.devquest.domain.member.model.Member;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,20 +24,18 @@ public class GuildPostComment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Size(min = 1, max = 500)
+    @Column(nullable = false, length = 500)
     private String content;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "guild_post_id")
+    @JoinColumn(name = "guild_post_id", nullable = false)
     private GuildPost guildPost;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member author;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Builder

@@ -3,6 +3,7 @@ package com.devquest.domain.guild.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -61,13 +62,13 @@ public class GuildMemberController {
         return ResponseEntity.ok(responseDtos);
     }
 
-    // TODO
     @PostMapping("/{guildId}/members")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> joinGuild(
             @PathVariable(name = "guildId") Long guildId,
             @AuthenticationPrincipal CustomUserDetails member) {
-        return null;
+        guildMemberService.joinGuild(guildId, member.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     // TODO

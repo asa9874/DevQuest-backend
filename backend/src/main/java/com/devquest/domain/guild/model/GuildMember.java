@@ -58,4 +58,29 @@ public class GuildMember {
         this.joinedAt = LocalDateTime.now();
         this.leftAt = null;
     }
+
+    public void leave() {
+        this.status = GuildMemberStatus.LEAVED;
+        this.leftAt = LocalDateTime.now();
+    }
+
+    public void resign() {
+        this.status = GuildMemberStatus.ACTIVE;
+        this.joinedAt = LocalDateTime.now();
+        this.leftAt = null;
+    }
+
+    public void ban() {
+        this.status = GuildMemberStatus.BANNED;
+        this.leftAt = LocalDateTime.now();
+    }
+
+    public void changeRole(GuildMemberRole newRole) {
+        this.role = newRole;
+    }
+
+    public void changeStatus(GuildMemberStatus newStatus) {
+        this.status = newStatus;
+    }
+
 }

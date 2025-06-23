@@ -80,8 +80,8 @@ public class GuildMemberController {
         guildMemberService.leaveGuild(guildId, memberId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+    
 
-    // TODO
     @PutMapping("/{guildId}/members/{memberId}/role")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> changeGuildMemberRole(
@@ -95,17 +95,24 @@ public class GuildMemberController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    // TODO
-    @PutMapping("/{guildId}/members/{memberId}/status")
+    @PutMapping("/{guildId}/members/{memberId}/ban")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> changeGuildMemberStatus(
+    public ResponseEntity<Void> banGuildMember(
             @PathVariable(name = "guildId") Long guildId,
             @PathVariable(name = "memberId") Long memberId,
-            @RequestParam(name = "status") String status,
             @AuthenticationPrincipal CustomUserDetails member) {
-        GuildMemberStatus guildMemberStatus = (status == null || status.isBlank()) ? null
-                : GuildMemberStatus.valueOf(status);
-        return null;
+        guildMemberService.banGuildMember(guildId, memberId, member.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/{guildId}/members/{memberId}/unban")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Void> unbanGuildMember(
+            @PathVariable(name = "guildId") Long guildId,
+            @PathVariable(name = "memberId") Long memberId,
+            @AuthenticationPrincipal CustomUserDetails member) {
+        guildMemberService.unbanGuildMember(guildId, memberId, member.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

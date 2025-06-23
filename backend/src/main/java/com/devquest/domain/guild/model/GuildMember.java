@@ -76,6 +76,10 @@ public class GuildMember {
         this.leftAt = LocalDateTime.now();
     }
 
+    public void unban() {
+        this.status = GuildMemberStatus.LEAVED;
+    }
+
     public void changeRole(GuildMemberRole newRole) {
         this.role = newRole;
     }

@@ -155,4 +155,40 @@ public class GuildMemberService {
         guildMember.changeRole(role);
         guildMemberRepository.save(guildMember);
     }
+
+    public void banGuildMember(
+            Long guildId,
+            Long memberId,
+            Long requestMemberId) {
+        if (!AuthUtil.isAdminOrEqualMember(requestMemberId)) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+        GuildMember guildMember = guildMemberRepository.findByGuildIdAndMemberId(guildId, memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드 멤버입니다"));
+        if (guildMember.getRole() == GuildMemberRole.OWNER || guildMember.getRole() == GuildMemberRole.ADMIN) {
+            throw new IllegalArgumentException("길드장과 어드민은 밴할 수 없습니다");
+        }
+        if (guildMember.getStatus() == GuildMemberStatus.BANNED) {
+            throw new IllegalArgumentException("이미 밴된 길드 멤버입니다");
+        }
+        guildMember.ban();
+        guildMemberRepository.save(guildMember);
+    }
+
+    public void unbanGuildMember(
+            Long guildId,
+            Long memberId,
+            Long requestMemberId) {
+        if (!AuthUtil.isAdminOrEqualMember(requestMemberId)) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+        GuildMember guildMember = guildMemberRepository.findByGuildIdAndMemberId(guildId, memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드 멤버입니다"));
+        if (guildMember.getStatus() != GuildMemberStatus.BANNED) {
+            throw new IllegalArgumentException("밴되지 않은 길드 멤버입니다");
+        }
+        guildMember.unban();
+        guildMemberRepository.save(guildMember);
+    }
 }
+

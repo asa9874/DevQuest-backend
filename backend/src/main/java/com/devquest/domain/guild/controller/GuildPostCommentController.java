@@ -2,6 +2,8 @@ package com.devquest.domain.guild.controller;
 
 import java.util.List;
 
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,19 +28,19 @@ import lombok.RequiredArgsConstructor;
 public class GuildPostCommentController {
     private final GuildPostCommentService guildPostCommentService;
 
-    // TODO
     @PostMapping("/comments")
-    public ResponseEntity<GuildPostCommentResponseDto> createGuildPostComment(
-            @PathVariable(name = "postId") Long postId,
+    public ResponseEntity<Void> createGuildPostComment(
             @RequestBody GuildPostCommentCreateRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails member) {
-        return null;
+        guildPostCommentService.createGuildPostComment(requestDto, member.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     // TODO
     @GetMapping("/post/{postId}/comments")
     public ResponseEntity<List<GuildPostCommentResponseDto>> getGuildPostCommentsByPostId(
             @PathVariable(name = "postId") Long postId) {
+        
         return null;
     }
 

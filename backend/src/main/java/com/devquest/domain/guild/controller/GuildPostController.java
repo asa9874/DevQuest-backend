@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.devquest.domain.guild.dto.requestDto.GuildPostCreateRequestDto;
 import com.devquest.domain.guild.dto.requestDto.GuildPostUpdateRequestDto;
 import com.devquest.domain.guild.dto.responseDto.GuildPostResponseDto;
-import com.devquest.domain.guild.dto.responseDto.GuildResponseDto;
 import com.devquest.domain.guild.service.GuildPostService;
 import com.devquest.global.jwt.CustomUserDetails;
 
@@ -31,6 +31,7 @@ public class GuildPostController {
     private final GuildPostService guildPostService;
 
     @PostMapping("/posts")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> createGuildPost(
             @Valid @RequestBody GuildPostCreateRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails member) {
@@ -38,17 +39,29 @@ public class GuildPostController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // TODO
     @GetMapping("/posts/{postId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<GuildPostResponseDto> getGuildPost(
             @PathVariable(name = "postId") Long postId) {
-        return null;
+        GuildPostResponseDto responseDto = guildPostService.getGuildPost(postId);
+        return ResponseEntity.ok(responseDto);
     }
 
-    // TODO
+    //TODO: 나중에 페이징
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @GetMapping("{guildId}/posts")
+    public ResponseEntity<List<GuildPostResponseDto>> getGuildPostsByGuildId(
+            @PathVariable(name = "guildId") Long guildId) {
+        List<GuildPostResponseDto> responseDtos = guildPostService.getGuildPostsByGuildId(guildId);
+        return ResponseEntity.ok(responseDtos);
+    }
+
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/posts")
-    public ResponseEntity<List<GuildResponseDto>> getGuildPosts() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<List<GuildPostResponseDto>> getGuildPosts() {
+        List<GuildPostResponseDto> responseDtos = guildPostService.getAllGuildPosts();
+        return ResponseEntity.ok(responseDtos);
     }
 
     // TODO

@@ -1,5 +1,7 @@
 package com.devquest.domain.guild.dto.responseDto;
 
+import java.time.LocalDateTime;
+
 public record GuildPostResponseDto(
     Long id,
     String title,
@@ -8,7 +10,7 @@ public record GuildPostResponseDto(
     String guildName,
     Long authorId,
     String authorName,
-    String createdAt
+    LocalDateTime createdAt
 ) {
     
 }

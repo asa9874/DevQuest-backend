@@ -64,6 +64,9 @@ public class GuildPostController {
     public ResponseEntity<Void> deleteGuildPost(
             @PathVariable(name = "postId") Long postId,
             @AuthenticationPrincipal CustomUserDetails member) {
+        if (member == null) {
+            throw new IllegalArgumentException("로그인된 사용자만 사용할 수 있습니다.");
+        }
         return ResponseEntity.noContent().build();
     }
 

@@ -18,6 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.devquest.domain.auth.service.CustomOAuth2UserService;
 import com.devquest.global.components.OAuth2LoginSuccessHandler;
+import com.devquest.global.exception.CustomAuthenticationEntryPoint;
 import com.devquest.global.jwt.JwtAuthenticationFilter;
 import com.devquest.global.jwt.JwtTokenProvider;
 
@@ -31,17 +32,15 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                
+                .exceptionHandling(eh -> eh.authenticationEntryPoint(customAuthenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/**")
-                        .permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

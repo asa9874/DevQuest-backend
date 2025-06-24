@@ -11,7 +11,9 @@ import com.devquest.domain.guild.model.Guild;
 import com.devquest.domain.guild.model.GuildMember;
 import com.devquest.domain.guild.model.GuildMemberRole;
 import com.devquest.domain.guild.model.GuildMemberStatus;
+import com.devquest.domain.guild.model.GuildPost;
 import com.devquest.domain.guild.repository.GuildMemberRepository;
+import com.devquest.domain.guild.repository.GuildPostRepository;
 import com.devquest.domain.guild.repository.GuildRepository;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.model.Role;
@@ -40,6 +42,8 @@ class devQuestApplicationTests {
     private GuildRepository guildRepository;
     @Autowired
     private GuildMemberRepository guildMemberRepository;
+    @Autowired
+    private GuildPostRepository guildPostRepository;
     
 
 	@Test
@@ -129,7 +133,22 @@ class devQuestApplicationTests {
                 guildMemberRepository.save(guildMember);
             }
         }
+        for (Guild guild : allGuilds) {
+            for (Member member : allMembers) {
+                for (int p = 0; p < 2; p++) {
+                    String title = guild.getName() + " - " + member.getName() + "의 게시글 " + p;
+                    String content = "테스트 게시글 내용 " + p + " (" + guild.getName() + ", " + member.getName() + ")";
+                    GuildPost post = GuildPost.builder()
+                        .title(title)
+                        .content(content)
+                        .guild(guild)
+                        .author(member)
+                        .build();
+                    guildPostRepository.save(post);
+                }
+            }
+        }
 	}
 
 }
-//TODO: 메모용 copy con local3.mv.db 
+//TODO: 메모용 copy con local3.mv.db

@@ -5,6 +5,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
@@ -23,8 +25,8 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
     }
 
     @Override
-    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
-            WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
+    public boolean beforeHandshake(@NonNull ServerHttpRequest request,@NonNull ServerHttpResponse response,
+            @NonNull WebSocketHandler wsHandler,@NonNull Map<String, Object> attributes) throws Exception {
         String token = getTokenFromQuery(request);
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
@@ -56,7 +58,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
     }
 
     @Override
-    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
-            WebSocketHandler wsHandler, Exception exception) {
+    public void afterHandshake(@NonNull ServerHttpRequest request,@NonNull ServerHttpResponse response,
+            @NonNull WebSocketHandler wsHandler,@Nullable Exception exception) {
     }
 }

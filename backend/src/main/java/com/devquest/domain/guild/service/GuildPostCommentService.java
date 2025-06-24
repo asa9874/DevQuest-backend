@@ -13,7 +13,6 @@ import com.devquest.domain.guild.model.GuildPostComment;
 import com.devquest.domain.guild.repository.GuildMemberRepository;
 import com.devquest.domain.guild.repository.GuildPostCommentRepository;
 import com.devquest.domain.guild.repository.GuildPostRepository;
-import com.devquest.domain.guild.repository.GuildRepository;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.repository.MemberRepository;
 

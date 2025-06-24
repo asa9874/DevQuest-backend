@@ -2,7 +2,6 @@ package com.devquest.domain.quest.model;
 
 import com.devquest.domain.member.model.Member;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

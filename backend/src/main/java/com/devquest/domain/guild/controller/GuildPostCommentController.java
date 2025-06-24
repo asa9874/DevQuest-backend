@@ -2,9 +2,9 @@ package com.devquest.domain.guild.controller;
 
 import java.util.List;
 
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +29,7 @@ public class GuildPostCommentController {
     private final GuildPostCommentService guildPostCommentService;
 
     @PostMapping("/comments")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> createGuildPostComment(
             @RequestBody GuildPostCommentCreateRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails member) {
@@ -36,29 +37,37 @@ public class GuildPostCommentController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // TODO
     @GetMapping("/post/{postId}/comments")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<GuildPostCommentResponseDto>> getGuildPostCommentsByPostId(
-            @PathVariable(name = "postId") Long postId) {
-        
-        return null;
+            @PathVariable(name = "postId") Long postId,
+            @AuthenticationPrincipal CustomUserDetails member) {
+        List<GuildPostCommentResponseDto> responseDtos = guildPostCommentService.getGuildPostCommentsByPostId(postId,
+                member.getId());
+        return ResponseEntity.ok(responseDtos);
     }
 
-    // TODO
     @GetMapping("/comments/{commentId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<GuildPostCommentResponseDto> getGuildPostCommentById(
-            @PathVariable(name = "commentId") Long commentId) {
-        return null;
+            @PathVariable(name = "commentId") Long commentId,
+            @AuthenticationPrincipal CustomUserDetails member) {
+        GuildPostCommentResponseDto responseDto = guildPostCommentService.getGuildPostCommentById(commentId,
+                member.getId());
+        return ResponseEntity.ok(responseDto);
     }
 
     // TODO
     @GetMapping("/comments")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<GuildPostCommentResponseDto>> getAllGuildPostComments() {
-        return null;
+        List<GuildPostCommentResponseDto> responseDtos = guildPostCommentService.getAllGuildPostComments();
+        return ResponseEntity.ok(responseDtos);
     }
 
     // TODO
     @PutMapping("/comments/{commentId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> updateGuildPostComment(
             @PathVariable(name = "commentId") Long commentId,
             @RequestBody GuildPostCommentResponseDto requestDto) {
@@ -67,6 +76,7 @@ public class GuildPostCommentController {
 
     // TODO
     @DeleteMapping("/comments/{commentId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteGuildPostComment(
             @PathVariable(name = "commentId") Long commentId,
             @AuthenticationPrincipal CustomUserDetails member) {

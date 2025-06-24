@@ -1,9 +1,12 @@
 package com.devquest.domain.guild.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
 import com.devquest.domain.guild.dto.requestDto.GuildPostCommentCreateRequestDto;
+import com.devquest.domain.guild.dto.responseDto.GuildPostCommentResponseDto;
 import com.devquest.domain.guild.model.GuildPost;
 import com.devquest.domain.guild.model.GuildPostComment;
 import com.devquest.domain.guild.repository.GuildMemberRepository;
@@ -20,14 +23,14 @@ import lombok.RequiredArgsConstructor;
 public class GuildPostCommentService {
     private final GuildPostCommentRepository guildPostCommentRepository;
     private final GuildPostRepository guildPostRepository;
-    private final GuildRepository guildRepository;
     private final GuildMemberRepository guildMemberRepository;
     private final MemberRepository memberRepository;
 
     public void createGuildPostComment(GuildPostCommentCreateRequestDto requestDto, Long memberId) {
         GuildPost guildPost = guildPostRepository.findById(requestDto.guildPostId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
-        if (!guildMemberRepository.existsByGuildIdAndMemberId(guildPost.getGuild().getId(), memberId) && !AuthUtil.isAdmin()) {
+        if (!guildMemberRepository.existsByGuildIdAndMemberId(guildPost.getGuild().getId(), memberId)
+                && !AuthUtil.isAdmin()) {
             throw new IllegalArgumentException("해당 길드에 가입하지 않은 회원입니다");
         }
         Member member = memberRepository.findById(memberId)
@@ -39,5 +42,37 @@ public class GuildPostCommentService {
                 .build();
         guildPostCommentRepository.save(guildPostComment);
     }
-    
+
+    public List<GuildPostCommentResponseDto> getGuildPostCommentsByPostId(Long postId, Long memberId) {
+        GuildPost guildPost = guildPostRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+
+        if (!guildMemberRepository.existsByGuildIdAndMemberId(guildPost.getGuild().getId(), memberId)
+                && !AuthUtil.isAdmin()) {
+            throw new IllegalArgumentException("해당 길드에 가입하지 않은 회원입니다");
+        }
+
+        if (!guildMemberRepository.existsByGuildIdAndMemberId(guildPost.getGuild().getId(),
+                AuthUtil.getCurrentMemberId()) && !AuthUtil.isAdmin()) {
+            throw new IllegalArgumentException("해당 길드에 가입하지 않은 회원입니다");
+        }
+
+        List<GuildPostCommentResponseDto> responseDtos = guildPostCommentRepository.findDtoByGuildByPostId(postId);
+        return responseDtos;
+    }
+
+    public GuildPostCommentResponseDto getGuildPostCommentById(Long commentId, Long memberId) {
+        GuildPostCommentResponseDto responseDto = guildPostCommentRepository.findDtoById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다"));
+
+        if (!AuthUtil.isAdminOrEqualMember(responseDto.authorId())) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+        return responseDto;
+    }
+
+    public List<GuildPostCommentResponseDto> getAllGuildPostComments() {
+        List<GuildPostCommentResponseDto> responseDtos = guildPostCommentRepository.findAllDto();
+        return responseDtos;
+    }
 }

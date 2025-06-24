@@ -64,22 +64,21 @@ public class GuildPostController {
         return ResponseEntity.ok(responseDtos);
     }
 
-    // TODO
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PutMapping("/posts/{postId}")
     public ResponseEntity<Void> updateGuildPost(
             @PathVariable(name = "postId") Long postId,
             @Valid @RequestBody GuildPostUpdateRequestDto requestDto) {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        guildPostService.updateGuildPost(postId, requestDto);
+        return ResponseEntity.noContent().build();
     }
 
     // TODO
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<Void> deleteGuildPost(
-            @PathVariable(name = "postId") Long postId,
-            @AuthenticationPrincipal CustomUserDetails member) {
-        if (member == null) {
-            throw new IllegalArgumentException("로그인된 사용자만 사용할 수 있습니다.");
-        }
+            @PathVariable(name = "postId") Long postId) {
+        guildPostService.deleteGuildPost(postId);
         return ResponseEntity.noContent().build();
     }
 

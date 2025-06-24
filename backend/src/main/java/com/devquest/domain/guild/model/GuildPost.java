@@ -49,4 +49,9 @@ public class GuildPost {
         this.author = author;
         this.createdAt = LocalDateTime.now();
     }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

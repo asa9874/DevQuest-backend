@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
 import com.devquest.domain.guild.dto.requestDto.GuildPostCreateRequestDto;
+import com.devquest.domain.guild.dto.requestDto.GuildPostUpdateRequestDto;
 import com.devquest.domain.guild.dto.responseDto.GuildPostResponseDto;
 import com.devquest.domain.guild.model.Guild;
 import com.devquest.domain.guild.model.GuildPost;
@@ -25,8 +26,7 @@ public class GuildPostService {
     private final GuildRepository guildRepository;
     private final MemberRepository memberRepository;
 
-    public void createGuildPost(
-            GuildPostCreateRequestDto requestDto,
+    public void createGuildPost(GuildPostCreateRequestDto requestDto,
             Long memberId) {
 
         if (!AuthUtil.isAdminOrEqualMember(memberId)) {
@@ -80,7 +80,30 @@ public class GuildPostService {
     public List<GuildPostResponseDto> getAllGuildPosts() {
         List<GuildPostResponseDto> responseDtos = guildPostRepository.findAllDto();
         return responseDtos;
+    }
 
+    public void updateGuildPost(Long postId,
+            GuildPostUpdateRequestDto requestDto) {
+        GuildPost guildPost = guildPostRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        if (!AuthUtil.isAdminOrEqualMember(guildPost.getAuthor().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
+        guildPost.update(requestDto.title(), requestDto.content());
+        guildPostRepository.save(guildPost);
+    }
+
+    public void deleteGuildPost(Long postId) {
+        GuildPost guildPost = guildPostRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        if (!AuthUtil.isAdminOrEqualMember(guildPost.getAuthor().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
+        guildPostRepository.delete(guildPost);
     }
 
 }

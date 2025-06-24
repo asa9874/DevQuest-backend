@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
 import com.devquest.domain.guild.dto.requestDto.GuildPostCommentCreateRequestDto;
+import com.devquest.domain.guild.dto.requestDto.GuildPostCommentUpdateRequestDto;
 import com.devquest.domain.guild.dto.responseDto.GuildPostCommentResponseDto;
 import com.devquest.domain.guild.model.GuildPost;
 import com.devquest.domain.guild.model.GuildPostComment;
@@ -74,5 +75,27 @@ public class GuildPostCommentService {
     public List<GuildPostCommentResponseDto> getAllGuildPostComments() {
         List<GuildPostCommentResponseDto> responseDtos = guildPostCommentRepository.findAllDto();
         return responseDtos;
+    }
+
+    public void updateGuildPostComment(Long commentId, GuildPostCommentUpdateRequestDto requestDto) {
+        GuildPostComment guildPostComment = guildPostCommentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다"));
+
+        if (!AuthUtil.isAdminOrEqualMember(guildPostComment.getAuthor().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+
+        guildPostComment.update(requestDto.content());
+        guildPostCommentRepository.save(guildPostComment);
+    }
+
+    public void deleteGuildPostComment(Long commentId, Long memberId) {
+        GuildPostComment guildPostComment = guildPostCommentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다"));
+
+        if (!AuthUtil.isAdminOrEqualMember(guildPostComment.getAuthor().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다");
+        }
+        guildPostCommentRepository.delete(guildPostComment);
     }
 }

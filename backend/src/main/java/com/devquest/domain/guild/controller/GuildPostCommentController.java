@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devquest.domain.guild.dto.requestDto.GuildPostCommentCreateRequestDto;
+import com.devquest.domain.guild.dto.requestDto.GuildPostCommentUpdateRequestDto;
 import com.devquest.domain.guild.dto.responseDto.GuildPostCommentResponseDto;
 import com.devquest.domain.guild.service.GuildPostCommentService;
 import com.devquest.global.jwt.CustomUserDetails;
@@ -57,7 +58,6 @@ public class GuildPostCommentController {
         return ResponseEntity.ok(responseDto);
     }
 
-    // TODO
     @GetMapping("/comments")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<GuildPostCommentResponseDto>> getAllGuildPostComments() {
@@ -65,22 +65,22 @@ public class GuildPostCommentController {
         return ResponseEntity.ok(responseDtos);
     }
 
-    // TODO
     @PutMapping("/comments/{commentId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> updateGuildPostComment(
             @PathVariable(name = "commentId") Long commentId,
-            @RequestBody GuildPostCommentResponseDto requestDto) {
-        return null;
+            @RequestBody GuildPostCommentUpdateRequestDto requestDto) {
+        guildPostCommentService.updateGuildPostComment(commentId, requestDto);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    // TODO
     @DeleteMapping("/comments/{commentId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteGuildPostComment(
             @PathVariable(name = "commentId") Long commentId,
             @AuthenticationPrincipal CustomUserDetails member) {
-        return null;
+        guildPostCommentService.deleteGuildPostComment(commentId, member.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

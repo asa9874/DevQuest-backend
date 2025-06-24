@@ -73,7 +73,6 @@ public class GuildPostController implements GuildPostApi {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<Void> deleteGuildPost(

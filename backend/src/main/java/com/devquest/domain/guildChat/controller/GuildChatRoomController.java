@@ -60,7 +60,9 @@ public class GuildChatRoomController {
 
     @DeleteMapping("/{guildChatRoomId}")
     public ResponseEntity<Void> deleteGuildChatRoom(
-            @PathVariable(name = "guildChatRoomId") Long guildChatRoomId) {
-        return null;
+            @PathVariable(name = "guildChatRoomId") Long guildChatRoomId,
+            @AuthenticationPrincipal CustomUserDetails member) {
+        guildChatRoomService.deleteGuildChatRoom(guildChatRoomId, member.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

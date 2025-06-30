@@ -26,6 +26,7 @@ public class GuildChatRoomService {
             GuildChatRoomCreateRequestDto requestDto,
             Long memberId) {
 
+        // TODO: 추후 이거 파일 분리
         if (!AuthUtil.isAdmin()) {
             if (guildMemberRepository.existsByGuildIdAndMemberIdAndStatusAndRole(
                     requestDto.guildId(), memberId, GuildMemberStatus.ACTIVE, GuildMemberRole.ADMIN)
@@ -66,8 +67,7 @@ public class GuildChatRoomService {
             if (guildMemberRepository.existsByGuildIdAndMemberIdAndStatusAndRole(
                     guildId, memberId, GuildMemberStatus.ACTIVE, GuildMemberRole.ADMIN)
                     || guildMemberRepository.existsByGuildIdAndMemberIdAndStatusAndRole(
-                            guildId, memberId, GuildMemberStatus.ACTIVE,
-                            GuildMemberRole.OWNER)) {
+                            guildId, memberId, GuildMemberStatus.ACTIVE, GuildMemberRole.OWNER)) {
                 throw new IllegalArgumentException("권한이 없습니다.");
             }
         }
@@ -81,5 +81,26 @@ public class GuildChatRoomService {
         }
         guildChatRoom.update(requestDto.title(), requestDto.description());
         guildChatRoomRepository.save(guildChatRoom);
+    }
+
+    public void deleteGuildChatRoom(Long guildChatRoomId, Long memberId) {
+        GuildChatRoom guildChatRoom = guildChatRoomRepository.findById(guildChatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+
+        Long guildId = guildChatRoom.getGuild().getId();
+        if (!AuthUtil.isAdmin()) {
+            if (guildMemberRepository.existsByGuildIdAndMemberIdAndStatusAndRole(
+                    guildId, memberId, GuildMemberStatus.ACTIVE, GuildMemberRole.ADMIN)
+                    || guildMemberRepository.existsByGuildIdAndMemberIdAndStatusAndRole(
+                            guildId, memberId, GuildMemberStatus.ACTIVE, GuildMemberRole.OWNER)) {
+                throw new IllegalArgumentException("권한이 없습니다.");
+            }
+        }
+
+        if (!AuthUtil.isAdminOrEqualMember(memberId)) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
+        guildChatRoomRepository.delete(guildChatRoom);
     }
 }

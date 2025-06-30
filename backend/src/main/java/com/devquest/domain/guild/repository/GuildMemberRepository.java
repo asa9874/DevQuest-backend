@@ -56,7 +56,8 @@ public interface GuildMemberRepository extends JpaRepository<GuildMember, Long> 
     
     Boolean existsByMemberIdAndStatus(Long memberId, GuildMemberStatus status);
     Boolean existsByGuildIdAndMemberId(Long guildId, Long memberId);
-    boolean existsByGuildIdAndMemberIdAndStatus(Long guildId, Long memberId, GuildMemberStatus status);
+    Boolean existsByGuildIdAndMemberIdAndStatus(Long guildId, Long memberId, GuildMemberStatus status);
+    Boolean existsByGuildIdAndMemberIdAndStatusAndRole(Long guildId, Long memberId, GuildMemberStatus status, GuildMemberRole role);
     Optional<GuildMember> findByGuildIdAndMemberId(Long guildId, Long memberId);
     void deleteAllByGuildId(Long guildId);
 }

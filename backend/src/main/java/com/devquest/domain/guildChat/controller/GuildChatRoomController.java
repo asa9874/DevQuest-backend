@@ -50,10 +50,12 @@ public class GuildChatRoomController {
     }
 
     @PutMapping("/{guildChatRoomId}")
-    public ResponseEntity<GuildChatRoomResponseDto> updateGuildChatRoom(
+    public ResponseEntity<Void> updateGuildChatRoom(
             @PathVariable(name = "guildChatRoomId") Long guildChatRoomId,
-            @RequestBody GuildChatRoomUpdateRequestDto requestDto) {
-        return null;
+            @RequestBody GuildChatRoomUpdateRequestDto requestDto,
+            @AuthenticationPrincipal CustomUserDetails member) {
+        guildChatRoomService.updateGuildChatRoom(guildChatRoomId, requestDto, member.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{guildChatRoomId}")

@@ -9,6 +9,7 @@ import com.devquest.domain.guild.model.GuildMemberStatus;
 import com.devquest.domain.guild.repository.GuildMemberRepository;
 import com.devquest.domain.guild.repository.GuildRepository;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomCreateRequestDto;
+import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomUpdateRequestDto;
 import com.devquest.domain.guildChat.model.GuildChatRoom;
 import com.devquest.domain.guildChat.repository.GuildChatRoomRepository;
 
@@ -50,6 +51,35 @@ public class GuildChatRoomService {
                 .description(requestDto.description())
                 .guild(guild)
                 .build();
+        guildChatRoomRepository.save(guildChatRoom);
+    }
+
+    public void updateGuildChatRoom(
+            Long guildChatRoomId,
+            GuildChatRoomUpdateRequestDto requestDto,
+            Long memberId) {
+
+        GuildChatRoom guildChatRoom = guildChatRoomRepository.findById(guildChatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+        Long guildId = guildChatRoom.getGuild().getId();
+        if (!AuthUtil.isAdmin()) {
+            if (guildMemberRepository.existsByGuildIdAndMemberIdAndStatusAndRole(
+                    guildId, memberId, GuildMemberStatus.ACTIVE, GuildMemberRole.ADMIN)
+                    || guildMemberRepository.existsByGuildIdAndMemberIdAndStatusAndRole(
+                            guildId, memberId, GuildMemberStatus.ACTIVE,
+                            GuildMemberRole.OWNER)) {
+                throw new IllegalArgumentException("권한이 없습니다.");
+            }
+        }
+
+        if (guildChatRoomRepository.existsByTitleAndGuildId(requestDto.title(), guildId)) {
+            throw new IllegalArgumentException("이미 존재하는 채팅방 제목입니다.");
+        }
+
+        if (!AuthUtil.isAdminOrEqualMember(guildChatRoom.getGuild().getLeader().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+        guildChatRoom.update(requestDto.title(), requestDto.description());
         guildChatRoomRepository.save(guildChatRoom);
     }
 }

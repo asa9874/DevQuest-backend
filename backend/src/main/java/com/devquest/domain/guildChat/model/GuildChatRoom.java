@@ -1,5 +1,6 @@
 package com.devquest.domain.guildChat.model;
 
+
 import com.devquest.domain.guild.model.Guild;
 
 import jakarta.persistence.Column;

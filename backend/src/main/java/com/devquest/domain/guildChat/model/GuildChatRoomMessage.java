@@ -1,7 +1,8 @@
 package com.devquest.domain.guildChat.model;
 
-import java.lang.reflect.Member;
 import java.time.LocalDateTime;
+
+import com.devquest.domain.member.model.Member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,9 +24,12 @@ public class GuildChatRoomMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @ManyToOne
     @JoinColumn(name = "guild_chat_room_id", nullable = false)
     private GuildChatRoom guildChatRoom;
 
+    @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 

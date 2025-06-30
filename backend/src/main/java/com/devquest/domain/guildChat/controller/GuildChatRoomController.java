@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,26 +31,43 @@ public class GuildChatRoomController {
     private final GuildChatRoomService guildChatRoomService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<GuildChatRoomResponseDto>> getGuildChatRoom() {
-        return null;
+        List<GuildChatRoomResponseDto> guildChatRooms = guildChatRoomService.getAllGuildChatRooms();
+        return ResponseEntity.ok(guildChatRooms);
     }
 
     @GetMapping("/{guildChatRoomId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<GuildChatRoomResponseDto> getGuildChatRoomById(
-            @PathVariable(name = "guildChatRoomId") Long guildChatRoomId) {
-        return null;
+            @PathVariable(name = "guildChatRoomId") Long guildChatRoomId,
+            @AuthenticationPrincipal CustomUserDetails member) {
+        GuildChatRoomResponseDto guildChatRoom = guildChatRoomService.getGuildChatRoomById(guildChatRoomId,
+                member.getId());
+        return ResponseEntity.ok(guildChatRoom);
+    }
+
+    @GetMapping("/guild/{guildId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<GuildChatRoomResponseDto>> getGuildChatRoomsByGuildId(
+            @PathVariable(name = "guildId") Long guildId,
+            @AuthenticationPrincipal CustomUserDetails member) {
+        List<GuildChatRoomResponseDto> guildChatRooms = guildChatRoomService.getGuildChatRoomsByGuildId(guildId,
+                member.getId());
+        return ResponseEntity.ok(guildChatRooms);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> createGuildChatRoom(
             @Valid @RequestBody GuildChatRoomCreateRequestDto requestDto,
-            @AuthenticationPrincipal CustomUserDetails member
-            ) {
+            @AuthenticationPrincipal CustomUserDetails member) {
         guildChatRoomService.createGuildChatRoom(requestDto, member.getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{guildChatRoomId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> updateGuildChatRoom(
             @PathVariable(name = "guildChatRoomId") Long guildChatRoomId,
             @RequestBody GuildChatRoomUpdateRequestDto requestDto,
@@ -59,6 +77,7 @@ public class GuildChatRoomController {
     }
 
     @DeleteMapping("/{guildChatRoomId}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteGuildChatRoom(
             @PathVariable(name = "guildChatRoomId") Long guildChatRoomId,
             @AuthenticationPrincipal CustomUserDetails member) {

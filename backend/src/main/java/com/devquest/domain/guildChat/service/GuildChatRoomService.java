@@ -1,5 +1,7 @@
 package com.devquest.domain.guildChat.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
@@ -10,6 +12,7 @@ import com.devquest.domain.guild.repository.GuildMemberRepository;
 import com.devquest.domain.guild.repository.GuildRepository;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomCreateRequestDto;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomUpdateRequestDto;
+import com.devquest.domain.guildChat.dto.responseDto.GuildChatRoomResponseDto;
 import com.devquest.domain.guildChat.model.GuildChatRoom;
 import com.devquest.domain.guildChat.repository.GuildChatRoomRepository;
 
@@ -102,5 +105,56 @@ public class GuildChatRoomService {
         }
 
         guildChatRoomRepository.delete(guildChatRoom);
+    }
+
+    public GuildChatRoomResponseDto getGuildChatRoomById(
+            Long guildChatRoomId,
+            Long memberId) {
+        GuildChatRoom guildChatRoom = guildChatRoomRepository.findById(guildChatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+        Long guildId = guildChatRoom.getGuild().getId();
+
+        if (!AuthUtil.isAdminOrEqualMember(memberId)) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
+        if (!AuthUtil.isAdmin()) {
+            if (guildMemberRepository.existsByGuildIdAndMemberIdAndStatus(
+                    guildId, memberId, GuildMemberStatus.ACTIVE)) {
+                throw new IllegalArgumentException("권한이 없습니다.");
+            }
+        }
+
+        return GuildChatRoomResponseDto.from(guildChatRoom);
+    }
+
+    public List<GuildChatRoomResponseDto> getGuildChatRoomsByGuildId(
+            Long guildId,
+            Long memberId) {
+
+        if (!AuthUtil.isAdminOrEqualMember(memberId)) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+
+        if (!AuthUtil.isAdmin()) {
+            if (guildMemberRepository.existsByGuildIdAndMemberIdAndStatus(
+                    guildId, memberId, GuildMemberStatus.ACTIVE)) {
+                throw new IllegalArgumentException("권한이 없습니다.");
+            }
+        }
+
+        if (!guildRepository.existsById(guildId)) {
+            throw new IllegalArgumentException("존재하지 않는 길드입니다.");
+        }
+
+        return guildChatRoomRepository.findAllByGuildId(guildId).stream()
+                .map(GuildChatRoomResponseDto::from)
+                .toList();
+    }
+
+    public List<GuildChatRoomResponseDto> getAllGuildChatRooms() {
+        return guildChatRoomRepository.findAll().stream()
+                .map(GuildChatRoomResponseDto::from)
+                .toList();
     }
 }

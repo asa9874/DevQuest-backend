@@ -17,6 +17,8 @@ import com.devquest.domain.guild.repository.GuildMemberRepository;
 import com.devquest.domain.guild.repository.GuildPostCommentRepository;
 import com.devquest.domain.guild.repository.GuildPostRepository;
 import com.devquest.domain.guild.repository.GuildRepository;
+import com.devquest.domain.guildChat.model.GuildChatRoom;
+import com.devquest.domain.guildChat.repository.GuildChatRoomRepository;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.model.Role;
 import com.devquest.domain.member.repository.MemberRepository;
@@ -30,12 +32,12 @@ import com.devquest.domain.quest.repository.QuestRepository;
 @SpringBootTest
 class devQuestApplicationTests {
 
-	@Autowired
-	private MemberRepository memberRepository;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	@Autowired
-	private QuestRepository questRepository;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private QuestRepository questRepository;
     @Autowired
     private QuestChallengeRepository questChallengeRepository;
     @Autowired
@@ -48,65 +50,67 @@ class devQuestApplicationTests {
     private GuildPostRepository guildPostRepository;
     @Autowired
     private GuildPostCommentRepository guildPostCommentRepository;
-    
+    @Autowired
+    private GuildChatRoomRepository guildChatRoomRepository;
 
-	@Test
-	void contextLoads() {
-		for (int i = 0; i < 10; i++) {
-			if (!memberRepository.existsByEmail("tester" + i)) {
-				Member member = Member.builder()
-						.name("tester" + i)
-						.password(passwordEncoder.encode("tester" + i))
-						.email("tester" + i)
-						.role(Role.USER)
-						.provider("local")
-						.build();
-				memberRepository.save(member);
-			}
-			if (!memberRepository.existsByEmail("admin" + i)) {
-				Member admin = Member.builder()
-						.name("admin" + i)
-						.password(passwordEncoder.encode("admin123" + i))
-						.email("admin" + i)
-						.role(Role.ADMIN)
-						.provider("local")
-						.build();
-				memberRepository.save(admin);
-			}
-		}
+    @Test
+    void contextLoads() {
+        for (int i = 0; i < 10; i++) {
+            if (!memberRepository.existsByEmail("tester" + i)) {
+                Member member = Member.builder()
+                        .name("tester" + i)
+                        .password(passwordEncoder.encode("tester" + i))
+                        .email("tester" + i)
+                        .role(Role.USER)
+                        .provider("local")
+                        .build();
+                memberRepository.save(member);
+            }
+            if (!memberRepository.existsByEmail("admin" + i)) {
+                Member admin = Member.builder()
+                        .name("admin" + i)
+                        .password(passwordEncoder.encode("admin123" + i))
+                        .email("admin" + i)
+                        .role(Role.ADMIN)
+                        .provider("local")
+                        .build();
+                memberRepository.save(admin);
+            }
+        }
 
-		List<Member> allMembers = memberRepository.findAll();
-		for (int i = 0; i < 30; i++) {
-			Member creator = allMembers.get(i % allMembers.size());
-			if (!questRepository.existsByTitle("퀘스트" + i)) {
-				Quest quest = Quest.builder()
-						.title("퀘스트" + i)
-						.description("퀘스트 설명" + i)
-						.creater(creator)
-						.build();
-				questRepository.save(quest);
-			}
-		}
-		List<Quest> allQuests = questRepository.findAll();
+        List<Member> allMembers = memberRepository.findAll();
+        for (int i = 0; i < 30; i++) {
+            Member creator = allMembers.get(i % allMembers.size());
+            if (!questRepository.existsByTitle("퀘스트" + i)) {
+                Quest quest = Quest.builder()
+                        .title("퀘스트" + i)
+                        .description("퀘스트 설명" + i)
+                        .creater(creator)
+                        .build();
+                questRepository.save(quest);
+            }
+        }
+        List<Quest> allQuests = questRepository.findAll();
 
-		for (Member member : allMembers) {
-			for (int j = 0; j < 5; j++) {
-				Quest quest = allQuests.get((member.getId().intValue() + j) % allQuests.size());
-				QuestChallenge challenge = QuestChallenge.builder()
-						.quest(quest)
-						.member(member)
-						.build();
-				if (j % 3 == 0) challenge.complete();
-				if (j % 3 == 1) challenge.fail();
-				questChallengeRepository.save(challenge);
-				QuestLike like = QuestLike.builder()
-						.quest(quest)
-						.member(member)
-						.build();
-				questLikeRepository.save(like);
-			}
-		}
-
+        for (Member member : allMembers) {
+            for (int j = 0; j < 5; j++) {
+                Quest quest = allQuests.get((member.getId().intValue() + j) % allQuests.size());
+                QuestChallenge challenge = QuestChallenge.builder()
+                        .quest(quest)
+                        .member(member)
+                        .build();
+                if (j % 3 == 0)
+                    challenge.complete();
+                if (j % 3 == 1)
+                    challenge.fail();
+                questChallengeRepository.save(challenge);
+                QuestLike like = QuestLike.builder()
+                        .quest(quest)
+                        .member(member)
+                        .build();
+                questLikeRepository.save(like);
+            }
+        }
 
         for (int i = 0; i < 5; i++) {
             if (!guildRepository.existsByName("길드" + i)) {
@@ -124,10 +128,14 @@ class devQuestApplicationTests {
             for (int i = 0; i < allMembers.size(); i++) {
                 Member member = allMembers.get(i);
                 boolean exists = guildMemberRepository.findAll().stream()
-                    .anyMatch(gm -> gm.getGuild().getId().equals(guild.getId()) && gm.getMember().getId().equals(member.getId()));
-                if (exists) continue;
-                GuildMemberRole role = (i % 10 == 0) ? GuildMemberRole.OWNER : (i % 5 == 0) ? GuildMemberRole.ADMIN : GuildMemberRole.MEMBER;
-                GuildMemberStatus status = (i % 7 == 0) ? GuildMemberStatus.BANNED : (i % 4 == 0) ? GuildMemberStatus.LEAVED : GuildMemberStatus.ACTIVE;
+                        .anyMatch(gm -> gm.getGuild().getId().equals(guild.getId())
+                                && gm.getMember().getId().equals(member.getId()));
+                if (exists)
+                    continue;
+                GuildMemberRole role = (i % 10 == 0) ? GuildMemberRole.OWNER
+                        : (i % 5 == 0) ? GuildMemberRole.ADMIN : GuildMemberRole.MEMBER;
+                GuildMemberStatus status = (i % 7 == 0) ? GuildMemberStatus.BANNED
+                        : (i % 4 == 0) ? GuildMemberStatus.LEAVED : GuildMemberStatus.ACTIVE;
                 GuildMember guildMember = GuildMember.builder()
                         .guild(guild)
                         .member(member)
@@ -143,25 +151,37 @@ class devQuestApplicationTests {
                     String title = guild.getName() + " - " + member.getName() + "의 게시글 " + p;
                     String content = "테스트 게시글 내용 " + p + " (" + guild.getName() + ", " + member.getName() + ")";
                     GuildPost post = GuildPost.builder()
-                        .title(title)
-                        .content(content)
-                        .guild(guild)
-                        .author(member)
-                        .build();
+                            .title(title)
+                            .content(content)
+                            .guild(guild)
+                            .author(member)
+                            .build();
                     guildPostRepository.save(post);
 
                     for (int c = 0; c < 3; c++) {
                         GuildPostComment comment = GuildPostComment.builder()
-                            .content("테스트 댓글 내용 " + c + " (" + title + ")")
-                            .guildPost(post)
-                            .author(member)
-                            .build();
+                                .content("테스트 댓글 내용 " + c + " (" + title + ")")
+                                .guildPost(post)
+                                .author(member)
+                                .build();
                         guildPostCommentRepository.save(comment);
                     }
                 }
             }
         }
-	}
+        for (Guild guild : allGuilds) {
+            for (int r = 0; r < 5; r++) { 
+                String roomName = guild.getName() + " 채팅방 " + r;
+                GuildChatRoom chatRoom = GuildChatRoom.builder()
+                        .guild(guild)
+                        .title(roomName)
+                        .description("테스트 채팅방 설명 " + r + " (" + guild.getName() + ")")
+                        .build();
+                guildChatRoomRepository.save(chatRoom);
+
+            }
+        }
+    }
 
 }
-//TODO: 메모용 copy con local3.mv.db
+// TODO: 메모용 copy con local3.mv.db

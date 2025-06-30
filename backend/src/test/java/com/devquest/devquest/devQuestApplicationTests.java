@@ -12,7 +12,9 @@ import com.devquest.domain.guild.model.GuildMember;
 import com.devquest.domain.guild.model.GuildMemberRole;
 import com.devquest.domain.guild.model.GuildMemberStatus;
 import com.devquest.domain.guild.model.GuildPost;
+import com.devquest.domain.guild.model.GuildPostComment;
 import com.devquest.domain.guild.repository.GuildMemberRepository;
+import com.devquest.domain.guild.repository.GuildPostCommentRepository;
 import com.devquest.domain.guild.repository.GuildPostRepository;
 import com.devquest.domain.guild.repository.GuildRepository;
 import com.devquest.domain.member.model.Member;
@@ -44,6 +46,8 @@ class devQuestApplicationTests {
     private GuildMemberRepository guildMemberRepository;
     @Autowired
     private GuildPostRepository guildPostRepository;
+    @Autowired
+    private GuildPostCommentRepository guildPostCommentRepository;
     
 
 	@Test
@@ -145,6 +149,15 @@ class devQuestApplicationTests {
                         .author(member)
                         .build();
                     guildPostRepository.save(post);
+
+                    for (int c = 0; c < 3; c++) {
+                        GuildPostComment comment = GuildPostComment.builder()
+                            .content("테스트 댓글 내용 " + c + " (" + title + ")")
+                            .guildPost(post)
+                            .author(member)
+                            .build();
+                        guildPostCommentRepository.save(comment);
+                    }
                 }
             }
         }

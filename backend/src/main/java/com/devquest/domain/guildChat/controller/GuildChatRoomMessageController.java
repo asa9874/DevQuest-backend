@@ -32,14 +32,16 @@ public class GuildChatRoomMessageController {
     @GetMapping("/messages")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<GuildChatRoomMessageResponseDto>> getAllMessages() {
-        return null;
+        List<GuildChatRoomMessageResponseDto> responseDtos = guildChatRoomMessageService.getAllMessages();
+        return ResponseEntity.ok(responseDtos);
     }
 
     @GetMapping("/messages/{messageId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GuildChatRoomMessageResponseDto> getMessageById(
             @PathVariable(name = "messageId") Long messageId) {
-        return null;
+        GuildChatRoomMessageResponseDto responseDto = guildChatRoomMessageService.getMessageById(messageId);
+        return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/{guildChatRoomId}/messages")
@@ -47,7 +49,9 @@ public class GuildChatRoomMessageController {
     public ResponseEntity<List<GuildChatRoomMessageResponseDto>> getMessagesByGuildChatRoomId(
             @PathVariable(name = "guildChatRoomId") Long guildChatRoomId,
             @AuthenticationPrincipal CustomUserDetails member) {
-        return null;
+        List<GuildChatRoomMessageResponseDto> responseDtos = guildChatRoomMessageService.getMessagesByGuildChatRoomId(
+                guildChatRoomId, member.getId());
+        return ResponseEntity.ok(responseDtos);
     }
 
     @PostMapping("/{guildChatRoomId}/messages")

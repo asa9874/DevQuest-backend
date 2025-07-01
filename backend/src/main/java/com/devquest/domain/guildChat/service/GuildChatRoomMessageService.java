@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.devquest.domain.auth.util.AuthUtil;
 import com.devquest.domain.guild.util.GuildUtil;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomMessageCreateRequestDto;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomMessageUpdateRequestDto;
@@ -27,18 +26,25 @@ public class GuildChatRoomMessageService {
     private final GuildUtil guildUtil;
 
     public List<GuildChatRoomMessageResponseDto> getAllMessages() {
-        return null;
+        return guildChatRoomMessageRepository.findAllDto();
     }
 
     public GuildChatRoomMessageResponseDto getMessageById(
             Long messageId) {
-        return null;
+        GuildChatRoomMessageResponseDto responseDto = guildChatRoomMessageRepository.findDtoById(messageId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메시지입니다."));
+        return responseDto;
     }
 
     public List<GuildChatRoomMessageResponseDto> getMessagesByGuildChatRoomId(
             Long guildChatRoomId,
             Long memberId) {
-        return null;
+        if (!guildUtil.isAdminOrGuildMember(memberId, guildChatRoomId)) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
+        List<GuildChatRoomMessageResponseDto> responseDtos = guildChatRoomMessageRepository
+                .findDtoByGuildChatRoomId(guildChatRoomId);
+        return responseDtos;
     }
 
     public void createMessage(

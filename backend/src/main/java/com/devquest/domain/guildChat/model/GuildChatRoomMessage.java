@@ -24,7 +24,6 @@ public class GuildChatRoomMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @ManyToOne
     @JoinColumn(name = "guild_chat_room_id", nullable = false)
     private GuildChatRoom guildChatRoom;

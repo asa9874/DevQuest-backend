@@ -117,7 +117,7 @@ public class GuildMemberService {
         if (guildMember.getRole() == role) {
             throw new IllegalArgumentException("이미 해당 역할입니다");
         }
-        if(AuthUtil.isAdmin()){ //관리자면 아래 다 무시하고 그냥;
+        if (AuthUtil.isAdmin()) { // 관리자면 아래 다 무시하고 그냥;
             guildMember.changeRole(role);
             guildMemberRepository.save(guildMember);
             return;
@@ -163,6 +163,12 @@ public class GuildMemberService {
         if (!AuthUtil.isAdminOrEqualMember(requestMemberId)) {
             throw new IllegalArgumentException("권한이 없습니다");
         }
+        GuildMember requestMember = guildMemberRepository.findByGuildIdAndMemberId(guildId, requestMemberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 요청자 멤버입니다"));
+        if (requestMember.getRole() != GuildMemberRole.ADMIN
+                && requestMember.getRole() != GuildMemberRole.OWNER) {
+            throw new IllegalArgumentException("어드민 권한이 없습니다");
+        }
         GuildMember guildMember = guildMemberRepository.findByGuildIdAndMemberId(guildId, memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드 멤버입니다"));
         if (guildMember.getRole() == GuildMemberRole.OWNER || guildMember.getRole() == GuildMemberRole.ADMIN) {
@@ -182,6 +188,14 @@ public class GuildMemberService {
         if (!AuthUtil.isAdminOrEqualMember(requestMemberId)) {
             throw new IllegalArgumentException("권한이 없습니다");
         }
+
+        GuildMember requestMember = guildMemberRepository.findByGuildIdAndMemberId(guildId, requestMemberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 요청자 멤버입니다"));
+        if (requestMember.getRole() != GuildMemberRole.ADMIN
+                && requestMember.getRole() != GuildMemberRole.OWNER) {
+            throw new IllegalArgumentException("어드민 권한이 없습니다");
+        }
+
         GuildMember guildMember = guildMemberRepository.findByGuildIdAndMemberId(guildId, memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드 멤버입니다"));
         if (guildMember.getStatus() != GuildMemberStatus.BANNED) {
@@ -191,4 +205,3 @@ public class GuildMemberService {
         guildMemberRepository.save(guildMember);
     }
 }
-

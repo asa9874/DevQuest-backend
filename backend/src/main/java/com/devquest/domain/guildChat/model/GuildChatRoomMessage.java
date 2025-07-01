@@ -39,11 +39,11 @@ public class GuildChatRoomMessage {
     private LocalDateTime sentAt;
 
     @Builder
-    public GuildChatRoomMessage(GuildChatRoom guildChatRoom, Member member, String content, LocalDateTime sentAt) {
+    public GuildChatRoomMessage(GuildChatRoom guildChatRoom, Member member, String content) {
         this.guildChatRoom = guildChatRoom;
         this.member = member;
         this.content = content;
-        this.sentAt = sentAt;
+        this.sentAt = LocalDateTime.now();
     }
 
     public void updateContent(String content) {

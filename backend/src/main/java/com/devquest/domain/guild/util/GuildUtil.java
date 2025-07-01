@@ -7,6 +7,7 @@ import com.devquest.domain.guild.model.GuildMemberRole;
 import com.devquest.domain.guild.model.GuildMemberStatus;
 import com.devquest.domain.guild.repository.GuildMemberRepository;
 import com.devquest.domain.guild.repository.GuildRepository;
+import com.devquest.domain.guildChat.repository.GuildChatRoomMessageRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GuildUtil {
     private final GuildMemberRepository guildMemberRepository;
+    private final GuildChatRoomMessageRepository guildChatRoomMessageRepository;
 
     public boolean isAdminOrGuildAdmin(Long memberId, Long guildId) {
         return AuthUtil.isAdmin()
@@ -30,5 +32,11 @@ public class GuildUtil {
                 ||
                 guildMemberRepository.existsByGuildIdAndMemberIdAndStatus(
                         guildId, memberId, GuildMemberStatus.ACTIVE);
+    }
+
+    public boolean isAdminOrMessageSender(Long memberId, Long messageId) {
+        return AuthUtil.isAdmin()
+                ||
+                guildChatRoomMessageRepository.existsByIdAndMemberId(messageId, memberId);
     }
 }

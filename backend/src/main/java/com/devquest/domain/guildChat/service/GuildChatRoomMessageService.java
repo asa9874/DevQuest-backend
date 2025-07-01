@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.devquest.domain.guild.util.GuildUtil;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomMessageCreateRequestDto;
+import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomMessageSendRequestDto;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomMessageUpdateRequestDto;
 import com.devquest.domain.guildChat.dto.responseDto.GuildChatRoomMessageResponseDto;
 import com.devquest.domain.guildChat.model.GuildChatRoom;
@@ -31,6 +32,7 @@ public class GuildChatRoomMessageService {
 
     public GuildChatRoomMessageResponseDto getMessageById(
             Long messageId) {
+        
         GuildChatRoomMessageResponseDto responseDto = guildChatRoomMessageRepository.findDtoById(messageId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메시지입니다."));
         return responseDto;
@@ -65,6 +67,26 @@ public class GuildChatRoomMessageService {
                 .content(requestDto.content())
                 .build();
         guildChatRoomMessageRepository.save(message);
+    }
+
+    public GuildChatRoomMessageResponseDto sendMessage(
+            GuildChatRoomMessageSendRequestDto requestDto,
+            Long senderId) {
+        if (senderId != requestDto.senderId()) {
+            throw new IllegalArgumentException("Sender ID mismatch");
+        }
+
+        GuildChatRoom guildChatRoom = guildChatRoomRepository.findById(requestDto.chatRoomId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드 채팅방입니다."));
+        Member member = memberRepository.findById(senderId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        GuildChatRoomMessage message = GuildChatRoomMessage.builder()
+                .guildChatRoom(guildChatRoom)
+                .member(member)
+                .content(requestDto.content())
+                .build();
+        guildChatRoomMessageRepository.save(message);
+        return GuildChatRoomMessageResponseDto.from(message);
     }
 
     public void updateMessage(

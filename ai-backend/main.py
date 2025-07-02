@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
-from prompt import generate_quest, generate_quiz
+from prompt import generate_quest, generate_quiz, make_quiz_batch_prompt, generate_quiz_batch
 
 app = Flask(__name__)
 CORS(app)
@@ -18,6 +18,17 @@ def create_quiz():
     data = request.json
     task_input = data.get('task_input', '')
     result = generate_quiz(task_input)
+    return jsonify(result)
+
+@app.route('/api/quiz/batch', methods=['POST'])
+def create_quiz_batch():
+    data = request.json
+    name = data.get('name', '')
+    description = data.get('description', '')
+    number = int(data.get('number', 1))
+    if number > 10:
+        number = 10
+    result = generate_quiz_batch(name, description, number)
     return jsonify(result)
 
 if __name__ == '__main__':

@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  ai-backend:
+    build:
+      context: ./ai-backend
+    container_name: ai-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: devquest
+      MYSQL_USER: devquest
+      MYSQL_PASSWORD: devquest1234
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7.2
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mysql_data:
+  redis_data:
+# docker-compose -f docker-compose-local.yml up --build

@@ -19,38 +19,31 @@ import com.devquest.domain.monster.dto.responseDto.QuizResponseDto;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/monsters/")
+@RequestMapping("/api/quizzes")
 public class QuizController {
 
     // 전체 조회
-    @GetMapping("/quizzes")
+    @GetMapping
     public ResponseEntity<List<QuizResponseDto>> getAllQuizzes() {
         return null;
     }
 
-    // 몬스터별 퀴즈 조회
-    @GetMapping("/{monsterId}/quizzes")
-    public ResponseEntity<List<QuizResponseDto>> getQuizzesByMonsterId(
-            @PathVariable(name = "monsterId") Long monsterId) {
-        return null;
-    }
-
     // 단일 조회
-    @GetMapping("/quizzes/{quizId}")
+    @GetMapping("/{quizId}")
     public ResponseEntity<QuizResponseDto> getQuizById(
             @PathVariable(name = "quizId") Long quizId) {
         return null;
     }
 
     // 등록
-    @PostMapping("/quizzes")
+    @PostMapping
     public ResponseEntity<Void> createQuiz(
             @Valid @RequestBody QuizCreateRequestDto requestDto) {
         return null;
     }
 
     // 수정
-    @PutMapping("/quizzes/{quizId}")
+    @PutMapping("/{quizId}")
     public ResponseEntity<Void> updateQuiz(
             @PathVariable(name = "quizId") Long quizId,
             @Valid @RequestBody QuizUpdateRequestDto requestDto) {
@@ -58,9 +51,9 @@ public class QuizController {
     }
 
     // 삭제
-    @DeleteMapping("/quizzes/{quizId}")
+    @DeleteMapping("/{quizId}")
     public ResponseEntity<Void> deleteQuiz(
-            @PathVariable Long quizId) {
+            @PathVariable(name = "quizId") Long quizId) {
         return null;
     }
 }

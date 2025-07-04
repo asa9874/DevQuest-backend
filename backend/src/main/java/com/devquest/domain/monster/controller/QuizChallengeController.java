@@ -15,11 +15,12 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/monsters/")
 public class QuizChallengeController {
 
+    // 퀴즈 도전
     @PostMapping("/quizzes/{quizId}/challenges")
     public ResponseEntity<Void> createQuizChallenge(
             @PathVariable(name = "quizId") Long quizId,
             @Valid @RequestBody QuizChallengeCreateRequestDto requestDto) {
         return null;
     }
-
+    
 }

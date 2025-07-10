@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 @Tag(name = "퀴즈 챌린지 API", description = "퀴즈 도전 관련 API")
 public interface QuizChallengeApi {
 
-    @Operation(summary = "퀴즈 도전 (회원)", description = "특정 퀴즈 챌린지에 대한 답변을 제출합니다.")
+    @Operation(summary = "퀴즈 풀기 (회원)", description = "특정 퀴즈 챌린지에 대한 답변을 제출합니다.")
     @PostMapping("/challenges/{quizChallengeId}")
     ResponseEntity<Void> solveQuizChallenge(
             @Parameter(description = "퀴즈 챌린지 ID", example = "1") @PathVariable(name = "quizChallengeId") Long quizChallengeId,

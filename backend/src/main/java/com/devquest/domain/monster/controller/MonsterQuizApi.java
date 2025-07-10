@@ -22,13 +22,13 @@ public interface MonsterQuizApi {
     ResponseEntity<List<QuizWithOutAnswerResponseDto>> getQuizzesByMonsterId(
             @Parameter(description = "몬스터 ID", example = "1") @PathVariable(name = "monsterId") Long monsterId);
 
-    @Operation(summary = "몬스터에 퀴즈 등록 (어드민)", description = "특정 몬스터에 퀴즈를 연결합니다.")
+    @Operation(summary = "몬스터에 퀴즈 등록 (몬스터 주인/어드민)", description = "특정 몬스터에 퀴즈를 연결합니다.")
     @PostMapping("/{monsterId}/quizzes/{quizId}")
     ResponseEntity<Void> registerQuizForMonster(
             @Parameter(description = "몬스터 ID", example = "1") @PathVariable(name = "monsterId") Long monsterId,
             @Parameter(description = "퀴즈 ID", example = "1") @PathVariable(name = "quizId") Long quizId);
 
-    @Operation(summary = "몬스터에서 퀴즈 삭제 (어드민)", description = "특정 몬스터에서 퀴즈 연결을 해제합니다.")
+    @Operation(summary = "몬스터에서 퀴즈 삭제 (몬스터 주인/어드민)", description = "특정 몬스터에서 퀴즈 연결을 해제합니다.")
     @DeleteMapping("/{monsterId}/quizzes/{quizId}")
     ResponseEntity<Void> deleteQuizForMonster(
             @Parameter(description = "몬스터 ID", example = "1") @PathVariable(name = "monsterId") Long monsterId,

@@ -46,4 +46,11 @@ public class Monster {
         this.required_correct_count = required_correct_count;
         this.creater = creater;
     }
+
+    public void update(String name, String description, String difficulty, Integer required_correct_count) {
+        this.name = name;
+        this.description = description;
+        this.difficulty = difficulty;
+        this.required_correct_count = required_correct_count;
+    }
 }

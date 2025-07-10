@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/monsters")
-public class MonsterQuizController {
+public class MonsterQuizController implements MonsterQuizApi {
     private final MonsterQuizService monsterQuizService;
 
     // 몬스터별 퀴즈 조회

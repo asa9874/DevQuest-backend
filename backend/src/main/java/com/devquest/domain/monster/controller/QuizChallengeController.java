@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/monsters/")
-public class QuizChallengeController {
+public class QuizChallengeController implements QuizChallengeApi {
     private final QuizChallengeService quizChallengeService;
 
     // 퀴즈 도전
@@ -31,6 +31,4 @@ public class QuizChallengeController {
         return ResponseEntity.ok().build();
     }
 
-
-    
 }

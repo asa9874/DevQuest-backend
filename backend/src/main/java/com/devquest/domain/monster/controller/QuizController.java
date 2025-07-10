@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/quizzes")
-public class QuizController {
+public class QuizController implements QuizApi {
     private final QuizService quizService;
 
     // 전체 조회

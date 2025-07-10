@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/monsters/")
-public class MonsterController {
+public class MonsterController implements MonsterApi {
     private final MonsterService monsterService;
 
     // 전체조회

@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/monsters/")
 @RequiredArgsConstructor
-public class MonsterChallengeController {
+public class MonsterChallengeController implements MonsterChallengeApi {
 
     private final MonsterChallengeService monsterChallengeService;
     private final QuizChallengeService quizChallengeService;

@@ -4,4 +4,5 @@ import com.devquest.domain.monster.model.QuizChallenge;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface QuizChallengeRepository extends JpaRepository<QuizChallenge, Long> {
+
 }

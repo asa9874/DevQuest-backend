@@ -7,9 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record QuizCreateRequestDto(
-    @NotNull(message = "몬스터 ID는 필수입니다.")
-    Long monsterId,
-    
     @NotBlank(message = "퀴즈 제목은 필수입니다.")
     @Size(max = 20, message = "퀴즈 제목은 20자 이하여야 합니다.")
     String title,

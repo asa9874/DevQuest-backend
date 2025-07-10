@@ -22,6 +22,8 @@ import com.devquest.domain.guildChat.repository.GuildChatRoomRepository;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.model.Role;
 import com.devquest.domain.member.repository.MemberRepository;
+import com.devquest.domain.monster.model.Quiz;
+import com.devquest.domain.monster.repository.QuizRepository;
 import com.devquest.domain.quest.model.Quest;
 import com.devquest.domain.quest.model.QuestChallenge;
 import com.devquest.domain.quest.model.QuestLike;
@@ -52,6 +54,8 @@ class devQuestApplicationTests {
     private GuildPostCommentRepository guildPostCommentRepository;
     @Autowired
     private GuildChatRoomRepository guildChatRoomRepository;
+    @Autowired
+    private QuizRepository quizRepository;
 
     @Test
     void contextLoads() {
@@ -178,10 +182,39 @@ class devQuestApplicationTests {
                         .description("테스트 채팅방 설명 " + r + " (" + guild.getName() + ")")
                         .build();
                 guildChatRoomRepository.save(chatRoom);
-
             }
         }
+        
+        // 퀴즈 데이터 생성
+        String[][] quizData = {
+            {"Java 기초", "Java의 기본 데이터 타입이 아닌 것은?", "int", "boolean", "String", "double", "3"},
+            {"컬렉션 프레임워크", "다음 중 순서가 있는 컬렉션 인터페이스는?", "Set", "List", "Map", "Queue", "2"},
+            {"OOP 개념", "캡슐화에 대한 설명으로 옳은 것은?", "클래스 간 상속 관계를 맺는 것", "데이터와 메소드를 하나로 묶는 것", "하나의 클래스로 여러 객체를 생성하는 것", "클래스를 재사용하는 것", "2"},
+            {"예외 처리", "try-catch 구문에서 반드시 필요한 블록은?", "try와 catch", "try와 finally", "catch와 finally", "try만", "1"},
+            {"스프링 기초", "스프링의 핵심 개념이 아닌 것은?", "IoC", "AOP", "DI", "MVC", "4"},
+            {"데이터베이스", "SQL 문장 중 데이터를 조회하는 명령어는?", "INSERT", "UPDATE", "DELETE", "SELECT", "4"},
+            {"네트워크", "HTTP 상태 코드 중 성공을 의미하는 코드 범위는?", "100번대", "200번대", "300번대", "400번대", "2"},
+            {"알고리즘", "시간 복잡도가 O(log n)인 정렬 알고리즘은?", "버블 정렬", "퀵 정렬", "삽입 정렬", "선택 정렬", "2"},
+            {"자료구조", "LIFO 방식으로 동작하는 자료구조는?", "큐", "스택", "해시맵", "트리", "2"},
+            {"개발 도구", "Git에서 현재 브랜치의 작업 상태를 확인하는 명령어는?", "git commit", "git push", "git status", "git merge", "3"}
+        };
+        
+        for (int i = 0; i < quizData.length; i++) {
+            String[] data = quizData[i];
+            Member creator = allMembers.get(i % allMembers.size());
+            
+            Quiz quiz = Quiz.builder()
+                    .title(data[0])
+                    .question(data[1])
+                    .option1(data[2])
+                    .option2(data[3])
+                    .option3(data[4])
+                    .option4(data[5])
+                    .answer(Integer.parseInt(data[6]))
+                    .creater(creator)
+                    .build();
+            quizRepository.save(quiz);
+        }
     }
-
 }
 // TODO: 메모용 copy con local3.mv.db

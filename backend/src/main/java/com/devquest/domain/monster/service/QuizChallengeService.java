@@ -2,6 +2,11 @@ package com.devquest.domain.monster.service;
 
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class QuizChallengeService {
+
+    
 }

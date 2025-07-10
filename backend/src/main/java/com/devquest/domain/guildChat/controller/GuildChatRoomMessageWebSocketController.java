@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomMessageSendRequestDto;
 import com.devquest.domain.guildChat.dto.responseDto.GuildChatRoomMessageResponseDto;
 import com.devquest.domain.guildChat.service.GuildChatRoomMessageService;
-import com.devquest.domain.guildChat.service.GuildChatRoomService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

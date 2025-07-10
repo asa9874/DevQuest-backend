@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.guild.model.Guild;
-import com.devquest.domain.guild.repository.GuildMemberRepository;
 import com.devquest.domain.guild.repository.GuildRepository;
 import com.devquest.domain.guild.util.GuildUtil;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomCreateRequestDto;

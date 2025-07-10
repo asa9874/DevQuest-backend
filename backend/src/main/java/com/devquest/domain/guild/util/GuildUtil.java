@@ -6,7 +6,6 @@ import com.devquest.domain.auth.util.AuthUtil;
 import com.devquest.domain.guild.model.GuildMemberRole;
 import com.devquest.domain.guild.model.GuildMemberStatus;
 import com.devquest.domain.guild.repository.GuildMemberRepository;
-import com.devquest.domain.guild.repository.GuildRepository;
 import com.devquest.domain.guildChat.repository.GuildChatRoomMessageRepository;
 
 import lombok.RequiredArgsConstructor;

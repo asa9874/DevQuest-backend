@@ -39,10 +39,13 @@ public class MonsterChallenge {
     private Boolean isSuccess;
 
     @Builder
-    public MonsterChallenge(Member member, Monster monster, LocalDateTime challengedAt, Boolean isSuccess) {
+    public MonsterChallenge(Member member, Monster monster) {
         this.member = member;
         this.monster = monster;
-        this.challengedAt = challengedAt;
+        this.challengedAt = LocalDateTime.now();
+        this.isSuccess = null;
+    }
+    public void setSuccess(Boolean isSuccess) {
         this.isSuccess = isSuccess;
     }
 }

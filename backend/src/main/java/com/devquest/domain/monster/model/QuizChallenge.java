@@ -1,6 +1,5 @@
 package com.devquest.domain.monster.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -29,16 +28,15 @@ public class QuizChallenge {
     @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
 
-    @Column(nullable = false)
     private Integer selectedOption;
 
     private Boolean isCorrect;
 
     @Builder
-    public QuizChallenge(MonsterChallenge monsterChallenge, Quiz quiz, Integer selectedOption, Boolean isCorrect) {
+    public QuizChallenge(MonsterChallenge monsterChallenge, Quiz quiz) {
         this.monsterChallenge = monsterChallenge;
         this.quiz = quiz;
-        this.selectedOption = selectedOption;
-        this.isCorrect = isCorrect;
+        this.selectedOption = null;
+        this.isCorrect = false; 
     }
 }

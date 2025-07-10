@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devquest.domain.auth.util.AuthUtil;
-import com.devquest.domain.member.model.Member;
-import com.devquest.domain.member.repository.MemberRepository;
 import com.devquest.domain.monster.dto.responseDto.QuizWithOutAnswerResponseDto;
 import com.devquest.domain.monster.model.Monster;
 import com.devquest.domain.monster.model.MonsterQuiz;

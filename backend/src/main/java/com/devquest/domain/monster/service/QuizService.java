@@ -10,6 +10,7 @@ import com.devquest.domain.member.repository.MemberRepository;
 import com.devquest.domain.monster.dto.requestDto.QuizCreateRequestDto;
 import com.devquest.domain.monster.dto.requestDto.QuizUpdateRequestDto;
 import com.devquest.domain.monster.dto.responseDto.QuizResponseDto;
+import com.devquest.domain.monster.dto.responseDto.QuizWithOutAnswerResponseDto;
 import com.devquest.domain.monster.model.Quiz;
 import com.devquest.domain.monster.repository.QuizRepository;
 
@@ -55,7 +56,17 @@ public class QuizService {
     public QuizResponseDto getQuizById(Long quizId) {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 퀴즈입니다."));
+
+        if (!AuthUtil.isAdminOrEqualMember(quiz.getCreater().getId())) {
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
         return QuizResponseDto.from(quiz);
+    }
+
+    public QuizWithOutAnswerResponseDto getQuizWithoutAnswer(Long quizId) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 퀴즈입니다."));
+        return QuizWithOutAnswerResponseDto.from(quiz);
     }
 
     public void updateQuiz(

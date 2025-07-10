@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.devquest.domain.monster.dto.requestDto.QuizCreateRequestDto;
 import com.devquest.domain.monster.dto.requestDto.QuizUpdateRequestDto;
 import com.devquest.domain.monster.dto.responseDto.QuizResponseDto;
+import com.devquest.domain.monster.dto.responseDto.QuizWithOutAnswerResponseDto;
 import com.devquest.domain.monster.service.QuizService;
 import com.devquest.global.jwt.CustomUserDetails;
 
@@ -32,16 +33,24 @@ public class QuizController {
     // 전체 조회
     @GetMapping
     public ResponseEntity<List<QuizResponseDto>> getAllQuizzes() {
-        List<QuizResponseDto> quizzes = quizService.getAllQuizzes();
-        return ResponseEntity.ok(quizzes);
+        List<QuizResponseDto> responseDtos = quizService.getAllQuizzes();
+        return ResponseEntity.ok(responseDtos);
     }
 
     // 단일 조회
     @GetMapping("/{quizId}")
     public ResponseEntity<QuizResponseDto> getQuizById(
             @PathVariable(name = "quizId") Long quizId) {
-        QuizResponseDto quiz = quizService.getQuizById(quizId);
-        return ResponseEntity.ok(quiz);
+        QuizResponseDto responseDto = quizService.getQuizById(quizId);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    // 정답 미포함 조회
+    @GetMapping("/{quizId}/without-answer")
+    public ResponseEntity<QuizWithOutAnswerResponseDto> getQuizWithoutAnswer(
+            @PathVariable(name = "quizId") Long quizId) {
+        QuizWithOutAnswerResponseDto responseDto = quizService.getQuizWithoutAnswer(quizId);
+        return ResponseEntity.ok(responseDto);
     }
 
     // 등록

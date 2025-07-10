@@ -1,19 +1,22 @@
 package com.devquest.domain.monster.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devquest.domain.monster.dto.responseDto.MonsterChallengeResponseDto;
+import com.devquest.domain.monster.dto.responseDto.QuizChallengeResponseDto;
 import com.devquest.domain.monster.service.MonsterChallengeService;
+import com.devquest.domain.monster.service.QuizChallengeService;
 import com.devquest.global.jwt.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MonsterChallengeController {
 
     private final MonsterChallengeService monsterChallengeService;
+    private final QuizChallengeService quizChallengeService;
 
     // 몬스터 챌린지 조회
     @GetMapping("challenges/{challengeId}")
@@ -29,6 +33,15 @@ public class MonsterChallengeController {
             @PathVariable(name = "challengeId") Long challengeId,
             @AuthenticationPrincipal CustomUserDetails member) {
         MonsterChallengeResponseDto response = monsterChallengeService.getChallengeById(challengeId, member.getId());
+        return ResponseEntity.ok(response);
+    }
+
+    // 몬스터 챌린지 퀴즈 조회
+    @GetMapping("challenges/{challengeId}/quizchallenge")
+    public ResponseEntity<List<QuizChallengeResponseDto>> getQuizChallengeByMonsterChallengeId(
+            @PathVariable(name = "challengeId") Long challengeId,
+            @AuthenticationPrincipal CustomUserDetails member) {
+        List<QuizChallengeResponseDto> response = quizChallengeService.getQuizChallengeByMonsterChallengeId(challengeId, member.getId());
         return ResponseEntity.ok(response);
     }
     

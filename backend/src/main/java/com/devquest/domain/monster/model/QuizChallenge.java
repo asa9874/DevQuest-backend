@@ -39,4 +39,13 @@ public class QuizChallenge {
         this.selectedOption = null;
         this.isCorrect = false; 
     }
+
+    public boolean isSolved() {
+        return selectedOption != null;
+    }
+
+    public void setSelectedOption(Integer selectedOption) {
+        this.selectedOption = selectedOption;
+        this.isCorrect = quiz.getAnswer().equals(selectedOption);
+    }
 }

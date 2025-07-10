@@ -1,11 +1,14 @@
 package com.devquest.domain.monster.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devquest.domain.auth.util.AuthUtil;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.repository.MemberRepository;
+import com.devquest.domain.monster.dto.responseDto.QuizWithOutAnswerResponseDto;
 import com.devquest.domain.monster.model.Monster;
 import com.devquest.domain.monster.model.MonsterQuiz;
 import com.devquest.domain.monster.model.Quiz;
@@ -23,7 +26,6 @@ public class MonsterQuizService {
     private final QuizRepository quizRepository;
 
     public void AddQuizToMonster(Long monsterId, Long quizId) {
-
         if (monsterQuizRepository.existsByMonsterIdAndQuizId(monsterId, quizId)) {
             throw new IllegalArgumentException("이미 등록된 퀴즈입니다.");
         }
@@ -58,5 +60,17 @@ public class MonsterQuizService {
         }
 
         monsterQuizRepository.deleteByMonsterIdAndQuizId(monsterId, quizId);
+    }
+
+    public List<QuizWithOutAnswerResponseDto> getQuizzesByMonsterId(Long monsterId) {
+        if(!monsterRepository.existsById(monsterId)) {
+            throw new IllegalArgumentException("존재하지 않는 몬스터입니다.");
+        }
+
+        List<Quiz> quizzes = quizRepository.findAllByMonsterId(monsterId);
+        return quizzes.stream()
+                .map(QuizWithOutAnswerResponseDto::from)
+                .toList();
+
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devquest.domain.monster.dto.responseDto.QuizResponseDto;
+import com.devquest.domain.monster.dto.responseDto.QuizWithOutAnswerResponseDto;
 import com.devquest.domain.monster.service.MonsterQuizService;
 import com.devquest.global.jwt.CustomUserDetails;
 
@@ -25,9 +26,10 @@ public class MonsterQuizController {
 
     // 몬스터별 퀴즈 조회
     @GetMapping("/{monsterId}/quizzes")
-    public ResponseEntity<List<Long>> getQuizzesByMonsterId(
+    public ResponseEntity<List<QuizWithOutAnswerResponseDto>> getQuizzesByMonsterId(
             @PathVariable(name = "monsterId") Long monsterId) {
-        return null;
+        List<QuizWithOutAnswerResponseDto> quizzes = monsterQuizService.getQuizzesByMonsterId(monsterId);
+        return ResponseEntity.ok(quizzes);
     }
 
     // 몬스터에 퀴즈 등록

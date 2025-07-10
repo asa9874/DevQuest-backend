@@ -7,4 +7,6 @@ import com.devquest.domain.monster.model.MonsterQuiz;
 
 @Repository
 public interface MonsterQuizRepository extends JpaRepository<MonsterQuiz, Long> {
+    boolean existsByMonsterIdAndQuizId(Long monsterId, Long quizId);
+    void deleteByMonsterIdAndQuizId(Long monsterId, Long quizId);
 }

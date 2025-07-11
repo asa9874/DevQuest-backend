@@ -22,4 +22,32 @@ public interface SkillRequiredSkillRepository extends JpaRepository<SkillRequire
     boolean existsBySkillIdAndRequiredSkillId(Long skillId, Long requiredSkillId);
 
     void deleteBySkillIdAndRequiredSkillId(Long skillId, Long requiredSkillId);
+
+    @Query("""
+            SELECT CASE WHEN COUNT(srs) > 0 THEN true ELSE false END
+            FROM SkillRequiredSkill srs
+            WHERE srs.skill.id = :skillId
+            AND srs.requiredSkill.id NOT IN (
+                SELECT ms.skill.id
+                FROM MemberSkill ms
+                WHERE ms.member.id = :memberId
+            )
+            """)
+    boolean existsAnyRequiredSkillNotAcquiredByMember(
+            @Param("memberId") Long memberId,
+            @Param("skillId") Long skillId);
+            
+    @Query("""
+            SELECT srs.requiredSkill.id
+            FROM SkillRequiredSkill srs
+            WHERE srs.skill.id = :skillId
+            AND srs.requiredSkill.id NOT IN (
+                SELECT ms.skill.id
+                FROM MemberSkill ms
+                WHERE ms.member.id = :memberId
+            )
+            """)
+    List<Long> findMissingRequiredSkillIds(
+            @Param("memberId") Long memberId,
+            @Param("skillId") Long skillId);
 }

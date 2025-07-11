@@ -22,4 +22,30 @@ public interface SkillRequiredQuestRepository extends JpaRepository<SkillRequire
     boolean existsBySkill_IdAndRequiredQuest_Id(Long skillId, Long questId);
 
     void deleteBySkill_IdAndRequiredQuest_Id(Long skillId, Long questId);
+    
+    @Query("""
+            SELECT CASE WHEN COUNT(srq) > 0 THEN true ELSE false END
+            FROM SkillRequiredQuest srq
+            WHERE srq.skill.id = :skillId
+            AND srq.requiredQuest.id NOT IN (
+                SELECT qc.quest.id
+                FROM QuestChallenge qc
+                WHERE qc.member.id = :memberId
+                AND qc.status = com.devquest.domain.quest.model.QuestStatus.COMPLETED
+            )
+            """)
+    boolean existsAnyRequiredQuestNotCompletedByMember(@Param("memberId") Long memberId, @Param("skillId") Long skillId);
+    
+    @Query("""
+            SELECT srq.requiredQuest.id
+            FROM SkillRequiredQuest srq
+            WHERE srq.skill.id = :skillId
+            AND srq.requiredQuest.id NOT IN (
+                SELECT qc.quest.id
+                FROM QuestChallenge qc
+                WHERE qc.member.id = :memberId
+                AND qc.status = com.devquest.domain.quest.model.QuestStatus.COMPLETED
+            )
+            """)
+    List<Long> findMissingRequiredQuestIds(@Param("memberId") Long memberId, @Param("skillId") Long skillId);
 }

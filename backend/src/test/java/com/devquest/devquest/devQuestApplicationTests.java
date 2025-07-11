@@ -22,7 +22,9 @@ import com.devquest.domain.guildChat.repository.GuildChatRoomRepository;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.model.Role;
 import com.devquest.domain.member.repository.MemberRepository;
+import com.devquest.domain.monster.model.Monster;
 import com.devquest.domain.monster.model.Quiz;
+import com.devquest.domain.monster.repository.MonsterRepository;
 import com.devquest.domain.monster.repository.QuizRepository;
 import com.devquest.domain.quest.model.Quest;
 import com.devquest.domain.quest.model.QuestChallenge;
@@ -30,6 +32,8 @@ import com.devquest.domain.quest.model.QuestLike;
 import com.devquest.domain.quest.repository.QuestChallengeRepository;
 import com.devquest.domain.quest.repository.QuestLikeRepository;
 import com.devquest.domain.quest.repository.QuestRepository;
+import com.devquest.domain.skill.model.Skill;
+import com.devquest.domain.skill.repository.SkillRepository;
 
 @SpringBootTest
 class devQuestApplicationTests {
@@ -56,6 +60,10 @@ class devQuestApplicationTests {
     private GuildChatRoomRepository guildChatRoomRepository;
     @Autowired
     private QuizRepository quizRepository;
+    @Autowired
+    private MonsterRepository monsterRepository;
+    @Autowired
+    private SkillRepository skillRepository;
 
     @Test
     void contextLoads() {
@@ -215,6 +223,63 @@ class devQuestApplicationTests {
                     .build();
             quizRepository.save(quiz);
         }
+        
+        // Monster 테스트 데이터 생성
+        String[][] monsterData = {
+            {"자바몬", "자바 코드를 먹고 사는 몬스터", "쉬움", "0"},
+            {"스프링드래곤", "스프링 빈을 불처럼 뿜어내는 드래곤", "중간", "0"},
+            {"SQL오우거", "데이터베이스를 파괴하는 거대한 오우거", "어려움", "0"},
+            {"HTTP유령", "네트워크 패킷 사이에 숨어 있는 유령", "쉬움", "0"},
+            {"리액트위치", "컴포넌트로 주문을 거는 마녀", "중간", "0"},
+            {"파이썬뱀", "코드를 감싸 죄어오는 뱀", "중간", "0"},
+            {"도커고래", "컨테이너를 등에 업고 다니는 고래", "어려움", "0"},
+            {"깃허브고스트", "커밋 히스토리에 출몰하는 유령", "쉬움", "0"},
+            {"클라우드하이드라", "여러 개의 서버 머리를 가진 괴물", "매우 어려움", "0"},
+            {"디버그벌레", "코드 속 버그를 먹고 사는 벌레", "쉬움", "0"}
+        };
+        
+        for (int i = 0; i < monsterData.length; i++) {
+            String[] data = monsterData[i];
+            Member creator = allMembers.get(i % allMembers.size());
+            
+            if (!monsterRepository.existsByName(data[0])) {
+                Monster monster = Monster.builder()
+                        .name(data[0])
+                        .description(data[1])
+                        .difficulty(data[2])
+                        .required_correct_count(Integer.parseInt(data[3]))
+                        .creater(creator)
+                        .build();
+                monsterRepository.save(monster);
+            }
+        }
+        
+        // Skill 테스트 데이터 생성
+        String[][] skillData = {
+            {"자바 기초", "자바 프로그래밍의 기본 개념을 이해합니다."},
+            {"객체지향 프로그래밍", "클래스, 상속, 다형성 등 객체지향 개념을 습득합니다."},
+            {"스프링 프레임워크", "스프링의 핵심 기능과 구조를 이해합니다."},
+            {"JPA 마스터", "JPA를 사용한 데이터 관리 기법을 습득합니다."},
+            {"RESTful API 설계", "REST 원칙에 따른 API 설계 방법을 배웁니다."},
+            {"프론트엔드 기초", "HTML, CSS, JavaScript의 기본을 이해합니다."},
+            {"리액트 개발", "React.js로 SPA 애플리케이션을 개발하는 방법을 배웁니다."},
+            {"데이터베이스 설계", "효율적인 데이터베이스 스키마를 설계하는 방법을 습득합니다."},
+            {"클라우드 배포", "AWS, Azure 등의 클라우드 서비스에 애플리케이션을 배포하는 방법을 배웁니다."},
+            {"DevOps 실무", "CI/CD 파이프라인 구축 및 운영 방법을 습득합니다."}
+        };
+        
+        for (int i = 0; i < skillData.length; i++) {
+            String[] data = skillData[i];
+            Member creator = allMembers.get(i % allMembers.size());
+            
+            if (!skillRepository.existsByName(data[0])) {
+                Skill skill = Skill.builder()
+                        .name(data[0])
+                        .description(data[1])
+                        .creater(creator)
+                        .build();
+                skillRepository.save(skill);
+            }
+        }
     }
 }
-// TODO: 메모용 copy con local3.mv.db

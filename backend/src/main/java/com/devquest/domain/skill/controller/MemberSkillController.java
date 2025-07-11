@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
-public class MemberSkillController {
+public class MemberSkillController implements MemberSkillApi {
     private final MemberSkillService memberSkillService;
 
     @GetMapping("/{memberId}/skills/{skillId}")

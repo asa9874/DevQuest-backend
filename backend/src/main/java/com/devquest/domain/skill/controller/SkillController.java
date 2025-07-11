@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/skills")
-public class SkillController {
+public class SkillController implements SkillApi {
     private final SkillService skillService;
 
     @GetMapping

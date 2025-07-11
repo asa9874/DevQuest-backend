@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/skills")
-public class SkillRequiredController {
+public class SkillRequiredController implements SkillRequiredApi {
     private final SkillRequiredService skillRequiredService;
 
     @GetMapping("/{skillId}/required/quests")

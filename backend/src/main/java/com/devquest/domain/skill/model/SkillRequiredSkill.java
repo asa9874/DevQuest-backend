@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SkillPrerequisiteSkill {
+public class SkillRequiredSkill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,12 +25,12 @@ public class SkillPrerequisiteSkill {
     private Skill skill;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "prerequisite_skill_id", nullable = false)
-    private Skill prerequisiteSkill;
+    @JoinColumn(name = "required_skill_id", nullable = false)
+    private Skill requiredSkill;
 
     @Builder
-    public SkillPrerequisiteSkill(Skill skill, Skill prerequisiteSkill) {
+    public SkillRequiredSkill(Skill skill, Skill requiredSkill) {
         this.skill = skill;
-        this.prerequisiteSkill = prerequisiteSkill;
+        this.requiredSkill = requiredSkill;
     }
 }

@@ -27,12 +27,12 @@ public class SkillRequiredQuest {
     private Skill skill;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quest_id", nullable = false)
-    private Quest quest;
+    @JoinColumn(name = "required_quest_id", nullable = false)
+    private Quest requiredQuest;
 
     @Builder
     public SkillRequiredQuest(Skill skill, Quest quest) {
         this.skill = skill;
-        this.quest = quest;
+        this.requiredQuest = quest;
     }
 }

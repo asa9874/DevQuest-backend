@@ -27,12 +27,12 @@ public class SkillRequiredMonster {
     private Skill skill;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "monster_id", nullable = false)
-    private Monster monster;
+    @JoinColumn(name = "required_monster_id", nullable = false)
+    private Monster requiredMonster;
 
     @Builder
     public SkillRequiredMonster(Skill skill, Monster monster) {
         this.skill = skill;
-        this.monster = monster;
+        this.requiredMonster = monster;
     }
 }

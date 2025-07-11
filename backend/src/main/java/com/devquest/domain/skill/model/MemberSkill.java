@@ -2,6 +2,8 @@ package com.devquest.domain.skill.model;
 
 import java.time.LocalDateTime;
 
+import org.springframework.cglib.core.Local;
+
 import com.devquest.domain.member.model.Member;
 
 import jakarta.persistence.Column;
@@ -37,9 +39,9 @@ public class MemberSkill {
     private LocalDateTime acquiredAt;
 
     @Builder
-    public MemberSkill(Member member, Skill skill, LocalDateTime acquiredAt) {
+    public MemberSkill(Member member, Skill skill) {
         this.member = member;
         this.skill = skill;
-        this.acquiredAt = acquiredAt;
+        this.acquiredAt = LocalDateTime.now();
     }
 }

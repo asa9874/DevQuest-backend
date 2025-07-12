@@ -8,11 +8,12 @@ def generate_quest(task_input):
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel('gemini-1.5-flash')
     response = model.generate_content(prompt)
+    text = clean_llm_json(response.text)
     try:
-        parsed = json.loads(response.text)
+        parsed = json.loads(text)
         return parsed
     except Exception:
-        return response.text
+        return text
 
 def make_quest_prompt(task_input):
     return f"""
@@ -36,11 +37,12 @@ def generate_quiz(task_input):
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel('gemini-1.5-flash')
     response = model.generate_content(prompt)
+    text = clean_llm_json(response.text)
     try:
-        parsed = json.loads(response.text)
+        parsed = json.loads(text)
         return parsed
     except Exception:
-        return response.text
+        return text
 
 def make_quiz_prompt(task_input):
     return f"""
@@ -100,14 +102,14 @@ def make_quiz_batch_prompt(name, description, number):
 
 def make_guild_search_prompt(user_query, guilds, top_n=3):
     guild_list = "\n".join([
-        f"{i+1}. name: {g['name']}, description: {g['description']}" for i, g in enumerate(guilds)
+        f"{i+1}. id: {g['id']}, name: {g['name']}, description: {g['description']}, leader_name: {g['leader_name']}" for i, g in enumerate(guilds)
     ])
     return f"""
     아래는 여러 길드의 목록이야.
     입력: {user_query}
     목록:
     {guild_list}
-    입력과 가장 관련 있는 길드 {top_n}개를 name, description만 포함된 JSON 배열로 반환해. 불필요한 설명, 인사, 코드블록 없이 오직 JSON만 출력해.
+    입력과 가장 관련 있는 길드 {top_n}개를 id, name, description, leader_name이 포함된 JSON 배열로 반환해. 불필요한 설명, 인사, 코드블록 없이 오직 JSON만 출력해.
     """
 
 def generate_guild_search_result(user_query, guilds, top_n=3):
@@ -118,12 +120,7 @@ def generate_guild_search_result(user_query, guilds, top_n=3):
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel('gemini-1.5-flash')
     response = model.generate_content(prompt)
-    text = response.text.strip()
-    if text.startswith('```'):
-        text = text.lstrip('`').split('\n', 1)[-1]
-    if text.endswith('```'):
-        text = text.rstrip('`').rsplit('\n', 1)[0]
-    text = text.strip()
+    text = clean_llm_json(response.text)
     try:
         return json.loads(text)
     except Exception:
@@ -131,7 +128,5 @@ def generate_guild_search_result(user_query, guilds, top_n=3):
 
 if __name__ == "__main__":
     task_input = input("입력:")
-    previous_tasks = [
-    ]
-    result = generate_quest(task_input, previous_tasks)
+    result = generate_quest(task_input)
     print(json.dumps(result, ensure_ascii=False, indent=2))

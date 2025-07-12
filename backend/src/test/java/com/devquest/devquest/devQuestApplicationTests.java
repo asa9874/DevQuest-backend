@@ -65,6 +65,65 @@ class devQuestApplicationTests {
     @Autowired
     private SkillRepository skillRepository;
 
+    private String getRandomPostTitle(String guildName, int index) {
+        if (guildName.contains("프론트엔드")) {
+            String[] titles = {
+                "React 18의 새로운 기능 공유합니다",
+                "Vue.js 3 마이그레이션 경험담",
+                "CSS-in-JS vs CSS Module 어떤 것이 더 나을까요?",
+                "Next.js 앱 라우터 사용기",
+                "프론트엔드 성능 최적화 팁"
+            };
+            return titles[index % titles.length];
+        } else if (guildName.contains("백엔드")) {
+            String[] titles = {
+                "Spring Boot 3.0 마이그레이션 가이드",
+                "MSA 설계시 주의점 공유",
+                "Node.js vs Spring Boot 성능 비교",
+                "데이터베이스 샤딩 전략",
+                "GraphQL vs REST API 경험담"
+            };
+            return titles[index % titles.length];
+        } else if (guildName.contains("데브옵스")) {
+            String[] titles = {
+                "Kubernetes 클러스터 구축 가이드",
+                "Jenkins vs GitHub Actions 비교",
+                "테라폼으로 인프라 관리하기",
+                "프로메테우스 모니터링 설정법",
+                "EKS vs GKE vs AKS 어떤 것이 좋을까요?"
+            };
+            return titles[index % titles.length];
+        } else if (guildName.contains("알고리즘")) {
+            String[] titles = {
+                "DP 문제 풀이 전략",
+                "그래프 알고리즘 정리",
+                "이진 탐색 활용 팁",
+                "코딩 테스트 준비 방법",
+                "시간 복잡도 최적화 기법"
+            };
+            return titles[index % titles.length];
+        } else {
+            return guildName + " - 개발 주제 게시글 " + index;
+        }
+    }
+    
+    private String getRandomPostContent(String guildName, int index) {
+        return "이 글은 " + guildName + "에 게시된 개발 주제 게시글입니다. " +
+               "여기에는 코드 예시, 기술 정보, 경험담 등 다양한 개발 지식이 공유됩니다. " +
+               "커뮤니티와 함께 성장하는 개발자 생활을 응원합니다! (게시글 인덱스: " + index + ")";
+    }
+    
+    private String getRandomComment(String postTitle, int index) {
+        String[] comments = {
+            "정말 유익한 정보네요! 감사합니다.",
+            "저도 비슷한 경험이 있는데 도움이 많이 됐어요.",
+            "추가 자료나 예시 코드가 있으면 공유해주세요.",
+            "이 부분에 대해 더 자세히 알고 싶습니다.",
+            "좋은 내용 감사합니다. 바로 적용해보겠습니다!"
+        };
+        return comments[index % comments.length] + " (댓글 인덱스: " + index + ", 게시글: " + postTitle + ")";
+    }
+
     @Test
     void contextLoads() {
         for (int i = 0; i < 10; i++) {
@@ -124,12 +183,28 @@ class devQuestApplicationTests {
             }
         }
 
-        for (int i = 0; i < 5; i++) {
-            if (!guildRepository.existsByName("길드" + i)) {
-                Member leader = allMembers.get(i % allMembers.size());
+        // 개발자 커뮤니티 길드 데이터 생성
+        String[][] guildData = {
+            {"프론트엔드 마스터즈", "React, Vue, Angular 등 프론트엔드 기술을 함께 공부하고 프로젝트를 진행하는 커뮤니티입니다."},
+            {"백엔드 아키텍츠", "Spring, Node.js, Django 등 서버 기술과 아키텍처 설계를 공유하고 토론하는 모임입니다."},
+            {"데브옵스 얼라이언스", "CI/CD, 컨테이너화, 클라우드 인프라 관리 기술을 공유하고 실무 경험을 나누는 길드입니다."},
+            {"알고리즘 스터디", "코딩 테스트 대비와 알고리즘 문제 해결 능력 향상을 위한 스터디 그룹입니다."},
+            {"머신러닝 연구소", "AI와 머신러닝 기술을 연구하고 프로젝트를 진행하는 연구 중심 커뮤니티입니다."},
+            {"오픈소스 컨트리뷰터스", "다양한 오픈소스 프로젝트에 기여하고 협업하는 개발자들의 모임입니다."},
+            {"모바일 앱 디벨로퍼스", "iOS, Android 앱 개발 기술과 경험을 공유하는 모바일 개발자 중심 길드입니다."},
+            {"블록체인 이노베이터스", "블록체인 기술과 웹3 개발에 관심 있는 개발자들의 혁신적인 모임입니다."},
+            {"게임 개발 길드", "게임 엔진과 게임 개발 기술을 공유하고 함께 게임을 만드는 창작자 모임입니다."},
+            {"UX/UI 디자인 크루", "개발자와 디자이너가 함께 사용자 경험과 인터페이스 디자인을 연구하는 협업 커뮤니티입니다."}
+        };
+        
+        for (int i = 0; i < guildData.length; i++) {
+            String[] data = guildData[i];
+            Member leader = allMembers.get(i % allMembers.size());
+            
+            if (!guildRepository.existsByName(data[0])) {
                 Guild guild = Guild.builder()
-                        .name("길드" + i)
-                        .description("길드 설명" + i)
+                        .name(data[0])
+                        .description(data[1])
                         .leader(leader)
                         .build();
                 guildRepository.save(guild);
@@ -160,8 +235,8 @@ class devQuestApplicationTests {
         for (Guild guild : allGuilds) {
             for (Member member : allMembers) {
                 for (int p = 0; p < 2; p++) {
-                    String title = guild.getName() + " - " + member.getName() + "의 게시글 " + p;
-                    String content = "테스트 게시글 내용 " + p + " (" + guild.getName() + ", " + member.getName() + ")";
+                    String title = getRandomPostTitle(guild.getName(), p);
+                    String content = getRandomPostContent(guild.getName(), p);
                     GuildPost post = GuildPost.builder()
                             .title(title)
                             .content(content)
@@ -172,7 +247,7 @@ class devQuestApplicationTests {
 
                     for (int c = 0; c < 3; c++) {
                         GuildPostComment comment = GuildPostComment.builder()
-                                .content("테스트 댓글 내용 " + c + " (" + title + ")")
+                                .content(getRandomComment(title, c))
                                 .guildPost(post)
                                 .author(member)
                                 .build();

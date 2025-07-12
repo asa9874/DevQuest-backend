@@ -9,6 +9,7 @@ CORS(app)
 
 @app.route('/api/quest', methods=['POST'])
 def create_quest():
+    print("퀘스트ai")
     data = request.json
     task_input = data.get('task_input', '')
     result = generate_quest(task_input)
@@ -16,6 +17,7 @@ def create_quest():
 
 @app.route('/api/quiz', methods=['POST'])
 def create_quiz():
+    print("퀴즈ai")
     data = request.json
     task_input = data.get('task_input', '')
     result = generate_quiz(task_input)
@@ -23,6 +25,7 @@ def create_quiz():
 
 @app.route('/api/quiz/batch', methods=['POST'])
 def create_quiz_batch():
+    print("퀴즈배치ai")
     data = request.json
     name = data.get('name', '')
     description = data.get('description', '')
@@ -34,6 +37,7 @@ def create_quiz_batch():
 
 @app.route('/api/guild/search', methods=['GET'])
 def search_guild():
+    print("길드검색")
     keyword = request.args.get('query', '')
     conn = pymysql.connect(
         host='mysql', 
@@ -46,12 +50,17 @@ def search_guild():
     )
     try:
         with conn.cursor() as cursor:
-            sql = "SELECT id, name, description FROM guild LIMIT 30"
+            sql = """
+                SELECT g.id, g.name, g.description, m.name as leader_name 
+                FROM guild g
+                JOIN member m ON g.member_id = m.id
+                LIMIT 30
+            """
             cursor.execute(sql)
             guilds = cursor.fetchall()
     finally:
         conn.close()
-    result = generate_guild_search_result(keyword, guilds, top_n=3)
+    result = generate_guild_search_result(keyword, guilds, top_n=5)
     return jsonify(result)
 
 if __name__ == '__main__':

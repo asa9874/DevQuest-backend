@@ -132,4 +132,8 @@ public class GuildValidator {
         return guildMemberRepository.existsByGuildIdAndMemberIdAndStatus(
                 guildId, memberId, GuildMemberStatus.BANNED);
     }
+
+    public boolean isGuildPostAuthor(Long postId, Long memberId) {
+        return guildChatRoomMessageRepository.existsByIdAndMemberId(postId, memberId);
+    }
 }

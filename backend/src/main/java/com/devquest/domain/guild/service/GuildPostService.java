@@ -2,6 +2,7 @@ package com.devquest.domain.guild.service;
 
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
@@ -13,9 +14,11 @@ import com.devquest.domain.guild.model.GuildPost;
 import com.devquest.domain.guild.repository.GuildMemberRepository;
 import com.devquest.domain.guild.repository.GuildPostRepository;
 import com.devquest.domain.guild.repository.GuildRepository;
+import com.devquest.domain.guild.util.GuildValidator;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.repository.MemberRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,22 +28,19 @@ public class GuildPostService {
     private final GuildMemberRepository guildMemberRepository;
     private final GuildRepository guildRepository;
     private final MemberRepository memberRepository;
+    private final GuildValidator guildValidator;
 
     public void createGuildPost(GuildPostCreateRequestDto requestDto,
             Long memberId) {
 
-        if (!AuthUtil.isAdminOrEqualMember(memberId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
-        }
-
-        if (!guildMemberRepository.existsByGuildIdAndMemberId(requestDto.guildId(), memberId)) {
-            throw new IllegalArgumentException("해당 길드에 가입되어 있지 않습니다.");
+        if (!guildValidator.isGuildMember(memberId, requestDto.guildId())) {
+            throw new AccessDeniedException("해당 길드에 가입되어 있지 않습니다.");
         }
 
         Guild guild = guildRepository.findById(requestDto.guildId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 길드입니다."));
         Member author = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
         GuildPost guildPost = GuildPost.builder()
                 .title(requestDto.title())
@@ -53,27 +53,26 @@ public class GuildPostService {
 
     public GuildPostResponseDto getGuildPost(Long postId) {
         GuildPost guildPost = guildPostRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다."));
 
-        if (!AuthUtil.isAdmin() && guildMemberRepository.existsByGuildIdAndMemberId(guildPost.getGuild().getId(),
-                AuthUtil.getCurrentMemberId())) {
-            throw new IllegalArgumentException("해당 길드에 가입되어 있지 않습니다.");
+        if (!guildValidator.isGuildMember(AuthUtil.getCurrentMemberId(), guildPost.getGuild().getId())) {
+            throw new AccessDeniedException("해당 길드에 가입되어 있지 않습니다.");
         }
 
         GuildPostResponseDto guildPostResponseDto = guildPostRepository.findDtoById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다."));
         return guildPostResponseDto;
     }
 
     public List<GuildPostResponseDto> getGuildPostsByGuildId(Long guildId) {
-        if (!AuthUtil.isAdmin() && guildMemberRepository.existsByGuildIdAndMemberId(guildId,
-                AuthUtil.getCurrentMemberId())) {
-            throw new IllegalArgumentException("해당 길드에 가입되어 있지 않습니다.");
+        if (!guildValidator.isGuildMember(AuthUtil.getCurrentMemberId(), guildId)) {
+            throw new AccessDeniedException("해당 길드에 가입되어 있지 않습니다.");
         }
 
         if (!guildRepository.existsById(guildId)) {
-            throw new IllegalArgumentException("존재하지 않는 길드입니다.");
+            throw new EntityNotFoundException("존재하지 않는 길드입니다.");
         }
+
         return guildPostRepository.findDtoByGuildIdOrderByCreatedAtDesc(guildId);
     }
 
@@ -85,10 +84,10 @@ public class GuildPostService {
     public void updateGuildPost(Long postId,
             GuildPostUpdateRequestDto requestDto) {
         GuildPost guildPost = guildPostRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다."));
 
-        if (!AuthUtil.isAdminOrEqualMember(guildPost.getAuthor().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+        if (!guildValidator.isGuildPostAuthor(postId, AuthUtil.getCurrentMemberId())) {
+            throw new AccessDeniedException("해당 게시글의 작성자가 아닙니다.");
         }
 
         guildPost.update(requestDto.title(), requestDto.content());
@@ -97,10 +96,10 @@ public class GuildPostService {
 
     public void deleteGuildPost(Long postId) {
         GuildPost guildPost = guildPostRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다."));
 
-        if (!AuthUtil.isAdminOrEqualMember(guildPost.getAuthor().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+        if (!guildValidator.isGuildPostAuthor(postId, AuthUtil.getCurrentMemberId())) {
+            throw new AccessDeniedException("해당 게시글의 작성자가 아닙니다.");
         }
 
         guildPostRepository.delete(guildPost);

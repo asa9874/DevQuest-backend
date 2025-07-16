@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.devquest.domain.guild.util.GuildUtil;
+import com.devquest.domain.guild.util.GuildValidator;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomMessageCreateRequestDto;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomMessageSendRequestDto;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomMessageUpdateRequestDto;
@@ -24,7 +24,7 @@ public class GuildChatRoomMessageService {
     private final GuildChatRoomMessageRepository guildChatRoomMessageRepository;
     private final GuildChatRoomRepository guildChatRoomRepository;
     private final MemberRepository memberRepository;
-    private final GuildUtil guildUtil;
+    private final GuildValidator guildUtil;
 
     public List<GuildChatRoomMessageResponseDto> getAllMessages() {
         return guildChatRoomMessageRepository.findAllDto();

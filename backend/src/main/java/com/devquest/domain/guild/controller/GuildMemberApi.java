@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "길드 멤버 API", description = "길드 멤버 관련 API")
 public interface GuildMemberApi {
     @Operation(summary = "길드 멤버 목록 조회 (유저/어드민)", description = "특정 길드의 멤버 목록을 조회합니다. status/role로 필터링 가능.")
-    ResponseEntity<List<GuildMemberResponseDto>> getGuildMembers(
+    ResponseEntity<List<GuildMemberResponseDto>> getGuildMembersByGuildId(
         @Parameter(name = "guildId", description = "길드 ID", example = "1") @PathVariable(name = "guildId") Long guildId,
         @Parameter(name = "status", description = "멤버 상태", example = "ACTIVE", required = false) @RequestParam(required = false, name = "status") String status,
         @Parameter(name = "role", description = "멤버 역할", example = "MEMBER", required = false) @RequestParam(required = false, name = "role") String role,

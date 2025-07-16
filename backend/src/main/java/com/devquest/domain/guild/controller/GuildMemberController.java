@@ -32,7 +32,7 @@ public class GuildMemberController  implements GuildMemberApi {
 
     @GetMapping("/{guildId}/members")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<GuildMemberResponseDto>> getGuildMembers(
+    public ResponseEntity<List<GuildMemberResponseDto>> getGuildMembersByGuildId(
             @PathVariable(name="guildId") Long guildId,
             @RequestParam(required = false, name = "status") String status,
             @RequestParam(required = false, name = "role") String role,

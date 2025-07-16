@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.devquest.domain.guild.model.Guild;
 import com.devquest.domain.guild.repository.GuildRepository;
-import com.devquest.domain.guild.util.GuildUtil;
+import com.devquest.domain.guild.util.GuildValidator;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomCreateRequestDto;
 import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomUpdateRequestDto;
 import com.devquest.domain.guildChat.dto.responseDto.GuildChatRoomResponseDto;
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class GuildChatRoomService {
     private final GuildChatRoomRepository guildChatRoomRepository;
     private final GuildRepository guildRepository;
-    private final GuildUtil guildUtil;
+    private final GuildValidator guildUtil;
 
     public void createGuildChatRoom(
             GuildChatRoomCreateRequestDto requestDto,

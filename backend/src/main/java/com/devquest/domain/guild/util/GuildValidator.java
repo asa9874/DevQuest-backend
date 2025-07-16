@@ -7,6 +7,8 @@ import com.devquest.domain.guild.model.GuildMember;
 import com.devquest.domain.guild.model.GuildMemberRole;
 import com.devquest.domain.guild.model.GuildMemberStatus;
 import com.devquest.domain.guild.repository.GuildMemberRepository;
+import com.devquest.domain.guild.repository.GuildPostCommentRepository;
+import com.devquest.domain.guild.repository.GuildPostRepository;
 import com.devquest.domain.guildChat.repository.GuildChatRoomMessageRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -14,8 +16,11 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class GuildValidator {
+
+    private final GuildPostCommentRepository guildPostCommentRepository;
     private final GuildMemberRepository guildMemberRepository;
     private final GuildChatRoomMessageRepository guildChatRoomMessageRepository;
+    private final GuildPostRepository guildPostRepository;
 
     /*
      * 길드 관리자인지 확인
@@ -77,7 +82,6 @@ public class GuildValidator {
                 !isGuildOwner(memberId, guildId);
     }
 
-
     /*
      * 길드 멤버의 역할을 변경할 수 있는지 확인
      * - 이미 해당 역할이거나, 활동 중인 멤버가 아니거나, 길드장이거나, 길드장으로 변경하려는 경우 -> 변경 불가
@@ -133,7 +137,18 @@ public class GuildValidator {
                 guildId, memberId, GuildMemberStatus.BANNED);
     }
 
+    /*
+     * 길드 게시글 작성자인지 확인
+     */
     public boolean isGuildPostAuthor(Long postId, Long memberId) {
-        return guildChatRoomMessageRepository.existsByIdAndMemberId(postId, memberId);
+        return guildPostRepository.existsByIdAndMemberId(postId, memberId);
     }
+
+    /*
+     * 길드 게시글 댓글 작성자인지 확인
+     */
+    public boolean isGuildPostCommentAuthor(Long commentId, Long memberId) {
+        return guildPostCommentRepository.existsByIdAndMemberId(commentId, memberId);
+    }
+
 }

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
@@ -16,10 +17,16 @@ import com.devquest.domain.guild.model.GuildMember;
 import com.devquest.domain.guild.model.GuildMemberRole;
 import com.devquest.domain.guild.model.GuildMemberStatus;
 import com.devquest.domain.guild.repository.GuildMemberRepository;
+import com.devquest.domain.guild.repository.GuildPostCommentRepository;
+import com.devquest.domain.guild.repository.GuildPostRepository;
 import com.devquest.domain.guild.repository.GuildRepository;
+import com.devquest.domain.guildChat.repository.GuildChatRoomMessageRepository;
+import com.devquest.domain.guildChat.repository.GuildChatRoomRepository;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.repository.MemberRepository;
+import com.devquest.global.exception.customException.DuplicateDataException;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,14 +34,19 @@ import lombok.RequiredArgsConstructor;
 public class GuildService {
     private final GuildRepository guildRepository;
     private final GuildMemberRepository guildMemberRepository;
+    private final GuildPostRepository guildPostRepository;
+    private final GuildPostCommentRepository guildPostCommentRepository;
+    private final GuildChatRoomRepository guildChatRoomRepository;
+    private final GuildChatRoomMessageRepository guildChatRoomMessageRepository;
+
     private final MemberRepository memberRepository;
 
     public void createGuild(GuildCreateRequestDto requestDto,
             Long memberId) {
         Member leader = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보가 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("회원 정보가 없습니다."));
         if (guildRepository.existsByName(requestDto.name())) {
-            throw new IllegalArgumentException("이미 존재하는 길드 이름입니다.");
+            throw new DuplicateDataException("이미 존재하는 길드 이름입니다.");
         }
         Guild guild = Guild.builder()
                 .name(requestDto.name())
@@ -60,7 +72,7 @@ public class GuildService {
 
     public GuildResponseDto getGuildById(Long guildId) {
         Guild guild = guildRepository.findById(guildId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 길드입니다."));
         return GuildResponseDto.from(guild);
     }
 
@@ -73,14 +85,14 @@ public class GuildService {
     public GuildResponseDto updateGuild(
             Long guildId, GuildUpdateRequestDto requestDto) {
         Guild guild = guildRepository.findById(guildId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 길드입니다."));
 
         if (!AuthUtil.isAdminOrEqualMember(guild.getLeader().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         if (guildRepository.existsByName(requestDto.name())) {
-            throw new IllegalArgumentException("이미 존재하는 길드 이름입니다.");
+            throw new DuplicateDataException("이미 존재하는 길드 이름입니다.");
         }
 
         guild.updateGuild(requestDto.name(), requestDto.description());
@@ -91,11 +103,18 @@ public class GuildService {
     // TODO:중간 테이블 삭제 처리 추후 추가
     public void deleteGuild(Long guildId) {
         Guild guild = guildRepository.findById(guildId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 길드입니다."));
         if (!AuthUtil.isAdminOrEqualMember(guild.getLeader().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
+
+        //중간 테이블 삭제쓰~
         guildMemberRepository.deleteAllByGuildId(guildId);
+        guildPostCommentRepository.deleteAllByGuildId(guildId);
+        guildPostRepository.deleteAllByGuildId(guildId);
+        guildChatRoomMessageRepository.deleteAllByGuildId(guildId);
+        guildChatRoomRepository.deleteAllByGuildId(guildId);
+
         guildRepository.delete(guild);
     }
 }

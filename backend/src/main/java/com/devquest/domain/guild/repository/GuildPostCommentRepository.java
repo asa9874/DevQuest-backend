@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -43,7 +44,6 @@ public interface GuildPostCommentRepository extends JpaRepository<GuildPostComme
     Optional<GuildPostCommentResponseDto> findDtoById(
             @Param("id") Long id);
 
-
     @Query("""
             SELECT new com.devquest.domain.guild.dto.responseDto.GuildPostCommentResponseDto(
                 c.id,
@@ -57,4 +57,8 @@ public interface GuildPostCommentRepository extends JpaRepository<GuildPostComme
             ORDER BY c.createdAt ASC
             """)
     List<GuildPostCommentResponseDto> findAllDto();
+
+    @Modifying
+    @Query("DELETE FROM GuildPostComment c WHERE c.guildPost.id = :guildId")    
+    void deleteAllByGuildId(Long guildId);
 }

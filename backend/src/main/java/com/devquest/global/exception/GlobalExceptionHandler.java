@@ -56,6 +56,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
     }
 
+    //DTO 검증 예외 처리
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
         String msg = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();

@@ -62,5 +62,6 @@ public interface GuildPostRepository extends JpaRepository<GuildPost, Long> {
             from GuildPost gp
             """)
     List<GuildPostResponseDto> findAllDto();
-                
+ 
+    void deleteAllByGuildId(Long guildId);
 }

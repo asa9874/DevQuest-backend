@@ -11,6 +11,7 @@ import com.devquest.domain.monster.model.QuizChallenge;
 import com.devquest.domain.monster.repository.MonsterChallengeRepository;
 import com.devquest.domain.monster.repository.QuizChallengeRepository;
 import com.devquest.domain.monster.util.MonsterQuizValidator;
+import com.devquest.global.exception.customException.DuplicateDataException;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -31,7 +32,7 @@ public class QuizChallengeService {
                 .orElseThrow(() -> new EntityNotFoundException("퀴즈 도전이 존재하지 않습니다."));
 
         if (quizChallenge.isSolved()) {
-            throw new IllegalArgumentException("이미 퀴즈를 풀었습니다.");
+            throw new DuplicateDataException("이미 퀴즈를 풀었습니다.");
         }
 
         if (!monsterValidator.isQuizChallengeOwner(quizChallengeId, memberId)) {

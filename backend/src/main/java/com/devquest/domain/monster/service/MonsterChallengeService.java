@@ -71,7 +71,7 @@ public class MonsterChallengeService {
         }
 
         if (monsterChallenge.getIsSuccess() != null) {
-            throw new IllegalArgumentException("이미 완료된 도전입니다.");
+            throw new IllegalStateException("이미 완료된 도전입니다.");
         }
 
         int requriedCorrectCount = monsterChallenge.getMonster().getRequired_correct_count();

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.devquest.domain.auth.util.AuthUtil;
 import com.devquest.domain.guild.dto.responseDto.GuildMemberResponseDto;
 import com.devquest.domain.guild.dto.responseDto.GuildResponseDto;
+import jakarta.persistence.EntityNotFoundException;
 import com.devquest.domain.guild.model.Guild;
 import com.devquest.domain.guild.model.GuildMember;
 import com.devquest.domain.guild.model.GuildMemberRole;
@@ -144,10 +145,10 @@ public class GuildMemberService {
         }
 
         GuildMember guildMember = guildMemberRepository.findByGuildIdAndMemberId(guildId, memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드 멤버입니다"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 길드 멤버입니다"));
 
         if (!guildValidator.isBannedGuildMember(memberId, guildId)) {
-            throw new IllegalArgumentException("밴되지 않은 길드 멤버입니다");
+            throw new IllegalStateException("밴되지 않은 길드 멤버입니다");
         }
 
         guildMember.unban();

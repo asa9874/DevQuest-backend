@@ -52,7 +52,7 @@ public class MonsterQuizService {
     @Transactional
     public void DeleteQuizFromMonster(Long monsterId, Long quizId) {
         if (!monsterQuizRepository.existsByMonsterIdAndQuizId(monsterId, quizId)) {
-            throw new IllegalArgumentException("등록되지 않은 퀴즈입니다.");
+            throw new EntityNotFoundException("등록되지 않은 퀴즈입니다.");
         }
 
         Monster monster = monsterRepository.findById(monsterId)

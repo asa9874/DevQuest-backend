@@ -2,6 +2,7 @@ package com.devquest.domain.skill.service;
 
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,8 @@ import com.devquest.domain.skill.repository.SkillRepository;
 import com.devquest.domain.skill.repository.SkillRequiredMonsterRepository;
 import com.devquest.domain.skill.repository.SkillRequiredQuestRepository;
 import com.devquest.domain.skill.repository.SkillRequiredSkillRepository;
+import com.devquest.global.exception.customException.DuplicateDataException;
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,10 +39,10 @@ public class SkillRequiredService {
 
     public List<QuestResponseDto> getSkillRequiredQuests(Long skillId) {
         Skill skill = skillRepository.findById(skillId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스킬입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 스킬입니다."));
 
         if (!AuthUtil.isAdminOrEqualMember(skill.getCreater().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         List<Quest> requiredQuests = skillRequiredQuestRepository.findAllBySkillId(skillId);
@@ -51,10 +54,10 @@ public class SkillRequiredService {
 
     public List<SkillResponseDto> getSkillRequiredSkills(Long skillId) {
         Skill skill = skillRepository.findById(skillId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스킬입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 스킬입니다."));
 
         if (!AuthUtil.isAdminOrEqualMember(skill.getCreater().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         List<Skill> requiredSkills = skillRequiredSkillRepository.findAllBySkillId(skillId);
@@ -66,10 +69,10 @@ public class SkillRequiredService {
 
     public List<MonsterResponseDto> getSkillRequiredMonsters(Long skillId) {
         Skill skill = skillRepository.findById(skillId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스킬입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 스킬입니다."));
 
         if (!AuthUtil.isAdminOrEqualMember(skill.getCreater().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         List<Monster> requiredMonsters = skillRequiredMonsterRepository.findAllBySkillId(skillId);
@@ -81,18 +84,18 @@ public class SkillRequiredService {
 
     public void createSkillRequiredQuest(Long skillId, Long requiredQuestId) {
         Skill skill = skillRepository.findById(skillId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 스킬입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 스킬입니다."));
 
         if (!AuthUtil.isAdminOrEqualMember(skill.getCreater().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         if (skillRequiredQuestRepository.existsBySkill_IdAndRequiredQuest_Id(skillId, requiredQuestId)) {
-            throw new IllegalArgumentException("이미 등록된 퀘스트입니다.");
+            throw new DuplicateDataException("이미 등록된 퀘스트입니다.");
         }
 
         Quest requiredQuest = questRepository.findById(requiredQuestId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 퀘스트입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 퀘스트입니다."));
 
         SkillRequiredQuest skillRequiredQuest = SkillRequiredQuest.builder()
                 .skill(skill)

@@ -2,6 +2,7 @@ package com.devquest.domain.skill.service;
 
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
@@ -12,6 +13,8 @@ import com.devquest.domain.skill.dto.requestDto.SkillUpdateRequestDto;
 import com.devquest.domain.skill.dto.responseDto.SkillResponseDto;
 import com.devquest.domain.skill.model.Skill;
 import com.devquest.domain.skill.repository.SkillRepository;
+import com.devquest.global.exception.customException.DuplicateDataException;
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +32,7 @@ public class SkillService {
 
     public SkillResponseDto getSkill(Long skillId) {
         Skill skill = skillRepository.findById(skillId)
-                .orElseThrow(() -> new IllegalArgumentException("스킬을 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("스킬을 찾을 수 없습니다."));
         return SkillResponseDto.from(skill);
     }
 
@@ -37,9 +40,9 @@ public class SkillService {
             SkillCreateRequestDto requestDto,
             Long memberId) {
         Member creater = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다. "));
+                .orElseThrow(() -> new EntityNotFoundException("회원이 존재하지 않습니다. "));
         if (skillRepository.existsByName(requestDto.name())) {
-            throw new IllegalArgumentException("이미 존재하는 스킬입니다.");
+            throw new DuplicateDataException("이미 존재하는 스킬입니다.");
         }
         Skill skill = Skill.builder()
                 .name(requestDto.name())
@@ -53,14 +56,14 @@ public class SkillService {
             Long skillId,
             SkillUpdateRequestDto requestDto) {
         Skill skill = skillRepository.findById(skillId)
-                .orElseThrow(() -> new IllegalArgumentException("스킬을 찾을 수 없습니다. "));
+                .orElseThrow(() -> new EntityNotFoundException("스킬을 찾을 수 없습니다. "));
 
         if (skillRepository.existsByName(requestDto.name())) {
-            throw new IllegalArgumentException("이미 존재하는 스킬입니다.");
+            throw new DuplicateDataException("이미 존재하는 스킬입니다.");
         }
 
         if (!AuthUtil.isAdminOrEqualMember(skill.getCreater().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         skill.update(requestDto.name(), requestDto.description());
@@ -69,10 +72,10 @@ public class SkillService {
 
     public void deleteSkill(Long skillId) {
         Skill skill = skillRepository.findById(skillId)
-                .orElseThrow(() -> new IllegalArgumentException("스킬을 찾을 수 없습니다. "));
+                .orElseThrow(() -> new EntityNotFoundException("스킬을 찾을 수 없습니다. "));
 
         if (!AuthUtil.isAdminOrEqualMember(skill.getCreater().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         skillRepository.delete(skill);

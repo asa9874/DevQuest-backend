@@ -3,6 +3,7 @@ package com.devquest.domain.quest.service;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
@@ -15,6 +16,8 @@ import com.devquest.domain.quest.model.QuestChallenge;
 import com.devquest.domain.quest.model.QuestStatus;
 import com.devquest.domain.quest.repository.QuestChallengeRepository;
 import com.devquest.domain.quest.repository.QuestRepository;
+import com.devquest.global.exception.customException.DuplicateDataException;
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,16 +30,16 @@ public class QuestChallengeService {
 
     public void createQuestChallenge(QuestChallengeCreateRequestDto requestDto) {
         if (!AuthUtil.isAdminOrEqualMember(requestDto.memberId())) {
-            throw new IllegalArgumentException("권한이 없습니다");
+            throw new AccessDeniedException("권한이 없습니다");
         }
         if (questChallengeRepository.existsByQuestIdAndMemberIdAndStatus(requestDto.questId(), requestDto.memberId(),
                 QuestStatus.IN_PROGRESS)) {
-            throw new IllegalArgumentException("이미 진행중인 퀘스트입니다");
+            throw new DuplicateDataException("이미 진행중인 퀘스트입니다");
         }
         Quest quest = questRepository.findById(requestDto.questId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 퀘스트입니다"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 퀘스트입니다"));
         Member member = memberRepository.findById(requestDto.memberId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다"));
 
         QuestChallenge questChallenge = QuestChallenge.builder()
                 .quest(quest)
@@ -47,9 +50,9 @@ public class QuestChallengeService {
 
     public QuestChallengeResponseDto getQuestChallenge(Long questChallengeId) {
         QuestChallenge questChallenge = questChallengeRepository.findById(questChallengeId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 챌린지입니다"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 챌린지입니다"));
         if (!AuthUtil.isAdminOrEqualMember(questChallenge.getMember().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다");
+            throw new AccessDeniedException("권한이 없습니다");
         }
         return QuestChallengeResponseDto.from(questChallenge);
     }
@@ -57,7 +60,7 @@ public class QuestChallengeService {
     public List<QuestChallengeResponseDto> getQuestChallengesByMemberId(
             Long memberId, QuestStatus status, String title, Pageable pageable) {
         if (!AuthUtil.isAdminOrEqualMember(memberId)) {
-            throw new IllegalArgumentException("권한이 없습니다");
+            throw new AccessDeniedException("권한이 없습니다");
         }
         return questChallengeRepository.findDtoByMemberIdWithFilter(memberId, status, title, pageable);
     }
@@ -65,21 +68,21 @@ public class QuestChallengeService {
     public List<QuestChallengeResponseDto> getQuestChallengesByQuestId(
             Long questId, QuestStatus status, Pageable pageable) {
         Quest quest = questRepository.findById(questId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 퀘스트입니다"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 퀘스트입니다"));
         if (!AuthUtil.isAdminOrEqualMember(quest.getCreater().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다");
+            throw new AccessDeniedException("권한이 없습니다");
         }
         return questChallengeRepository.findDtoByQuestIdWithFilter(questId, status, pageable);
     }
 
     public void completeQuestChallenge(Long questChallengeId) {
         QuestChallenge questChallenge = questChallengeRepository.findById(questChallengeId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 챌린지입니다"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 챌린지입니다"));
         if (!questChallenge.isInProgress()) {
-            throw new IllegalArgumentException("진행중인 챌린지가 아닙니다");
+            throw new IllegalStateException("진행중인 챌린지가 아닙니다");
         }
         if (!AuthUtil.isAdminOrEqualMember(questChallenge.getMember().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다");
+            throw new AccessDeniedException("권한이 없습니다");
         }
         questChallenge.complete();
         questChallengeRepository.save(questChallenge);
@@ -87,12 +90,12 @@ public class QuestChallengeService {
 
     public void failQuestChallenge(Long questChallengeId) {
         QuestChallenge questChallenge = questChallengeRepository.findById(questChallengeId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 챌린지입니다"));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 챌린지입니다"));
         if (!questChallenge.isInProgress()) {
-            throw new IllegalArgumentException("진행중인 챌린지가 아닙니다");
+            throw new IllegalStateException("진행중인 챌린지가 아닙니다");
         }
         if (!AuthUtil.isAdminOrEqualMember(questChallenge.getMember().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다");
+            throw new AccessDeniedException("권한이 없습니다");
         }
         questChallenge.fail();
         questChallengeRepository.save(questChallenge);

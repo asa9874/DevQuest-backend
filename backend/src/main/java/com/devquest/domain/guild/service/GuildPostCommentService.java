@@ -34,7 +34,7 @@ public class GuildPostCommentService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
 
         if (!guildValidator.isGuildMember(memberId, guildPost.getGuild().getId())) {
-            throw new IllegalArgumentException("해당 길드에 가입하지 않은 회원입니다");
+            throw new AccessDeniedException("해당 길드에 가입하지 않은 회원입니다");
         }
 
         Member member = memberRepository.findById(memberId)

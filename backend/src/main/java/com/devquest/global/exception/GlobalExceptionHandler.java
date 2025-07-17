@@ -9,7 +9,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.devquest.global.exception.customException.CyclicReferenceException;
 import com.devquest.global.exception.customException.DuplicateDataException;
+import com.devquest.global.exception.customException.PrerequisiteNotMetException;
+import com.devquest.global.exception.customException.ResourceAlreadyAcquiredException;
+import com.devquest.global.exception.customException.SelfReferenceException;
 
 import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -61,6 +65,30 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
         String msg = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         return ResponseEntity.badRequest().body(msg);
+    }
+
+    @ExceptionHandler(SelfReferenceException.class)
+    public ResponseEntity<String> handleSelfReferenceException(SelfReferenceException ex) {
+        String apiResponse = "자기 참조 오류: " + ex.getMessage();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
+    }
+
+    @ExceptionHandler(PrerequisiteNotMetException.class)
+    public ResponseEntity<String> handlePrerequisiteNotMetException(PrerequisiteNotMetException ex) {
+        String apiResponse = "선행 조건 미충족 오류: " + ex.getMessage();
+        return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(apiResponse);
+    }
+
+    @ExceptionHandler(ResourceAlreadyAcquiredException.class)
+    public ResponseEntity<String> handleResourceAlreadyAcquiredException(ResourceAlreadyAcquiredException ex) {
+        String apiResponse = "이미 획득한 자원 오류: " + ex.getMessage();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
+    }
+
+    @ExceptionHandler(CyclicReferenceException.class)
+    public ResponseEntity<String> handleCyclicReferenceException(CyclicReferenceException ex) {
+        String apiResponse = "순환 참조 오류: " + ex.getMessage();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
     }
 
 }

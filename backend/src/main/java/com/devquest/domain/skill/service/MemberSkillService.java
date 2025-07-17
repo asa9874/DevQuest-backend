@@ -20,7 +20,8 @@ import com.devquest.domain.skill.repository.SkillRequiredMonsterRepository;
 import com.devquest.domain.skill.repository.SkillRequiredQuestRepository;
 import com.devquest.domain.skill.repository.SkillRequiredSkillRepository;
 import com.devquest.domain.skill.util.SkillValidator;
-import com.devquest.global.exception.customException.DuplicateDataException;
+import com.devquest.global.exception.customException.PrerequisiteNotMetException;
+import com.devquest.global.exception.customException.ResourceAlreadyAcquiredException;
 import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -42,13 +43,13 @@ public class MemberSkillService {
         }
 
         if (memberSkillRepository.existsByMemberIdAndSkillId(memberId, skillId)) {
-            throw new DuplicateDataException("이미 습득한 스킬입니다.");
+            throw new ResourceAlreadyAcquiredException("이미 습득한 스킬입니다.");
         }
 
         // 사전 스킬
         List<Long> missingSkillIds = skillRequiredSkillRepository.findMissingRequiredSkillIds(memberId, skillId);
         if (!missingSkillIds.isEmpty()) {
-            throw new IllegalStateException(
+            throw new PrerequisiteNotMetException(
                     "해당 스킬을 습득하기 위해 다음 사전 스킬을 먼저 습득해야 합니다: " +
                             missingSkillIds.stream().map(id -> "ID: " + id).collect(Collectors.joining(", ")));
         }
@@ -56,7 +57,7 @@ public class MemberSkillService {
         // 사전 몬스터
         List<Long> missingMonsterIds = skillRequiredMonsterRepository.findMissingRequiredMonsterIds(memberId, skillId);
         if (!missingMonsterIds.isEmpty()) {
-            throw new IllegalStateException(
+            throw new PrerequisiteNotMetException(
                     "해당 스킬을 습득하기 위해 다음 몬스터를 먼저 처치해야 합니다: " +
                             missingMonsterIds.stream().map(id -> "ID: " + id).collect(Collectors.joining(", ")));
         }
@@ -64,7 +65,7 @@ public class MemberSkillService {
         // 사전 퀘스트
         List<Long> missingQuestIds = skillRequiredQuestRepository.findMissingRequiredQuestIds(memberId, skillId);
         if (!missingQuestIds.isEmpty()) {
-            throw new IllegalStateException(
+            throw new PrerequisiteNotMetException(
                     "해당 스킬을 습득하기 위해 다음 퀘스트를 먼저 완료해야 합니다: " +
                             missingQuestIds.stream().map(id -> "ID: " + id).collect(Collectors.joining(", ")));
         }

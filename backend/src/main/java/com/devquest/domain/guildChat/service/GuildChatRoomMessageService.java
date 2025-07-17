@@ -41,7 +41,7 @@ public class GuildChatRoomMessageService {
     public List<GuildChatRoomMessageResponseDto> getMessagesByGuildChatRoomId(
             Long guildChatRoomId,
             Long memberId) {
-        if (!guildUtil.isAdminOrGuildMember(memberId, guildChatRoomId)) {
+        if (!guildUtil.isGuildMember(memberId, guildChatRoomId)) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
         List<GuildChatRoomMessageResponseDto> responseDtos = guildChatRoomMessageRepository
@@ -53,7 +53,7 @@ public class GuildChatRoomMessageService {
             Long guildChatRoomId,
             GuildChatRoomMessageCreateRequestDto requestDto,
             Long memberId) {
-        if (!guildUtil.isAdminOrGuildMember(memberId, guildChatRoomId)) {
+        if (!guildUtil.isGuildMember(memberId, guildChatRoomId)) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
         GuildChatRoom guildChatRoom = guildChatRoomRepository.findById(guildChatRoomId)
@@ -94,7 +94,7 @@ public class GuildChatRoomMessageService {
             GuildChatRoomMessageUpdateRequestDto requestDto,
             Long memberId) {
 
-        if (!guildUtil.isAdminOrMessageSender(memberId, messageId)) {
+        if (!guildUtil.isMessageSender(memberId, messageId)) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
 
@@ -107,7 +107,7 @@ public class GuildChatRoomMessageService {
     public void deleteMessage(
             Long messageId,
             Long memberId) {
-        if (!guildUtil.isAdminOrMessageSender(memberId, messageId)) {
+        if (!guildUtil.isMessageSender(memberId, messageId)) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
         GuildChatRoomMessage message = guildChatRoomMessageRepository.findById(messageId)

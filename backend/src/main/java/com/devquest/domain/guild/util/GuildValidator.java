@@ -141,14 +141,14 @@ public class GuildValidator {
      * 길드 게시글 작성자인지 확인
      */
     public boolean isGuildPostAuthor(Long postId, Long memberId) {
-        return guildPostRepository.existsByIdAndMemberId(postId, memberId);
+        return guildPostRepository.existsByIdAndAuthor_Id(postId, memberId);
     }
 
     /*
      * 길드 게시글 댓글 작성자인지 확인
      */
     public boolean isGuildPostCommentAuthor(Long commentId, Long memberId) {
-        return guildPostCommentRepository.existsByIdAndMemberId(commentId, memberId);
+        return guildPostCommentRepository.existsByIdAndAuthor_Id(commentId, memberId);
     }
 
 }

@@ -65,5 +65,6 @@ public interface GuildPostRepository extends JpaRepository<GuildPost, Long> {
  
     void deleteAllByGuildId(Long guildId);
 
-    boolean existsByIdAndMemberId(Long postId, Long memberId);
+    
+    boolean existsByIdAndAuthor_Id(Long postId, Long memberId);
 }

@@ -16,6 +16,7 @@ import com.devquest.domain.guildChat.repository.GuildChatRoomMessageRepository;
 import com.devquest.domain.guildChat.repository.GuildChatRoomRepository;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.repository.MemberRepository;
+import com.devquest.global.exception.customException.DuplicateDataException;
 import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;

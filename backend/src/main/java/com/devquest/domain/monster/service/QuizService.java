@@ -2,6 +2,7 @@ package com.devquest.domain.monster.service;
 
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
@@ -13,6 +14,7 @@ import com.devquest.domain.monster.dto.responseDto.QuizResponseDto;
 import com.devquest.domain.monster.dto.responseDto.QuizWithOutAnswerResponseDto;
 import com.devquest.domain.monster.model.Quiz;
 import com.devquest.domain.monster.repository.QuizRepository;
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,11 +29,11 @@ public class QuizService {
             Long memberId) {
 
         if (!AuthUtil.isAdminOrEqualMember(memberId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
         Quiz quiz = Quiz.builder()
                 .title(requestDto.title())
@@ -55,17 +57,17 @@ public class QuizService {
 
     public QuizResponseDto getQuizById(Long quizId) {
         Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 퀴즈입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 퀴즈입니다."));
 
         if (!AuthUtil.isAdminOrEqualMember(quiz.getCreater().getId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
         return QuizResponseDto.from(quiz);
     }
 
     public QuizWithOutAnswerResponseDto getQuizWithoutAnswer(Long quizId) {
         Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 퀴즈입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 퀴즈입니다."));
         return QuizWithOutAnswerResponseDto.from(quiz);
     }
 
@@ -75,14 +77,14 @@ public class QuizService {
             Long memberId) {
 
         if (!AuthUtil.isAdminOrEqualMember(memberId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 퀴즈입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 퀴즈입니다."));
 
         if (quiz.getCreater().getId() != memberId && !AuthUtil.isAdmin()) {
-            throw new IllegalArgumentException("퀴즈 작성자만 수정할 수 있습니다.");
+            throw new AccessDeniedException("퀴즈 작성자만 수정할 수 있습니다.");
         }
 
         quiz.update(
@@ -98,14 +100,14 @@ public class QuizService {
 
     public void deleteQuiz(Long quizId, Long memberId) {
         if (!AuthUtil.isAdminOrEqualMember(memberId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 퀴즈입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 퀴즈입니다."));
 
         if (quiz.getCreater().getId() != memberId && !AuthUtil.isAdmin()) {
-            throw new IllegalArgumentException("퀴즈 작성자만 삭제할 수 있습니다.");
+            throw new AccessDeniedException("퀴즈 작성자만 삭제할 수 있습니다.");
         }
 
         quizRepository.delete(quiz);

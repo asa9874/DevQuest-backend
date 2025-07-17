@@ -2,6 +2,7 @@ package com.devquest.domain.monster.service;
 
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,8 @@ import com.devquest.domain.monster.model.Quiz;
 import com.devquest.domain.monster.repository.MonsterQuizRepository;
 import com.devquest.domain.monster.repository.MonsterRepository;
 import com.devquest.domain.monster.repository.QuizRepository;
+import com.devquest.global.exception.customException.DuplicateDataException;
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,16 +28,16 @@ public class MonsterQuizService {
 
     public void AddQuizToMonster(Long monsterId, Long quizId) {
         if (monsterQuizRepository.existsByMonsterIdAndQuizId(monsterId, quizId)) {
-            throw new IllegalArgumentException("이미 등록된 퀴즈입니다.");
+            throw new DuplicateDataException("이미 등록된 퀴즈입니다.");
         }
 
         Monster monster = monsterRepository.findById(monsterId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 몬스터입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 몬스터입니다."));
         Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 퀴즈입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 퀴즈입니다."));
 
         if (!AuthUtil.isAdminOrEqualMember(monster.getCreater().getId())) {
-            throw new IllegalArgumentException("해당 몬스터에 퀴즈를 등록할 권한이 없습니다.");
+            throw new AccessDeniedException("해당 몬스터에 퀴즈를 등록할 권한이 없습니다.");
         }
 
         MonsterQuiz monsterQuiz = MonsterQuiz.builder()
@@ -51,10 +54,10 @@ public class MonsterQuizService {
         }
 
         Monster monster = monsterRepository.findById(monsterId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 몬스터입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 몬스터입니다."));
 
         if (!AuthUtil.isAdminOrEqualMember(monster.getCreater().getId())) {
-            throw new IllegalArgumentException("해당 몬스터에 퀴즈를 삭제할 권한이 없습니다.");
+            throw new AccessDeniedException("해당 몬스터에 퀴즈를 삭제할 권한이 없습니다.");
         }
 
         monsterQuizRepository.deleteByMonsterIdAndQuizId(monsterId, quizId);
@@ -62,7 +65,7 @@ public class MonsterQuizService {
 
     public List<QuizWithOutAnswerResponseDto> getQuizzesByMonsterId(Long monsterId) {
         if(!monsterRepository.existsById(monsterId)) {
-            throw new IllegalArgumentException("존재하지 않는 몬스터입니다.");
+            throw new EntityNotFoundException("존재하지 않는 몬스터입니다.");
         }
 
         List<Quiz> quizzes = quizRepository.findAllByMonsterId(monsterId);

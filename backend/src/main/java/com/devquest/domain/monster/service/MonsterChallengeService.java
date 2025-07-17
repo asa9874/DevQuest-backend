@@ -2,6 +2,7 @@ package com.devquest.domain.monster.service;
 
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
@@ -16,6 +17,8 @@ import com.devquest.domain.monster.repository.MonsterChallengeRepository;
 import com.devquest.domain.monster.repository.MonsterRepository;
 import com.devquest.domain.monster.repository.QuizChallengeRepository;
 import com.devquest.domain.monster.repository.QuizRepository;
+import com.devquest.global.exception.customException.DuplicateDataException;
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,13 +35,13 @@ public class MonsterChallengeService {
             Long monsterId,
             Long memberId) {
         if (monsterChallengeRepository.existsByMonsterIdAndMemberIdAndIsSuccessIsNull(monsterId, memberId)) {
-            throw new IllegalArgumentException("이미 진행 중인 도전이 있습니다.");
+            throw new DuplicateDataException("이미 진행 중인 도전이 있습니다.");
         }
 
         Monster monster = monsterRepository.findById(monsterId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 몬스터입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 몬스터입니다."));
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
         MonsterChallenge monsterChallenge = MonsterChallenge.builder()
                 .monster(monster)
@@ -59,7 +62,7 @@ public class MonsterChallengeService {
     public void completeChallenge(
             Long monsterChallengeId) {
         MonsterChallenge monsterChallenge = monsterChallengeRepository.findById(monsterChallengeId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 몬스터 도전입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 몬스터 도전입니다."));
         if (monsterChallenge.getIsSuccess() != null) {
             throw new IllegalArgumentException("이미 완료된 도전입니다.");
         }
@@ -76,10 +79,10 @@ public class MonsterChallengeService {
 
     public MonsterChallengeResponseDto getChallengeById(Long challengeId, Long memberId) {
         MonsterChallenge challenge = monsterChallengeRepository.findById(challengeId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 몬스터 도전입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 몬스터 도전입니다."));
 
         if (!AuthUtil.isAdminOrEqualMember(challenge.getMember().getId())) {
-            throw new IllegalArgumentException("접근 권한이 없습니다.");
+            throw new AccessDeniedException("접근 권한이 없습니다.");
         }
 
         Integer correctCount;

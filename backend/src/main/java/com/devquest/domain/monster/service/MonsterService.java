@@ -2,6 +2,7 @@ package com.devquest.domain.monster.service;
 
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
@@ -12,6 +13,8 @@ import com.devquest.domain.monster.dto.requestDto.MonsterUpdateRequestDto;
 import com.devquest.domain.monster.dto.responseDto.MonsterResponseDto;
 import com.devquest.domain.monster.model.Monster;
 import com.devquest.domain.monster.repository.MonsterRepository;
+import com.devquest.global.exception.customException.DuplicateDataException;
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +32,7 @@ public class MonsterService {
 
     public MonsterResponseDto getMonsterById(Long monsterId) {
         Monster monster = monsterRepository.findById(monsterId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 몬스터입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지않는 몬스터입니다."));
         return MonsterResponseDto.from(monster);
     }
 
@@ -38,10 +41,10 @@ public class MonsterService {
             Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 회원입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지않는 회원입니다."));
 
         if (monsterRepository.existsByName(requestDto.name())) {
-            throw new IllegalArgumentException("이미 존재하는 몬스터 이름입니다.");
+            throw new DuplicateDataException("이미 존재하는 몬스터 이름입니다.");
         }
 
         Monster monster = Monster.builder()
@@ -56,14 +59,14 @@ public class MonsterService {
 
     public void updateMonster(MonsterUpdateRequestDto requestDto, Long monsterId, Long memberId) {
         Monster monster = monsterRepository.findById(monsterId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 몬스터입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지않는 몬스터입니다."));
 
         if (!monster.getCreater().getId().equals(memberId) && !AuthUtil.isAdmin()) {
-            throw new IllegalArgumentException("몬스터를 수정할 권한이 없습니다.");
+            throw new AccessDeniedException("몬스터를 수정할 권한이 없습니다.");
         }
 
         if (monsterRepository.existsByName(requestDto.name())) {
-            throw new IllegalArgumentException("이미 존재하는 몬스터 이름입니다.");
+            throw new DuplicateDataException("이미 존재하는 몬스터 이름입니다.");
         }
 
         monster.update(
@@ -76,10 +79,10 @@ public class MonsterService {
 
     public void deleteMonster(Long monsterId, Long memberId) {
         Monster monster = monsterRepository.findById(monsterId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지않는 몬스터입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지않는 몬스터입니다."));
 
         if (!monster.getCreater().getId().equals(memberId) && !AuthUtil.isAdmin()) {
-            throw new IllegalArgumentException("몬스터를 삭제할 권한이 없습니다.");
+            throw new AccessDeniedException("몬스터를 삭제할 권한이 없습니다.");
         }
         monsterRepository.delete(monster);
     }

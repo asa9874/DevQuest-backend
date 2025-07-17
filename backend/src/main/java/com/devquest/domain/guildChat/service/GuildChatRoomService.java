@@ -63,7 +63,7 @@ public class GuildChatRoomService {
         }
 
         if (guildChatRoomRepository.existsByTitleAndGuildId(requestDto.title(), guildId)) {
-            throw new IllegalArgumentException("이미 존재하는 채팅방 제목입니다.");
+            throw new DuplicateDataException("이미 존재하는 채팅방 제목입니다.");
         }
 
         guildChatRoom.update(requestDto.title(), requestDto.description());
@@ -76,7 +76,7 @@ public class GuildChatRoomService {
 
         Long guildId = guildChatRoom.getGuild().getId();
 
-        if (guildValidator.isGuildAdmin(memberId, guildId)) {
+        if (!guildValidator.isGuildAdmin(memberId, guildId)) {
             throw new AccessDeniedException("권한이 없습니다.");
         }
 

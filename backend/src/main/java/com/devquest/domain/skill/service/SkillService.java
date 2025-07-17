@@ -13,6 +13,7 @@ import com.devquest.domain.skill.dto.requestDto.SkillUpdateRequestDto;
 import com.devquest.domain.skill.dto.responseDto.SkillResponseDto;
 import com.devquest.domain.skill.model.Skill;
 import com.devquest.domain.skill.repository.SkillRepository;
+import com.devquest.domain.skill.util.SkillValidator;
 import com.devquest.global.exception.customException.DuplicateDataException;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class SkillService {
     private final SkillRepository skillRepository;
     private final MemberRepository memberRepository;
+    private final SkillValidator skillValidator;
 
     public List<SkillResponseDto> getSkills() {
         return skillRepository.findAll().stream()
@@ -62,7 +64,7 @@ public class SkillService {
             throw new DuplicateDataException("이미 존재하는 스킬입니다.");
         }
 
-        if (!AuthUtil.isAdminOrEqualMember(skill.getCreater().getId())) {
+        if (!skillValidator.isSkillOwner(skillId, AuthUtil.getCurrentMemberId())) {
             throw new AccessDeniedException("권한이 없습니다.");
         }
 
@@ -74,7 +76,7 @@ public class SkillService {
         Skill skill = skillRepository.findById(skillId)
                 .orElseThrow(() -> new EntityNotFoundException("스킬을 찾을 수 없습니다. "));
 
-        if (!AuthUtil.isAdminOrEqualMember(skill.getCreater().getId())) {
+        if (!skillValidator.isSkillOwner(skillId, AuthUtil.getCurrentMemberId())) {
             throw new AccessDeniedException("권한이 없습니다.");
         }
 

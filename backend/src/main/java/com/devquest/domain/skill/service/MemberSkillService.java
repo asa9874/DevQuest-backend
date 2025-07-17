@@ -19,6 +19,7 @@ import com.devquest.domain.skill.repository.SkillRepository;
 import com.devquest.domain.skill.repository.SkillRequiredMonsterRepository;
 import com.devquest.domain.skill.repository.SkillRequiredQuestRepository;
 import com.devquest.domain.skill.repository.SkillRequiredSkillRepository;
+import com.devquest.domain.skill.util.SkillValidator;
 import com.devquest.global.exception.customException.DuplicateDataException;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -33,6 +34,7 @@ public class MemberSkillService {
     private final SkillRequiredQuestRepository skillRequiredQuestRepository;
     private final SkillRequiredMonsterRepository skillRequiredMonsterRepository;
     private final MemberRepository memberRepository;
+    private final SkillValidator skillValidator;
 
     public void createMemberSkill(Long memberId, Long skillId) {
         if (!AuthUtil.isAdminOrEqualMember(memberId)) {
@@ -99,6 +101,10 @@ public class MemberSkillService {
     public MemberSkillResponseDto getMemberSkill(Long memberId, Long skillId) {
         if (!AuthUtil.isAdminOrEqualMember(memberId)) {
             throw new AccessDeniedException("권한이 없습니다.");
+        }
+
+        if (!skillValidator.hasMemberSkill(memberId, skillId)) {
+            throw new EntityNotFoundException("습득하지 않은 스킬입니다.");
         }
 
         MemberSkillResponseDto responseDto = memberSkillRepository.findDtoByMemberIdAndSkillId(memberId, skillId)

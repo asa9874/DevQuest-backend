@@ -49,5 +49,6 @@ public interface QuestRepository extends JpaRepository<Quest, Long> {
             @Param("title") String title,
             @Param("creatorName") String creatorName,
             Pageable pageable);
-
+            
+    boolean existsByIdAndCreaterId(Long id, Long createrId);
 }

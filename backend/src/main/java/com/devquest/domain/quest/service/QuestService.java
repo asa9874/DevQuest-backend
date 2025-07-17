@@ -19,6 +19,7 @@ import com.devquest.domain.quest.model.QuestLike;
 import com.devquest.domain.quest.repository.QuestChallengeRepository;
 import com.devquest.domain.quest.repository.QuestLikeRepository;
 import com.devquest.domain.quest.repository.QuestRepository;
+import com.devquest.domain.quest.util.QuestValidator;
 import com.devquest.global.exception.customException.DuplicateDataException;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -31,6 +32,7 @@ public class QuestService {
     private final QuestLikeRepository questLikeRepository;
     private final QuestChallengeRepository questChallengeRepository;
     private final MemberRepository memberRepository;
+    private final QuestValidator questValidator;
 
     public void createQuest(
             QuestCreateRequestDto requestDto,
@@ -105,7 +107,7 @@ public class QuestService {
             QuestUpdateRequestDto requestDto) {
         Quest quest = questRepository.findById(questId)
                 .orElseThrow(() -> new EntityNotFoundException("퀘스트를 찾을 수 없습니다"));
-        if (!AuthUtil.isAdminOrEqualMember(quest.getCreater().getId())) {
+        if (!questValidator.isQuestOwner(questId, AuthUtil.getCurrentMemberId())) {
             throw new AccessDeniedException("권한이 없습니다");
         }
         quest.update(requestDto.title(), requestDto.description());
@@ -116,7 +118,7 @@ public class QuestService {
     public void deleteQuest(Long questId) {
         Quest quest = questRepository.findById(questId)
                 .orElseThrow(() -> new EntityNotFoundException("퀘스트를 찾을 수 없습니다"));
-        if (!AuthUtil.isAdminOrEqualMember(quest.getCreater().getId())) {
+        if (!questValidator.isQuestOwner(questId, AuthUtil.getCurrentMemberId())) {
             throw new AccessDeniedException("권한이 없습니다");
         }
         questChallengeRepository.deleteByQuestId(questId);

@@ -16,6 +16,7 @@ import com.devquest.domain.quest.model.QuestChallenge;
 import com.devquest.domain.quest.model.QuestStatus;
 import com.devquest.domain.quest.repository.QuestChallengeRepository;
 import com.devquest.domain.quest.repository.QuestRepository;
+import com.devquest.domain.quest.util.QuestValidator;
 import com.devquest.global.exception.customException.DuplicateDataException;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -27,6 +28,7 @@ public class QuestChallengeService {
     private final QuestChallengeRepository questChallengeRepository;
     private final QuestRepository questRepository;
     private final MemberRepository memberRepository;
+    private final QuestValidator questValidator;
 
     public void createQuestChallenge(QuestChallengeCreateRequestDto requestDto) {
         if (!AuthUtil.isAdminOrEqualMember(requestDto.memberId())) {
@@ -51,7 +53,7 @@ public class QuestChallengeService {
     public QuestChallengeResponseDto getQuestChallenge(Long questChallengeId) {
         QuestChallenge questChallenge = questChallengeRepository.findById(questChallengeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 챌린지입니다"));
-        if (!AuthUtil.isAdminOrEqualMember(questChallenge.getMember().getId())) {
+        if (!questValidator.isQuestChallengeOwner(questChallengeId, AuthUtil.getCurrentMemberId())) {
             throw new AccessDeniedException("권한이 없습니다");
         }
         return QuestChallengeResponseDto.from(questChallenge);
@@ -67,9 +69,10 @@ public class QuestChallengeService {
 
     public List<QuestChallengeResponseDto> getQuestChallengesByQuestId(
             Long questId, QuestStatus status, Pageable pageable) {
-        Quest quest = questRepository.findById(questId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 퀘스트입니다"));
-        if (!AuthUtil.isAdminOrEqualMember(quest.getCreater().getId())) {
+        if (!questRepository.existsById(questId)) {
+            throw new EntityNotFoundException("존재하지 않는 퀘스트입니다");
+        }
+        if (!questValidator.isQuestOwner(questId, AuthUtil.getCurrentMemberId())) {
             throw new AccessDeniedException("권한이 없습니다");
         }
         return questChallengeRepository.findDtoByQuestIdWithFilter(questId, status, pageable);
@@ -81,7 +84,7 @@ public class QuestChallengeService {
         if (!questChallenge.isInProgress()) {
             throw new IllegalStateException("진행중인 챌린지가 아닙니다");
         }
-        if (!AuthUtil.isAdminOrEqualMember(questChallenge.getMember().getId())) {
+        if (!questValidator.isQuestChallengeOwner(questChallengeId, AuthUtil.getCurrentMemberId())) {
             throw new AccessDeniedException("권한이 없습니다");
         }
         questChallenge.complete();
@@ -94,7 +97,7 @@ public class QuestChallengeService {
         if (!questChallenge.isInProgress()) {
             throw new IllegalStateException("진행중인 챌린지가 아닙니다");
         }
-        if (!AuthUtil.isAdminOrEqualMember(questChallenge.getMember().getId())) {
+        if (!questValidator.isQuestChallengeOwner(questChallengeId, AuthUtil.getCurrentMemberId())) {
             throw new AccessDeniedException("권한이 없습니다");
         }
         questChallenge.fail();

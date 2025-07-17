@@ -71,4 +71,6 @@ public interface QuestChallengeRepository extends JpaRepository<QuestChallenge, 
     List<QuestChallengeResponseDto> findDtoByQuestIdWithFilter(@Param("questId") Long questId,
             @Param("status") QuestStatus status,
             Pageable pageable);
+            
+    boolean existsByIdAndMemberId(Long id, Long memberId);
 }

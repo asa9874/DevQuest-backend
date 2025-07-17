@@ -26,7 +26,7 @@ public class GuildChatRoomService {
             GuildChatRoomCreateRequestDto requestDto,
             Long memberId) {
 
-        if (guildUtil.isAdminOrGuildAdmin(memberId, requestDto.guildId())) {
+        if (guildUtil.isGuildAdmin(memberId, requestDto.guildId())) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
 
@@ -53,7 +53,7 @@ public class GuildChatRoomService {
         GuildChatRoom guildChatRoom = guildChatRoomRepository.findById(guildChatRoomId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
         Long guildId = guildChatRoom.getGuild().getId();
-        if (guildUtil.isAdminOrGuildAdmin(memberId, guildId)) {
+        if (guildUtil.isGuildAdmin(memberId, guildId)) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
 
@@ -70,7 +70,7 @@ public class GuildChatRoomService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
 
         Long guildId = guildChatRoom.getGuild().getId();
-        if (guildUtil.isAdminOrGuildAdmin(memberId, guildId)) {
+        if (guildUtil.isGuildAdmin(memberId, guildId)) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
 
@@ -84,7 +84,7 @@ public class GuildChatRoomService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
         Long guildId = guildChatRoom.getGuild().getId();
 
-        if (!guildUtil.isAdminOrGuildMember(memberId, guildId)) {
+        if (!guildUtil.isGuildMember(memberId, guildId)) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
 
@@ -95,7 +95,7 @@ public class GuildChatRoomService {
             Long guildId,
             Long memberId) {
 
-        if (!guildUtil.isAdminOrGuildMember(memberId, guildId)) {
+        if (!guildUtil.isGuildMember(memberId, guildId)) {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
 

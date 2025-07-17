@@ -63,4 +63,8 @@ public interface GuildPostCommentRepository extends JpaRepository<GuildPostComme
     void deleteAllByGuildId(Long guildId);
 
     boolean existsByIdAndAuthor_Id(Long commentId, Long memberId);
+
+    @Modifying
+    @Query("DELETE FROM GuildPostComment c WHERE c.id = :commentId AND c.author.id = :memberId")
+    void deleteByGuildPostId(Long guildPostId);
 }

@@ -12,6 +12,7 @@ import com.devquest.domain.guild.dto.responseDto.GuildPostResponseDto;
 import com.devquest.domain.guild.model.Guild;
 import com.devquest.domain.guild.model.GuildPost;
 import com.devquest.domain.guild.repository.GuildMemberRepository;
+import com.devquest.domain.guild.repository.GuildPostCommentRepository;
 import com.devquest.domain.guild.repository.GuildPostRepository;
 import com.devquest.domain.guild.repository.GuildRepository;
 import com.devquest.domain.guild.util.GuildValidator;
@@ -29,6 +30,7 @@ public class GuildPostService {
     private final GuildRepository guildRepository;
     private final MemberRepository memberRepository;
     private final GuildValidator guildValidator;
+    private final GuildPostCommentRepository guildPostCommentRepository;
 
     public void createGuildPost(GuildPostCreateRequestDto requestDto,
             Long memberId) {
@@ -101,7 +103,7 @@ public class GuildPostService {
         if (!guildValidator.isGuildPostAuthor(postId, AuthUtil.getCurrentMemberId())) {
             throw new AccessDeniedException("해당 게시글의 작성자가 아닙니다.");
         }
-
+        guildPostCommentRepository.deleteByGuildPostId(postId);
         guildPostRepository.delete(guildPost);
     }
 

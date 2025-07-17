@@ -16,4 +16,6 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
             WHERE mq.monster.id = :monsterId
                 """)
     List<Quiz> findAllByMonsterId(@Param("monsterId") Long monsterId);
+
+    boolean existsByIdAndCreaterId(Long quizId, Long memberId);
 }

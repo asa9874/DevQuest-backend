@@ -17,6 +17,7 @@ import com.devquest.domain.monster.repository.MonsterChallengeRepository;
 import com.devquest.domain.monster.repository.MonsterRepository;
 import com.devquest.domain.monster.repository.QuizChallengeRepository;
 import com.devquest.domain.monster.repository.QuizRepository;
+import com.devquest.domain.monster.util.MonsterQuizValidator;
 import com.devquest.global.exception.customException.DuplicateDataException;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -30,6 +31,7 @@ public class MonsterChallengeService {
     private final MonsterRepository monsterRepository;
     private final QuizChallengeRepository quizChallengeRepository;
     private final QuizRepository quizRepository;
+    private final MonsterQuizValidator monsterValidator;
 
     public void createChallengeForMonster(
             Long monsterId,
@@ -63,6 +65,11 @@ public class MonsterChallengeService {
             Long monsterChallengeId) {
         MonsterChallenge monsterChallenge = monsterChallengeRepository.findById(monsterChallengeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 몬스터 도전입니다."));
+
+        if (!monsterValidator.isQuizChallengeOwner(monsterChallengeId, AuthUtil.getCurrentMemberId())) {
+            throw new AccessDeniedException("해당 도전 정보를 수정할 권한이 없습니다.");
+        }
+
         if (monsterChallenge.getIsSuccess() != null) {
             throw new IllegalArgumentException("이미 완료된 도전입니다.");
         }
@@ -81,8 +88,8 @@ public class MonsterChallengeService {
         MonsterChallenge challenge = monsterChallengeRepository.findById(challengeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 몬스터 도전입니다."));
 
-        if (!AuthUtil.isAdminOrEqualMember(challenge.getMember().getId())) {
-            throw new AccessDeniedException("접근 권한이 없습니다.");
+        if (!monsterValidator.isQuizChallengeOwner(challengeId, memberId)) {
+            throw new AccessDeniedException("해당 도전 정보를 조회할 권한이 없습니다.");
         }
 
         Integer correctCount;

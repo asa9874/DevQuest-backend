@@ -10,4 +10,5 @@ public interface QuizChallengeRepository extends JpaRepository<QuizChallenge, Lo
     int countByMonsterChallengeIdAndIsCorrectTrue(Long monsterChallengeId);
     
     List<QuizChallenge> findByMonsterChallengeId(Long monsterChallengeId);
+    boolean existsByIdAndMonsterChallengeMemberId(Long quizChallengeId, Long memberId);
 }

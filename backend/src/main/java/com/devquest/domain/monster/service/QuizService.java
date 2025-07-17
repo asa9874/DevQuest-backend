@@ -12,8 +12,11 @@ import com.devquest.domain.monster.dto.requestDto.QuizCreateRequestDto;
 import com.devquest.domain.monster.dto.requestDto.QuizUpdateRequestDto;
 import com.devquest.domain.monster.dto.responseDto.QuizResponseDto;
 import com.devquest.domain.monster.dto.responseDto.QuizWithOutAnswerResponseDto;
+import com.devquest.domain.monster.model.Monster;
 import com.devquest.domain.monster.model.Quiz;
 import com.devquest.domain.monster.repository.QuizRepository;
+import com.devquest.domain.monster.util.MonsterQuizValidator;
+
 import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class QuizService {
     private final MemberRepository memberRepository;
     private final QuizRepository quizRepository;
+    private final MonsterQuizValidator monsterValidator;
 
     public void createQuiz(
             QuizCreateRequestDto requestDto,
@@ -59,9 +63,10 @@ public class QuizService {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 퀴즈입니다."));
 
-        if (!AuthUtil.isAdminOrEqualMember(quiz.getCreater().getId())) {
-            throw new AccessDeniedException("권한이 없습니다.");
+        if (!monsterValidator.isQuizOwner(quizId, AuthUtil.getCurrentMemberId())) {
+            throw new AccessDeniedException("퀴즈 작성자만 조회할 수 있습니다.");
         }
+
         return QuizResponseDto.from(quiz);
     }
 
@@ -83,7 +88,7 @@ public class QuizService {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 퀴즈입니다."));
 
-        if (quiz.getCreater().getId() != memberId && !AuthUtil.isAdmin()) {
+        if (!monsterValidator.isQuizOwner(quizId, memberId)) {
             throw new AccessDeniedException("퀴즈 작성자만 수정할 수 있습니다.");
         }
 
@@ -106,7 +111,7 @@ public class QuizService {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 퀴즈입니다."));
 
-        if (quiz.getCreater().getId() != memberId && !AuthUtil.isAdmin()) {
+        if (!monsterValidator.isQuizOwner(quizId, memberId)) {
             throw new AccessDeniedException("퀴즈 작성자만 삭제할 수 있습니다.");
         }
 

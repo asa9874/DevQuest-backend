@@ -2,6 +2,7 @@ package com.devquest.domain.guildChat.service;
 
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.guild.util.GuildValidator;
@@ -15,6 +16,7 @@ import com.devquest.domain.guildChat.repository.GuildChatRoomMessageRepository;
 import com.devquest.domain.guildChat.repository.GuildChatRoomRepository;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.repository.MemberRepository;
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,9 +34,9 @@ public class GuildChatRoomMessageService {
 
     public GuildChatRoomMessageResponseDto getMessageById(
             Long messageId) {
-        
+
         GuildChatRoomMessageResponseDto responseDto = guildChatRoomMessageRepository.findDtoById(messageId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메시지입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 메시지입니다."));
         return responseDto;
     }
 
@@ -42,10 +44,12 @@ public class GuildChatRoomMessageService {
             Long guildChatRoomId,
             Long memberId) {
         if (!guildUtil.isGuildMember(memberId, guildChatRoomId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
+
         List<GuildChatRoomMessageResponseDto> responseDtos = guildChatRoomMessageRepository
                 .findDtoByGuildChatRoomId(guildChatRoomId);
+
         return responseDtos;
     }
 
@@ -54,18 +58,21 @@ public class GuildChatRoomMessageService {
             GuildChatRoomMessageCreateRequestDto requestDto,
             Long memberId) {
         if (!guildUtil.isGuildMember(memberId, guildChatRoomId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
+
         GuildChatRoom guildChatRoom = guildChatRoomRepository.findById(guildChatRoomId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드 채팅방입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 길드 채팅방입니다."));
+
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
 
         GuildChatRoomMessage message = GuildChatRoomMessage.builder()
                 .guildChatRoom(guildChatRoom)
                 .member(member)
                 .content(requestDto.content())
                 .build();
+
         guildChatRoomMessageRepository.save(message);
     }
 
@@ -73,19 +80,23 @@ public class GuildChatRoomMessageService {
             GuildChatRoomMessageSendRequestDto requestDto,
             Long senderId) {
         if (senderId != requestDto.senderId()) {
-            throw new IllegalArgumentException("Sender ID mismatch");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         GuildChatRoom guildChatRoom = guildChatRoomRepository.findById(requestDto.chatRoomId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드 채팅방입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 길드 채팅방입니다."));
+
         Member member = memberRepository.findById(senderId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
+
         GuildChatRoomMessage message = GuildChatRoomMessage.builder()
                 .guildChatRoom(guildChatRoom)
                 .member(member)
                 .content(requestDto.content())
                 .build();
+
         guildChatRoomMessageRepository.save(message);
+
         return GuildChatRoomMessageResponseDto.from(message);
     }
 
@@ -95,23 +106,28 @@ public class GuildChatRoomMessageService {
             Long memberId) {
 
         if (!guildUtil.isMessageSender(memberId, messageId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         GuildChatRoomMessage message = guildChatRoomMessageRepository.findById(messageId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메시지입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 메시지입니다."));
+
         message.updateContent(requestDto.content());
+
         guildChatRoomMessageRepository.save(message);
     }
 
     public void deleteMessage(
             Long messageId,
             Long memberId) {
+
         if (!guildUtil.isMessageSender(memberId, messageId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
+
         GuildChatRoomMessage message = guildChatRoomMessageRepository.findById(messageId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메시지입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 메시지입니다."));
+
         guildChatRoomMessageRepository.delete(message);
     }
 }

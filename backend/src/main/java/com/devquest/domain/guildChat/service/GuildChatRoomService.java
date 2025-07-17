@@ -2,6 +2,7 @@ package com.devquest.domain.guildChat.service;
 
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.guild.model.Guild;
@@ -12,6 +13,9 @@ import com.devquest.domain.guildChat.dto.requestDto.GuildChatRoomUpdateRequestDt
 import com.devquest.domain.guildChat.dto.responseDto.GuildChatRoomResponseDto;
 import com.devquest.domain.guildChat.model.GuildChatRoom;
 import com.devquest.domain.guildChat.repository.GuildChatRoomRepository;
+import com.devquest.global.exception.customException.DuplicateDataException;
+
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,21 +24,20 @@ import lombok.RequiredArgsConstructor;
 public class GuildChatRoomService {
     private final GuildChatRoomRepository guildChatRoomRepository;
     private final GuildRepository guildRepository;
-    private final GuildValidator guildUtil;
+    private final GuildValidator guildValidator;
 
     public void createGuildChatRoom(
             GuildChatRoomCreateRequestDto requestDto,
             Long memberId) {
-
-        if (guildUtil.isGuildAdmin(memberId, requestDto.guildId())) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+        if (!guildValidator.isGuildAdmin(memberId, requestDto.guildId())) {
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         Guild guild = guildRepository.findById(requestDto.guildId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 길드입니다."));
 
         if (guildChatRoomRepository.existsByTitleAndGuildId(requestDto.title(), requestDto.guildId())) {
-            throw new IllegalArgumentException("이미 존재하는 채팅방 제목입니다.");
+            throw new DuplicateDataException("이미 존재하는 채팅방 제목입니다.");
         }
 
         GuildChatRoom guildChatRoom = GuildChatRoom.builder()
@@ -42,6 +45,7 @@ public class GuildChatRoomService {
                 .description(requestDto.description())
                 .guild(guild)
                 .build();
+
         guildChatRoomRepository.save(guildChatRoom);
     }
 
@@ -49,12 +53,13 @@ public class GuildChatRoomService {
             Long guildChatRoomId,
             GuildChatRoomUpdateRequestDto requestDto,
             Long memberId) {
-
         GuildChatRoom guildChatRoom = guildChatRoomRepository.findById(guildChatRoomId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 채팅방입니다."));
+
         Long guildId = guildChatRoom.getGuild().getId();
-        if (guildUtil.isGuildAdmin(memberId, guildId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+
+        if (!guildValidator.isGuildAdmin(memberId, guildId)) {
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         if (guildChatRoomRepository.existsByTitleAndGuildId(requestDto.title(), guildId)) {
@@ -67,11 +72,12 @@ public class GuildChatRoomService {
 
     public void deleteGuildChatRoom(Long guildChatRoomId, Long memberId) {
         GuildChatRoom guildChatRoom = guildChatRoomRepository.findById(guildChatRoomId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 채팅방입니다."));
 
         Long guildId = guildChatRoom.getGuild().getId();
-        if (guildUtil.isGuildAdmin(memberId, guildId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+
+        if (guildValidator.isGuildAdmin(memberId, guildId)) {
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         guildChatRoomRepository.delete(guildChatRoom);
@@ -81,11 +87,12 @@ public class GuildChatRoomService {
             Long guildChatRoomId,
             Long memberId) {
         GuildChatRoom guildChatRoom = guildChatRoomRepository.findById(guildChatRoomId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 채팅방입니다."));
+
         Long guildId = guildChatRoom.getGuild().getId();
 
-        if (!guildUtil.isGuildMember(memberId, guildId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+        if (!guildValidator.isGuildMember(memberId, guildId)) {
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         return GuildChatRoomResponseDto.from(guildChatRoom);
@@ -95,12 +102,12 @@ public class GuildChatRoomService {
             Long guildId,
             Long memberId) {
 
-        if (!guildUtil.isGuildMember(memberId, guildId)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
+        if (!guildValidator.isGuildMember(memberId, guildId)) {
+            throw new AccessDeniedException("권한이 없습니다.");
         }
 
         if (!guildRepository.existsById(guildId)) {
-            throw new IllegalArgumentException("존재하지 않는 길드입니다.");
+            throw new EntityNotFoundException("존재하지 않는 길드입니다.");
         }
 
         return guildChatRoomRepository.findAllByGuildId(guildId).stream()

@@ -27,12 +27,27 @@ public class MonsterChallengeController implements MonsterChallengeApi {
     private final MonsterChallengeService monsterChallengeService;
     private final QuizChallengeService quizChallengeService;
 
+    // 몬스터 챌린지 전체 조회
+    @GetMapping("challenges")
+    public ResponseEntity<List<MonsterChallengeResponseDto>> getAllChallenges() {
+        List<MonsterChallengeResponseDto> response = monsterChallengeService.getAllChallenges();
+        return ResponseEntity.ok(response);
+    }
+
     // 몬스터 챌린지 조회
     @GetMapping("challenges/{challengeId}")
     public ResponseEntity<MonsterChallengeResponseDto> getChallengeForMonster(
             @PathVariable(name = "challengeId") Long challengeId,
             @AuthenticationPrincipal CustomUserDetails member) {
         MonsterChallengeResponseDto response = monsterChallengeService.getChallengeById(challengeId, member.getId());
+        return ResponseEntity.ok(response);
+    }
+
+    // 회원의 진행 중인 모든 몬스터 챌린지 조회
+    @GetMapping("members/{memberId}/challenges")
+    public ResponseEntity<List<MonsterChallengeResponseDto>> getOngoingChallengesForMember(
+            @PathVariable(name = "memberId") Long memberId) {
+        List<MonsterChallengeResponseDto> response = monsterChallengeService.getOngoingChallengesByMemberId(memberId);
         return ResponseEntity.ok(response);
     }
 

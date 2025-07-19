@@ -28,4 +28,18 @@ public record MonsterChallengeResponseDto(
             challenge.getMonster().getRequired_correct_count()
         );
     }
+
+    public static MonsterChallengeResponseDto fromEntity(MonsterChallenge challenge) {
+        return new MonsterChallengeResponseDto(
+            challenge.getId(),
+            challenge.getMonster().getId(),
+            challenge.getMonster().getName(),
+            challenge.getMember().getId(),
+            challenge.getMember().getName(),
+            challenge.getChallengedAt(),
+            challenge.getIsSuccess(),
+            null,
+            challenge.getMonster().getRequired_correct_count()
+        );
+    }
 }

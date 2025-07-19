@@ -102,4 +102,17 @@ public class MonsterChallengeService {
 
         return responseDto;
     }
+
+    public List<MonsterChallengeResponseDto> getOngoingChallengesByMemberId(Long memberId) {
+        List<MonsterChallengeResponseDto> ongoingChallenges = monsterChallengeRepository
+                .findOngoingChallengesDtoByMemberId(memberId);
+        return ongoingChallenges;
+    }
+
+    public List<MonsterChallengeResponseDto> getAllChallenges() {
+        List<MonsterChallenge> challenges = monsterChallengeRepository.findAll();
+        return challenges.stream()
+                .map(MonsterChallengeResponseDto::fromEntity)
+                .toList();
+    }
 }

@@ -52,4 +52,6 @@ public interface MonsterApi {
     ResponseEntity<Void> deleteMonster(
             @Parameter(description = "몬스터 ID", example = "1") @PathVariable(name = "monsterId") Long monsterId,
             @Parameter(description = "로그인 사용자 정보", hidden = true) @AuthenticationPrincipal CustomUserDetails member);
+    
+    
 }

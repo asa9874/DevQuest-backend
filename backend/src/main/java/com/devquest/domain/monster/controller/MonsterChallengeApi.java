@@ -42,4 +42,13 @@ public interface MonsterChallengeApi {
     ResponseEntity<Void> completeChallengeForMonster(
             @Parameter(description = "챌린지 ID", example = "1") @PathVariable(name = "challengeId") Long challengeId,
             @Parameter(description = "로그인 사용자 정보", hidden = true) @AuthenticationPrincipal CustomUserDetails member);
+
+    @Operation(summary = "회원의 진행 중인 몬스터 챌린지 조회", description = "특정 회원이 진행 중인 모든 몬스터 챌린지를 조회합니다.")
+    @GetMapping("/members/{memberId}/challenges")
+    ResponseEntity<List<MonsterChallengeResponseDto>> getOngoingChallengesForMember(
+            @Parameter(description = "회원 ID", example = "1") @PathVariable(name = "memberId") Long memberId);
+
+    @Operation(summary = "전체 몬스터 챌린지 조회", description = "모든 몬스터 챌린지를 조회합니다.")
+    @GetMapping("/challenges")
+    ResponseEntity<List<MonsterChallengeResponseDto>> getAllChallenges();
 }

@@ -12,9 +12,9 @@
     </root>
 
     <!-- Spring Boot 로그 -->
-    <logger name="org.springframework" level="ERROR"/>
+    <logger name="org.springframework" level="INFO"/>
 
     <!-- 패키지의 로그 -->
-    <logger name="com.example" level="ERROR" />
+    <logger name="com.example" level="INFO" />
 </configuration>
 <!--ERROR INFO DEBUG-->

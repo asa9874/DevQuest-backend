@@ -81,12 +81,23 @@ public class QuestChallengeService {
     public void completeQuestChallenge(Long questChallengeId) {
         QuestChallenge questChallenge = questChallengeRepository.findById(questChallengeId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 챌린지입니다"));
+        
         if (!questChallenge.isInProgress()) {
             throw new IllegalStateException("진행중인 챌린지가 아닙니다");
         }
+        
+        // 만료된 퀘스트인지 확인
+        if (questChallenge.isExpired()) {
+            // 만료된 퀘스트는 자동으로 실패 처리
+            questChallenge.fail();
+            questChallengeRepository.save(questChallenge);
+            throw new IllegalStateException("퀘스트가 만료되어 자동으로 실패 처리되었습니다");
+        }
+        
         if (!questValidator.isQuestChallengeOwner(questChallengeId, AuthUtil.getCurrentMemberId())) {
             throw new AccessDeniedException("권한이 없습니다");
         }
+        
         questChallenge.complete();
         questChallengeRepository.save(questChallenge);
     }

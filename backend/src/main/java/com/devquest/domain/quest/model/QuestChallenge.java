@@ -75,4 +75,8 @@ public class QuestChallenge {
     public boolean isFailed() {
         return this.status == QuestStatus.FAILED;
     }
+    
+    public boolean isExpired() {
+        return isInProgress() && startedAt.isBefore(LocalDateTime.now().minusDays(5));
+    }
 }

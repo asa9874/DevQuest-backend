@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/guildchatrooms/")
-public class GuildChatRoomMessageController {
+public class GuildChatRoomMessageController implements GuildChatRoomMessageApi {
     private final GuildChatRoomMessageService guildChatRoomMessageService;
 
     @GetMapping("/messages")

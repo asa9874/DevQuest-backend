@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/guilds")
 @RequiredArgsConstructor
-public class GuildPostCommentController {
+public class GuildPostCommentController implements GuildPostCommentApi {
     private final GuildPostCommentService guildPostCommentService;
 
     @PostMapping("/comments")

@@ -19,7 +19,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/ai")
-public class AiController {
+public class AiController implements AiApi {
 
     private final AiService aiService;
     

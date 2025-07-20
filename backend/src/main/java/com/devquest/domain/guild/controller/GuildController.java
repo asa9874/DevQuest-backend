@@ -29,8 +29,8 @@ import com.devquest.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/guilds")
 @RequiredArgsConstructor
+@RequestMapping("/api/guilds")
 public class GuildController implements GuildApi {
     private final GuildService guildService;
 

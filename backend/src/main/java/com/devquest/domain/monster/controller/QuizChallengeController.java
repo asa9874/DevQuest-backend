@@ -1,5 +1,7 @@
 package com.devquest.domain.monster.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +14,6 @@ import com.devquest.domain.monster.dto.requestDto.QuizChallengeSolveRequestDto;
 import com.devquest.domain.monster.service.QuizChallengeService;
 import com.devquest.global.jwt.CustomUserDetails;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController

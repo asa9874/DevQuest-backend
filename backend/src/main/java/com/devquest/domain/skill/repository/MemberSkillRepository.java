@@ -1,15 +1,14 @@
 package com.devquest.domain.skill.repository;
 
-import com.devquest.domain.skill.dto.responseDto.MemberSkillResponseDto;
-import com.devquest.domain.skill.model.MemberSkill;
-
-import java.lang.reflect.Member;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import com.devquest.domain.skill.dto.responseDto.MemberSkillResponseDto;
+import com.devquest.domain.skill.model.MemberSkill;
 
 public interface MemberSkillRepository extends JpaRepository<MemberSkill, Long> {
     boolean existsByMemberIdAndSkillId(Long memberId, Long skillId);

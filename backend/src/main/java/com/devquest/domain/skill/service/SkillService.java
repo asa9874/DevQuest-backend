@@ -2,6 +2,8 @@ package com.devquest.domain.skill.service;
 
 import java.util.List;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,6 @@ import com.devquest.domain.skill.model.Skill;
 import com.devquest.domain.skill.repository.SkillRepository;
 import com.devquest.domain.skill.util.SkillValidator;
 import com.devquest.global.exception.customException.DuplicateDataException;
-import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

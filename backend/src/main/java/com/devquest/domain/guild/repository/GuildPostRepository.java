@@ -47,7 +47,6 @@ public interface GuildPostRepository extends JpaRepository<GuildPost, Long> {
     List<GuildPostResponseDto> findDtoByGuildIdOrderByCreatedAtDesc(
             @Param("guildId") Long guildId);
 
-
     @Query("""
             select new com.devquest.domain.guild.dto.responseDto.GuildPostResponseDto(
                 gp.id,
@@ -62,9 +61,8 @@ public interface GuildPostRepository extends JpaRepository<GuildPost, Long> {
             from GuildPost gp
             """)
     List<GuildPostResponseDto> findAllDto();
- 
+
     void deleteAllByGuildId(Long guildId);
 
-    
     boolean existsByIdAndAuthor_Id(Long postId, Long memberId);
 }

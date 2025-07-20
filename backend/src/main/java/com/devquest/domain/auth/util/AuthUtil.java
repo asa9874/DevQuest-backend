@@ -6,13 +6,12 @@ import org.springframework.stereotype.Component;
 
 import com.devquest.global.jwt.CustomUserDetails;
 
-
 @Component
 public class AuthUtil {
     public static boolean isAdminOrEqualMember(Long memberId) {
         return isAdmin() || isEqualMember(memberId);
     }
-    
+
     public static boolean isAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

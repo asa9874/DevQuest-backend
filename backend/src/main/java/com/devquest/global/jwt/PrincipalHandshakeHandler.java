@@ -19,4 +19,3 @@ public class PrincipalHandshakeHandler extends DefaultHandshakeHandler {
         return new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
     }
 }
-

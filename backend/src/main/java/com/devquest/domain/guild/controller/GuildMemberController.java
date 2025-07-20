@@ -25,8 +25,8 @@ import com.devquest.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/guilds")
 @RequiredArgsConstructor
+@RequestMapping("/api/guilds")
 public class GuildMemberController  implements GuildMemberApi {
     private final GuildMemberService guildMemberService;
 
@@ -80,7 +80,6 @@ public class GuildMemberController  implements GuildMemberApi {
         guildMemberService.leaveGuild(guildId, memberId, member.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-    
 
     @PutMapping("/{guildId}/members/{memberId}/role")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")

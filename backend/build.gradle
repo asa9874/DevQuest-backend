@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.3'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'com.diffplug.spotless' version '6.25.0'
 }
 
 group = 'com.devQuest'
@@ -59,3 +60,55 @@ tasks.withType(JavaCompile) {
 bootRun {
     sourceResources sourceSets.main
 }
+
+spotless {
+    java {
+        target 'src/**/*.java'
+        custom 'DevQuest Java Style', { content ->
+            content
+                // 클래스 선언 후 바로 시작
+                .replaceAll(/(@\w+.*\n)+\s*\n+public\s+(class|interface|enum)/, { match ->
+                    match[0].replaceAll(/\n\s*\n+public/, '\npublic')
+                })
+
+                // 어노테이션 정렬
+                .replaceAll(/(@RestController\n)(@RequestMapping.*\n)(@RequiredArgsConstructor\n)/, '$1$3$2')
+
+                // 메서드 사이 빈줄 정리 (한 줄만)
+                .replaceAll(/(\}\s*)\n{2,}(\s*@\w+.*\n\s*public)/, '$1\n\n$2')
+                .replaceAll(/(\}\s*)\n{2,}(\s*public)/, '$1\n\n$2')
+
+                // 필드 선언 후 바로 시작
+                .replaceAll(/(private\s+final\s+\w+.*;\s*)\n{2,}/, '$1\n\n')
+
+                // 연속된 빈줄 제거 (최대 1줄)
+                .replaceAll(/\n\s*\n\s*\n/, '\n\n')
+        }
+
+        // Import 순서
+        importOrder(
+            'java',
+            'javax',
+            'jakarta',
+            'org.springframework',
+            'org',
+            'com.devquest',
+            'com',
+            ''
+        )
+
+        // 사용하지 않는 import 제거
+        removeUnusedImports()
+        // 후행 공백 제거
+        trimTrailingWhitespace()
+        // 파일 끝 개행 추가
+        endWithNewline()
+    }
+
+    format 'misc', {
+        target '**/*.md', '**/*.properties', '**/*.yml', '**/*.yaml'
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
+

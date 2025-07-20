@@ -35,7 +35,6 @@ public interface GuildMemberRepository extends JpaRepository<GuildMember, Long> 
             @Param("status") GuildMemberStatus status,
             @Param("role") GuildMemberRole role);
 
-    
     @Query("""
             SELECT new com.devquest.domain.guild.dto.responseDto.GuildResponseDto(
                 gm.guild.id,
@@ -53,7 +52,6 @@ public interface GuildMemberRepository extends JpaRepository<GuildMember, Long> 
             @Param("status") GuildMemberStatus status,
             @Param("role") GuildMemberRole role);
 
-    
     Boolean existsByMemberIdAndStatus(Long memberId, GuildMemberStatus status);
     Boolean existsByGuildIdAndMemberId(Long guildId, Long memberId);
     Boolean existsByGuildIdAndMemberIdAndStatus(Long guildId, Long memberId, GuildMemberStatus status);

@@ -24,8 +24,8 @@ import com.devquest.global.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/guilds")
 @RequiredArgsConstructor
+@RequestMapping("/api/guilds")
 public class GuildPostCommentController implements GuildPostCommentApi {
     private final GuildPostCommentService guildPostCommentService;
 

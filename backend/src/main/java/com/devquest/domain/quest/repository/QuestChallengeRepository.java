@@ -72,17 +72,17 @@ public interface QuestChallengeRepository extends JpaRepository<QuestChallenge, 
     List<QuestChallengeResponseDto> findDtoByQuestIdWithFilter(@Param("questId") Long questId,
             @Param("status") QuestStatus status,
             Pageable pageable);
-            
+
     boolean existsByIdAndMemberId(Long id, Long memberId);
-    
+
     /**
      * 시작일이 특정 날짜 이전인 만료된 퀘스트 챌린지 조회
      */
     @Query("""
-            SELECT qc FROM QuestChallenge qc 
-            WHERE qc.status = :status 
+            SELECT qc FROM QuestChallenge qc
+            WHERE qc.status = :status
             AND qc.startedAt < :expireDateTime
             """)
-    List<QuestChallenge> findExpiredChallenges(@Param("status") QuestStatus status, 
+    List<QuestChallenge> findExpiredChallenges(@Param("status") QuestStatus status,
                                              @Param("expireDateTime") LocalDateTime expireDateTime);
 }

@@ -2,6 +2,8 @@ package com.devquest.domain.monster.service;
 
 import java.util.List;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +14,9 @@ import com.devquest.domain.monster.dto.requestDto.QuizCreateRequestDto;
 import com.devquest.domain.monster.dto.requestDto.QuizUpdateRequestDto;
 import com.devquest.domain.monster.dto.responseDto.QuizResponseDto;
 import com.devquest.domain.monster.dto.responseDto.QuizWithOutAnswerResponseDto;
-import com.devquest.domain.monster.model.Monster;
 import com.devquest.domain.monster.model.Quiz;
 import com.devquest.domain.monster.repository.QuizRepository;
 import com.devquest.domain.monster.util.MonsterQuizValidator;
-
-import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

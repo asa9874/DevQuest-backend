@@ -3,6 +3,8 @@ package com.devquest.domain.guild.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -26,7 +28,6 @@ import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.repository.MemberRepository;
 import com.devquest.global.exception.customException.DuplicateDataException;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service

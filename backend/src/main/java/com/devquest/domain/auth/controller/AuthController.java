@@ -1,5 +1,7 @@
 package com.devquest.domain.auth.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +16,6 @@ import com.devquest.domain.auth.dto.responseDto.AuthLoginResponseDto;
 import com.devquest.domain.auth.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor

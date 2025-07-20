@@ -1,5 +1,7 @@
 package com.devquest.global.exception;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -17,7 +19,6 @@ import com.devquest.global.exception.customException.SelfReferenceException;
 
 import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.Hidden;
-import jakarta.persistence.EntityNotFoundException;
 
 @Hidden
 @Order(Ordered.HIGHEST_PRECEDENCE)

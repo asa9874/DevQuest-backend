@@ -1,5 +1,9 @@
 package com.devquest.devquest.acceptance.config;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -10,10 +14,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.devquest.global.jwt.CustomUserDetails;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class CustomUserDetailsArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -29,7 +29,7 @@ public class CustomUserDetailsArgumentResolver implements HandlerMethodArgumentR
                 .stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-        
+
         return new CustomUserDetails(1L, "test@example.com", "password123", authorities);
     }
 }

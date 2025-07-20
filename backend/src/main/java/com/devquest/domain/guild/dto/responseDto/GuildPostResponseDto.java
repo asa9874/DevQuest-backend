@@ -12,5 +12,5 @@ public record GuildPostResponseDto(
     String authorName,
     LocalDateTime createdAt
 ) {
-    
+
 }

@@ -2,6 +2,8 @@ package com.devquest.domain.guild.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,12 +23,11 @@ import com.devquest.domain.guild.dto.responseDto.GuildPostResponseDto;
 import com.devquest.domain.guild.service.GuildPostService;
 import com.devquest.global.jwt.CustomUserDetails;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/guilds")
 @RequiredArgsConstructor
+@RequestMapping("/api/guilds")
 public class GuildPostController implements GuildPostApi {
     private final GuildPostService guildPostService;
 
@@ -55,7 +56,6 @@ public class GuildPostController implements GuildPostApi {
         List<GuildPostResponseDto> responseDtos = guildPostService.getGuildPostsByGuildId(guildId);
         return ResponseEntity.ok(responseDtos);
     }
-
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/posts")

@@ -3,14 +3,14 @@ package com.devquest.domain.skill.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.repository.MemberRepository;
-import com.devquest.domain.monster.repository.MonsterRepository;
-import com.devquest.domain.quest.repository.QuestRepository;
 import com.devquest.domain.skill.dto.responseDto.MemberSkillResponseDto;
 import com.devquest.domain.skill.model.MemberSkill;
 import com.devquest.domain.skill.model.Skill;
@@ -22,7 +22,6 @@ import com.devquest.domain.skill.repository.SkillRequiredSkillRepository;
 import com.devquest.domain.skill.util.SkillValidator;
 import com.devquest.global.exception.customException.PrerequisiteNotMetException;
 import com.devquest.global.exception.customException.ResourceAlreadyAcquiredException;
-import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

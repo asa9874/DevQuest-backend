@@ -5,5 +5,5 @@ public record GuildChatRoomMessageSendRequestDto(
         String content,
         Long senderId
 ) {
-    
+
 }

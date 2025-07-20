@@ -23,7 +23,10 @@ import com.devquest.domain.member.model.Role;
 import com.devquest.domain.member.repository.MemberRepository;
 import com.devquest.domain.monster.model.Monster;
 import com.devquest.domain.monster.model.Quiz;
+import com.devquest.domain.monster.repository.MonsterChallengeRepository;
+import com.devquest.domain.monster.repository.MonsterQuizRepository;
 import com.devquest.domain.monster.repository.MonsterRepository;
+import com.devquest.domain.monster.repository.QuizChallengeRepository;
 import com.devquest.domain.monster.repository.QuizRepository;
 import com.devquest.domain.quest.model.Quest;
 import com.devquest.domain.quest.model.QuestChallenge;
@@ -32,14 +35,11 @@ import com.devquest.domain.quest.repository.QuestChallengeRepository;
 import com.devquest.domain.quest.repository.QuestLikeRepository;
 import com.devquest.domain.quest.repository.QuestRepository;
 import com.devquest.domain.skill.model.Skill;
+import com.devquest.domain.skill.repository.MemberSkillRepository;
 import com.devquest.domain.skill.repository.SkillRepository;
 import com.devquest.domain.skill.repository.SkillRequiredMonsterRepository;
 import com.devquest.domain.skill.repository.SkillRequiredQuestRepository;
 import com.devquest.domain.skill.repository.SkillRequiredSkillRepository;
-import com.devquest.domain.skill.repository.MemberSkillRepository;
-import com.devquest.domain.monster.repository.MonsterQuizRepository;
-import com.devquest.domain.monster.repository.QuizChallengeRepository;
-import com.devquest.domain.monster.repository.MonsterChallengeRepository;
 import com.devquest.domain.test.dto.AdminSignupRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AdminTestService {
-    
+
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final QuestRepository questRepository;
@@ -61,7 +61,7 @@ public class AdminTestService {
     private final QuizRepository quizRepository;
     private final MonsterRepository monsterRepository;
     private final SkillRepository skillRepository;
-    
+
     private final SkillRequiredMonsterRepository skillRequiredMonsterRepository;
     private final SkillRequiredQuestRepository skillRequiredQuestRepository;
     private final SkillRequiredSkillRepository skillRequiredSkillRepository;
@@ -79,42 +79,42 @@ public class AdminTestService {
         generateMonsters();
         generateSkills();
     }
-    
+
     @Transactional
     public void clearAllData() {
         quizChallengeRepository.deleteAll();
         monsterChallengeRepository.deleteAll();
-        
+
         guildPostCommentRepository.deleteAll();
         guildPostRepository.deleteAll();
         guildChatRoomRepository.deleteAll();
         guildMemberRepository.deleteAll();
         guildRepository.deleteAll();
-        
+
         questLikeRepository.deleteAll();
         questChallengeRepository.deleteAll();
-        
+
         memberSkillRepository.deleteAll();
         skillRequiredMonsterRepository.deleteAll();
         skillRequiredQuestRepository.deleteAll();
         skillRequiredSkillRepository.deleteAll();
-        
+
         monsterQuizRepository.deleteAll();
-        
+
         questRepository.deleteAll();
         quizRepository.deleteAll();
         monsterRepository.deleteAll();
         skillRepository.deleteAll();
-        
+
         memberRepository.deleteAll();
     }
-    
+
     @Transactional
     public void createAdminMember(AdminSignupRequest request) {
         if (memberRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다: " + request.getEmail());
         }
-        
+
         Member admin = Member.builder()
                 .name(request.getName())
                 .email(request.getEmail())
@@ -122,10 +122,10 @@ public class AdminTestService {
                 .role(Role.ADMIN)
                 .provider("local")
                 .build();
-        
+
         memberRepository.save(admin);
     }
-    
+
     private void generateMembers() {
         for (int i = 0; i < 10; i++) {
             if (!memberRepository.existsByEmail("tester" + i)) {
@@ -150,7 +150,7 @@ public class AdminTestService {
             }
         }
     }
-    
+
     private void generateQuests() {
         List<Member> allMembers = memberRepository.findAll();
         for (int i = 0; i < 30; i++) {
@@ -164,7 +164,7 @@ public class AdminTestService {
                 questRepository.save(quest);
             }
         }
-        
+
         List<Quest> allQuests = questRepository.findAll();
         for (Member member : allMembers) {
             for (int j = 0; j < 5; j++) {
@@ -178,7 +178,7 @@ public class AdminTestService {
                 if (j % 3 == 1)
                     challenge.fail();
                 questChallengeRepository.save(challenge);
-                
+
                 QuestLike like = QuestLike.builder()
                         .quest(quest)
                         .member(member)
@@ -187,7 +187,7 @@ public class AdminTestService {
             }
         }
     }
-    
+
     private void generateGuilds() {
         List<Member> allMembers = memberRepository.findAll();
         String[][] guildData = {
@@ -202,11 +202,11 @@ public class AdminTestService {
             {"게임 개발 길드", "게임 엔진과 게임 개발 기술을 공유하고 함께 게임을 만드는 창작자 모임입니다."},
             {"UX/UI 디자인 크루", "개발자와 디자이너가 함께 사용자 경험과 인터페이스 디자인을 연구하는 협업 커뮤니티입니다."}
         };
-        
+
         for (int i = 0; i < guildData.length; i++) {
             String[] data = guildData[i];
             Member leader = allMembers.get(i % allMembers.size());
-            
+
             if (!guildRepository.existsByName(data[0])) {
                 Guild guild = Guild.builder()
                         .name(data[0])
@@ -216,7 +216,7 @@ public class AdminTestService {
                 guildRepository.save(guild);
             }
         }
-        
+
         List<Guild> allGuilds = guildRepository.findAll();
         for (Guild guild : allGuilds) {
             for (int i = 0; i < allMembers.size(); i++) {
@@ -226,12 +226,12 @@ public class AdminTestService {
                                 && gm.getMember().getId().equals(member.getId()));
                 if (exists)
                     continue;
-                    
+
                 GuildMemberRole role = (i % 10 == 0) ? GuildMemberRole.OWNER
                         : (i % 5 == 0) ? GuildMemberRole.ADMIN : GuildMemberRole.MEMBER;
                 GuildMemberStatus status = (i % 7 == 0) ? GuildMemberStatus.BANNED
                         : (i % 4 == 0) ? GuildMemberStatus.LEAVED : GuildMemberStatus.ACTIVE;
-                        
+
                 GuildMember guildMember = GuildMember.builder()
                         .guild(guild)
                         .member(member)
@@ -241,7 +241,7 @@ public class AdminTestService {
                 guildMemberRepository.save(guildMember);
             }
         }
-        
+
         for (Guild guild : allGuilds) {
             for (Member member : allMembers) {
                 for (int p = 0; p < 2; p++) {
@@ -266,9 +266,9 @@ public class AdminTestService {
                 }
             }
         }
-        
+
         for (Guild guild : allGuilds) {
-            for (int r = 0; r < 5; r++) { 
+            for (int r = 0; r < 5; r++) {
                 String roomName = guild.getName() + " 채팅방 " + r;
                 GuildChatRoom chatRoom = GuildChatRoom.builder()
                         .guild(guild)
@@ -279,7 +279,7 @@ public class AdminTestService {
             }
         }
     }
-    
+
     private void generateQuizzes() {
         List<Member> allMembers = memberRepository.findAll();
         String[][] quizData = {
@@ -294,11 +294,11 @@ public class AdminTestService {
             {"자료구조", "LIFO 방식으로 동작하는 자료구조는?", "큐", "스택", "해시맵", "트리", "2"},
             {"개발 도구", "Git에서 현재 브랜치의 작업 상태를 확인하는 명령어는?", "git commit", "git push", "git status", "git merge", "3"}
         };
-        
+
         for (int i = 0; i < quizData.length; i++) {
             String[] data = quizData[i];
             Member creator = allMembers.get(i % allMembers.size());
-            
+
             Quiz quiz = Quiz.builder()
                     .title(data[0])
                     .question(data[1])
@@ -312,7 +312,7 @@ public class AdminTestService {
             quizRepository.save(quiz);
         }
     }
-    
+
     private void generateMonsters() {
         List<Member> allMembers = memberRepository.findAll();
         String[][] monsterData = {
@@ -327,11 +327,11 @@ public class AdminTestService {
             {"클라우드하이드라", "여러 개의 서버 머리를 가진 괴물", "매우 어려움", "0"},
             {"디버그벌레", "코드 속 버그를 먹고 사는 벌레", "쉬움", "0"}
         };
-        
+
         for (int i = 0; i < monsterData.length; i++) {
             String[] data = monsterData[i];
             Member creator = allMembers.get(i % allMembers.size());
-            
+
             if (!monsterRepository.existsByName(data[0])) {
                 Monster monster = Monster.builder()
                         .name(data[0])
@@ -344,7 +344,7 @@ public class AdminTestService {
             }
         }
     }
-    
+
     private void generateSkills() {
         List<Member> allMembers = memberRepository.findAll();
         String[][] skillData = {
@@ -359,11 +359,11 @@ public class AdminTestService {
             {"클라우드 배포", "AWS, Azure 등의 클라우드 서비스에 애플리케이션을 배포하는 방법을 배웁니다."},
             {"DevOps 실무", "CI/CD 파이프라인 구축 및 운영 방법을 습득합니다."}
         };
-        
+
         for (int i = 0; i < skillData.length; i++) {
             String[] data = skillData[i];
             Member creator = allMembers.get(i % allMembers.size());
-            
+
             if (!skillRepository.existsByName(data[0])) {
                 Skill skill = Skill.builder()
                         .name(data[0])
@@ -374,7 +374,7 @@ public class AdminTestService {
             }
         }
     }
-    
+
     private String getRandomPostTitle(String guildName, int index) {
         if (guildName.contains("프론트엔드")) {
             String[] titles = {
@@ -416,13 +416,13 @@ public class AdminTestService {
             return guildName + " - 개발 주제 게시글 " + index;
         }
     }
-    
+
     private String getRandomPostContent(String guildName, int index) {
         return "이 글은 " + guildName + "에 게시된 개발 주제 게시글입니다. " +
                "여기에는 코드 예시, 기술 정보, 경험담 등 다양한 개발 지식이 공유됩니다. " +
                "커뮤니티와 함께 성장하는 개발자 생활을 응원합니다! (게시글 인덱스: " + index + ")";
     }
-    
+
     private String getRandomComment(String postTitle, int index) {
         String[] comments = {
             "정말 유익한 정보네요! 감사합니다.",

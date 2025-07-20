@@ -2,6 +2,8 @@ package com.devquest.domain.guild.service;
 
 import java.util.List;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,6 @@ import com.devquest.domain.guild.util.GuildValidator;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.repository.MemberRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service

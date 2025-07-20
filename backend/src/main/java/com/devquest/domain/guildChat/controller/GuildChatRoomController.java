@@ -2,6 +2,8 @@ package com.devquest.domain.guildChat.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,12 +23,11 @@ import com.devquest.domain.guildChat.dto.responseDto.GuildChatRoomResponseDto;
 import com.devquest.domain.guildChat.service.GuildChatRoomService;
 import com.devquest.global.jwt.CustomUserDetails;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/guildchatrooms/")
 @RequiredArgsConstructor
+@RequestMapping("/api/guildchatrooms/")
 public class GuildChatRoomController implements GuildChatRoomApi {
     private final GuildChatRoomService guildChatRoomService;
 

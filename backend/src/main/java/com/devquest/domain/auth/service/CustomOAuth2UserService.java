@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final MemberRepository memberRepository;
-    
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
@@ -35,7 +35,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                     .email(email)
                     .name("개발자"+(String) attributes.get("name")+ UUID.randomUUID().toString().substring(0, 7))
                     .password(UUID.randomUUID().toString())
-                    .role(Role.USER)   
+                    .role(Role.USER)
                     .provider(registrationId) // OAuth2 공급자 정보 저장
                 .build();
 

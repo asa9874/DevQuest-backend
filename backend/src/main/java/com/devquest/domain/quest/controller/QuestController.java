@@ -57,7 +57,7 @@ public class QuestController implements QuestApi{
         QuestWithLikeResponseDto questResponseDto = questService.getQuest(questId);
         return ResponseEntity.ok(questResponseDto);
     }
-    
+
     @GetMapping("/search")
     public ResponseEntity<Page<QuestWithLikeResponseDto>> searchQuests(
             @RequestParam(required = false,name = "title") String title,
@@ -67,7 +67,6 @@ public class QuestController implements QuestApi{
         return ResponseEntity.ok(responseDtos);
     }
 
-    
     @PutMapping("/{questId}")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<QuestResponseDto> updateQuest(

@@ -41,7 +41,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
 
         }
         log.error("No token found in query parameters");
-        return false; 
+        return false;
     }
 
     private String getTokenFromQuery(ServerHttpRequest request) {

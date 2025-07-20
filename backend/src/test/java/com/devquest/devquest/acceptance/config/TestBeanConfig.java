@@ -8,10 +8,10 @@ import com.devquest.domain.guild.service.GuildService;
 
 @TestConfiguration
 public class TestBeanConfig {
-    
+
     @MockBean
     private GuildService guildService;
-    
+
     @Bean
     public GuildService guildService() {
         return guildService;

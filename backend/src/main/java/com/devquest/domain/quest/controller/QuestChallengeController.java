@@ -25,11 +25,10 @@ import com.devquest.domain.quest.service.QuestChallengeService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/quests/challenges")
 @RequiredArgsConstructor
+@RequestMapping("/api/quests/challenges")
 public class QuestChallengeController implements QuestChallengeApi {
     private final QuestChallengeService questChallengeService;
-
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")

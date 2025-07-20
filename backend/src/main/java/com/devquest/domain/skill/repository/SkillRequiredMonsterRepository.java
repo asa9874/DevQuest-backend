@@ -1,13 +1,13 @@
 package com.devquest.domain.skill.repository;
 
-import com.devquest.domain.monster.model.Monster;
-import com.devquest.domain.skill.model.SkillRequiredMonster;
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import com.devquest.domain.monster.model.Monster;
+import com.devquest.domain.skill.model.SkillRequiredMonster;
 
 public interface SkillRequiredMonsterRepository extends JpaRepository<SkillRequiredMonster, Long> {
 
@@ -22,7 +22,7 @@ public interface SkillRequiredMonsterRepository extends JpaRepository<SkillRequi
     boolean existsBySkill_IdAndRequiredMonster_Id(Long skillId, Long requiredMonsterId);
 
     void deleteBySkill_IdAndRequiredMonster_Id(Long skillId, Long requiredMonsterId);
-    
+
     @Query("""
             SELECT CASE WHEN COUNT(srm) > 0 THEN true ELSE false END
             FROM SkillRequiredMonster srm
@@ -35,7 +35,7 @@ public interface SkillRequiredMonsterRepository extends JpaRepository<SkillRequi
             )
             """)
     boolean existsAnyRequiredMonsterNotDefeatedByMember(@Param("memberId") Long memberId, @Param("skillId") Long skillId);
-    
+
     @Query("""
             SELECT srm.requiredMonster.id
             FROM SkillRequiredMonster srm

@@ -16,5 +16,4 @@ public interface GuildRepository extends JpaRepository<Guild, Long> {
             @Param("name") String name,
             Pageable pageable);
 
-    
 }

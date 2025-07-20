@@ -1,13 +1,13 @@
 package com.devquest.domain.skill.repository;
 
-import com.devquest.domain.skill.model.Skill;
-import com.devquest.domain.skill.model.SkillRequiredSkill;
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import com.devquest.domain.skill.model.Skill;
+import com.devquest.domain.skill.model.SkillRequiredSkill;
 
 public interface SkillRequiredSkillRepository extends JpaRepository<SkillRequiredSkill, Long> {
 
@@ -36,7 +36,7 @@ public interface SkillRequiredSkillRepository extends JpaRepository<SkillRequire
     boolean existsAnyRequiredSkillNotAcquiredByMember(
             @Param("memberId") Long memberId,
             @Param("skillId") Long skillId);
-            
+
     @Query("""
             SELECT srs.requiredSkill.id
             FROM SkillRequiredSkill srs

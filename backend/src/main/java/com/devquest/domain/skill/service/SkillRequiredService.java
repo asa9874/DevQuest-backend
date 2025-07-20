@@ -2,6 +2,8 @@ package com.devquest.domain.skill.service;
 
 import java.util.List;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,6 @@ import com.devquest.domain.skill.util.SkillValidator;
 import com.devquest.global.exception.customException.CyclicReferenceException;
 import com.devquest.global.exception.customException.DuplicateDataException;
 import com.devquest.global.exception.customException.SelfReferenceException;
-import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -144,7 +145,7 @@ public class SkillRequiredService {
         if (skillId == requiredSkillId) {
             throw new SelfReferenceException("자기 자신을 요구하는 스킬은 등록할 수 없습니다.");
         }
-        
+
         // 순환 참조 확인
         if (skillValidator.hasCircularDependency(requiredSkillId, skillId)) {
             throw new CyclicReferenceException("순환 참조가 발생합니다. A→B→C→A와 같은 참조 구조는 불가능합니다.");
@@ -160,7 +161,7 @@ public class SkillRequiredService {
 
         skillRequiredSkillRepository.save(skillRequiredSkill);
     }
-    
+
     @Transactional
     public void deleteSkillRequiredSkill(Long skillId, Long requiredSkillId) {
         if (!skillRepository.existsById(skillId)) {
@@ -170,11 +171,11 @@ public class SkillRequiredService {
         if (!skillValidator.isSkillOwner(skillId, AuthUtil.getCurrentMemberId())) {
             throw new AccessDeniedException("권한이 없습니다.");
         }
-        
+
         if (!skillRequiredSkillRepository.existsBySkillIdAndRequiredSkillId(skillId, requiredSkillId)) {
             throw new EntityNotFoundException("등록되지 않은 스킬입니다.");
         }
-        
+
         skillRequiredSkillRepository.deleteBySkillIdAndRequiredSkillId(skillId, requiredSkillId);
     }
 

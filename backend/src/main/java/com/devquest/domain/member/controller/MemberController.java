@@ -62,7 +62,7 @@ public class MemberController implements MemberApi {
         memberService.updatePassword(member.getId(), requestDto);
         return ResponseEntity.noContent().build();
     }
-    
+
     @GetMapping("/public/{memberId}")
     public ResponseEntity<MemberResponseDto> getPublicMemberProfile(
             @PathVariable(name = "memberId") Long memberId) {

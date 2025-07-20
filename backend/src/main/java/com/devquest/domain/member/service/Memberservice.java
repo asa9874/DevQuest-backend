@@ -3,6 +3,8 @@ package com.devquest.domain.member.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,6 @@ import com.devquest.domain.quest.repository.QuestChallengeRepository;
 import com.devquest.domain.quest.repository.QuestLikeRepository;
 import com.devquest.global.exception.customException.DuplicateDataException;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service

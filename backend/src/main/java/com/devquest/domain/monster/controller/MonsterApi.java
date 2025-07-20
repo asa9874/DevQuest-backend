@@ -2,6 +2,8 @@ package com.devquest.domain.monster.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,8 +21,6 @@ import com.devquest.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import jakarta.validation.Valid;
 
 @Tag(name = "몬스터 API", description = "몬스터 관련 API")
 public interface MonsterApi {
@@ -52,6 +52,5 @@ public interface MonsterApi {
     ResponseEntity<Void> deleteMonster(
             @Parameter(description = "몬스터 ID", example = "1") @PathVariable(name = "monsterId") Long monsterId,
             @Parameter(description = "로그인 사용자 정보", hidden = true) @AuthenticationPrincipal CustomUserDetails member);
-    
-    
+
 }

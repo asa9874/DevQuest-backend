@@ -1,5 +1,7 @@
 package com.devquest.domain.monster.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +14,6 @@ import com.devquest.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import jakarta.validation.Valid;
 
 @Tag(name = "퀴즈 챌린지 API", description = "퀴즈 도전 관련 API")
 public interface QuizChallengeApi {

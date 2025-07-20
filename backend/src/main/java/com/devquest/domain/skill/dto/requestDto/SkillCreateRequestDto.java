@@ -4,5 +4,5 @@ public record SkillCreateRequestDto(
     String name,
     String description
 ) {
-    
+
 }

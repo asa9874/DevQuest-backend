@@ -2,6 +2,8 @@ package com.devquest.domain.guildChat.service;
 
 import java.util.List;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +18,6 @@ import com.devquest.domain.guildChat.repository.GuildChatRoomMessageRepository;
 import com.devquest.domain.guildChat.repository.GuildChatRoomRepository;
 import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.repository.MemberRepository;
-import com.devquest.global.exception.customException.DuplicateDataException;
-import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,5 +1,9 @@
 package com.devquest.devquest.acceptance.config;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -11,10 +15,6 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 
 import com.devquest.global.jwt.CustomUserDetails;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Configuration
 public class TestSecurityConfig {
 
@@ -24,16 +24,16 @@ public class TestSecurityConfig {
                 .stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-        
+
         CustomUserDetails userDetails = new CustomUserDetails(1L, "test@example.com", "password", authorities);
         return new PreAuthenticatedAuthenticationToken(userDetails, null, authorities);
     }
-    
+
     public static void setSecurityContext(Long memberId, String email, String... roles) {
         List<SimpleGrantedAuthority> authorities = Arrays.stream(roles)
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toList());
-        
+
         CustomUserDetails userDetails = new CustomUserDetails(memberId, email, "password", authorities);
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(new TestingAuthenticationToken(userDetails, null, authorities));

@@ -2,8 +2,6 @@ package com.devquest.domain.quest.model;
 
 import java.time.LocalDateTime;
 
-import com.devquest.domain.member.model.Member;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,6 +12,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
+import com.devquest.domain.member.model.Member;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -75,7 +76,7 @@ public class QuestChallenge {
     public boolean isFailed() {
         return this.status == QuestStatus.FAILED;
     }
-    
+
     public boolean isExpired() {
         return isInProgress() && startedAt.isBefore(LocalDateTime.now().minusDays(5));
     }

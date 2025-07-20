@@ -1,7 +1,7 @@
 package com.devquest.domain.guild.model;
 
 public enum GuildMemberRole {
-    MEMBER, 
+    MEMBER,
     ADMIN,
     OWNER;
 }

@@ -1,3 +1,79 @@
+root = true
+
+# 모든 파일의 기본 설정
 [*]
-indent_style = space              
-indent_size = 4                  
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.java]
+indent_style = space
+indent_size = 4
+max_line_length = 120
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Gradle 빌드 파일 (탭 사용)
+[*.gradle]
+indent_style = tab
+indent_size = 1
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Gradle Wrapper 파일들
+[gradle*.properties]
+indent_style = space
+indent_size = 2
+
+[*.{properties,yml,yaml}]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[application*.properties]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.xml]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[docker-compose*.yml]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[Dockerfile*]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 88
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.json]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.md]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = false
+insert_final_newline = true
+max_line_length = 80

@@ -1,13 +1,13 @@
 package com.devquest.domain.skill.repository;
 
-import com.devquest.domain.quest.model.Quest;
-import com.devquest.domain.skill.model.SkillRequiredQuest;
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import com.devquest.domain.quest.model.Quest;
+import com.devquest.domain.skill.model.SkillRequiredQuest;
 
 public interface SkillRequiredQuestRepository extends JpaRepository<SkillRequiredQuest, Long> {
 
@@ -22,7 +22,7 @@ public interface SkillRequiredQuestRepository extends JpaRepository<SkillRequire
     boolean existsBySkill_IdAndRequiredQuest_Id(Long skillId, Long questId);
 
     void deleteBySkill_IdAndRequiredQuest_Id(Long skillId, Long questId);
-    
+
     @Query("""
             SELECT CASE WHEN COUNT(srq) > 0 THEN true ELSE false END
             FROM SkillRequiredQuest srq
@@ -35,7 +35,7 @@ public interface SkillRequiredQuestRepository extends JpaRepository<SkillRequire
             )
             """)
     boolean existsAnyRequiredQuestNotCompletedByMember(@Param("memberId") Long memberId, @Param("skillId") Long skillId);
-    
+
     @Query("""
             SELECT srq.requiredQuest.id
             FROM SkillRequiredQuest srq

@@ -2,6 +2,8 @@ package com.devquest.domain.monster.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,7 +22,6 @@ import com.devquest.domain.monster.dto.responseDto.MonsterResponseDto;
 import com.devquest.domain.monster.service.MonsterService;
 import com.devquest.global.jwt.CustomUserDetails;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -72,5 +73,5 @@ public class MonsterController implements MonsterApi {
         return ResponseEntity.noContent().build();
     }
 
-    //TODO:  검색 페이징 추가 
+    //TODO:  검색 페이징 추가
 }

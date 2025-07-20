@@ -2,6 +2,8 @@ package com.devquest.domain.auth.service;
 
 import java.util.concurrent.TimeUnit;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +18,6 @@ import com.devquest.domain.member.repository.MemberRepository;
 import com.devquest.global.exception.customException.DuplicateDataException;
 import com.devquest.global.jwt.JwtTokenProvider;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,12 +28,11 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final StringRedisTemplate redisTemplate;
 
-
     public void register(AuthRegisterRequestDto requestDto) {
-        if(memberRepository.existsByEmail(requestDto.email())) {
+        if (memberRepository.existsByEmail(requestDto.email())) {
             throw new DuplicateDataException("이미 존재하는 이메일입니다.");
         }
-        if(memberRepository.existsByName(requestDto.name())) {
+        if (memberRepository.existsByName(requestDto.name())) {
             throw new DuplicateDataException("이미 존재하는 이름입니다.");
         }
         Member member = Member.builder()
@@ -46,7 +46,7 @@ public class AuthService {
     }
 
     public AuthLoginResponseDto login(AuthLoginRequestDto requestDto) {
-        Member member =memberRepository.findByEmail(requestDto.email())
+        Member member = memberRepository.findByEmail(requestDto.email())
                 .orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
 
         if (!passwordEncoder.matches(requestDto.password(), member.getPassword())) {

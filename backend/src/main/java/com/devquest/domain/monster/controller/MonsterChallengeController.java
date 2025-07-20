@@ -18,10 +18,9 @@ import com.devquest.global.jwt.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 
-
 @RestController
-@RequestMapping("/api/monsters/")
 @RequiredArgsConstructor
+@RequestMapping("/api/monsters/")
 public class MonsterChallengeController implements MonsterChallengeApi {
 
     private final MonsterChallengeService monsterChallengeService;
@@ -59,7 +58,6 @@ public class MonsterChallengeController implements MonsterChallengeApi {
         List<QuizChallengeResponseDto> response = quizChallengeService.getQuizChallengeByMonsterChallengeId(challengeId, member.getId());
         return ResponseEntity.ok(response);
     }
-    
 
     // 몬스터 챌린지 생성
     @PostMapping("{monsterId}/challenges")
@@ -78,6 +76,5 @@ public class MonsterChallengeController implements MonsterChallengeApi {
         monsterChallengeService.completeChallenge(challengeId);
         return ResponseEntity.ok().build();
     }
-
 
 }

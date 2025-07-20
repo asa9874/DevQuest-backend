@@ -2,13 +2,14 @@ package com.devquest.domain.guild.service;
 
 import java.util.List;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.devquest.domain.auth.util.AuthUtil;
 import com.devquest.domain.guild.dto.responseDto.GuildMemberResponseDto;
 import com.devquest.domain.guild.dto.responseDto.GuildResponseDto;
-import jakarta.persistence.EntityNotFoundException;
 import com.devquest.domain.guild.model.Guild;
 import com.devquest.domain.guild.model.GuildMember;
 import com.devquest.domain.guild.model.GuildMemberRole;
@@ -20,7 +21,6 @@ import com.devquest.domain.member.model.Member;
 import com.devquest.domain.member.repository.MemberRepository;
 import com.devquest.global.exception.customException.DuplicateDataException;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service

@@ -2,6 +2,8 @@ package com.devquest.domain.quest.service;
 
 import java.util.List;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -21,7 +23,6 @@ import com.devquest.domain.quest.repository.QuestLikeRepository;
 import com.devquest.domain.quest.repository.QuestRepository;
 import com.devquest.domain.quest.util.QuestValidator;
 import com.devquest.global.exception.customException.DuplicateDataException;
-import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,10 +38,10 @@ public class QuestService {
     public void createQuest(
             QuestCreateRequestDto requestDto,
             Long memberId) {
-        
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException("회원을 찾을수없습니다"));
-        
+
         Quest quest = Quest.builder()
                 .title(requestDto.title())
                 .description(requestDto.description())

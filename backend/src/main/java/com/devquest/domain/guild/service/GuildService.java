@@ -101,7 +101,6 @@ public class GuildService {
         return GuildResponseDto.from(guild);
     }
 
-    // TODO:중간 테이블 삭제 처리 추후 추가
     public void deleteGuild(Long guildId) {
         Guild guild = guildRepository.findById(guildId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 길드입니다."));

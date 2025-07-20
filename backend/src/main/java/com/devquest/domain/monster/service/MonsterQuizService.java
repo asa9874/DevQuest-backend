@@ -56,8 +56,9 @@ public class MonsterQuizService {
             throw new EntityNotFoundException("등록되지 않은 퀴즈입니다.");
         }
 
-        Monster monster = monsterRepository.findById(monsterId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 몬스터입니다."));
+        if (!monsterRepository.existsById(monsterId)) {
+            throw new EntityNotFoundException("존재하지 않는 몬스터입니다.");
+        }
 
         if (!monsterValidator.isMonsterOwner(monsterId, AuthUtil.getCurrentMemberId())) {
             throw new AccessDeniedException("해당 몬스터에 퀴즈를 삭제할 권한이 없습니다.");

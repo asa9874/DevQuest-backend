@@ -48,7 +48,6 @@ public class GuildPostController implements GuildPostApi {
         return ResponseEntity.ok(responseDto);
     }
 
-    //TODO: 나중에 페이징
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @GetMapping("{guildId}/posts")
     public ResponseEntity<List<GuildPostResponseDto>> getGuildPostsByGuildId(

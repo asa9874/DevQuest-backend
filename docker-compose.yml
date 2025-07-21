@@ -1,6 +1,16 @@
 version: "3.8"
 
 services:
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - ai-backend
+    restart: always
+    
   backend:
     image: asa9874/devquest-backend:latest
     container_name: spring-backend

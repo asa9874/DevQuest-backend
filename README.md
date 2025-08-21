@@ -15,12 +15,4 @@ BCSD BackEnd 회고프로젝트
 ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 
-
-
-# 📖 개발 일지
-### [🔍프로젝트 일정표 Notion🔍](https://www.notion.so/DevQuest-2172fbfb597e801eb287e88bc4503798)
-### [#0 프로젝트 개요 및 구성도](https://asa9874.tistory.com/703)
-### [#1 스프링부트 프로젝트 생성 및 설정](https://asa9874.tistory.com/705)
-### [#2 인증 및 회원구현(1)- JWT, 로그인 회원가입 구현](https://asa9874.tistory.com/706)
-### [#3 인증 및 회원구현(2)- Redis 추가 및 로그아웃, 회원 엔드포인트](https://asa9874tistory.com/707)
-### [#4 인증 및 회원구현(3)- Oauth2.0](https://asa9874.tistory.com/708)
+<img width="601" height="411" alt="image" src="https://github.com/user-attachments/assets/d8e5d66f-e20d-4ed6-8779-a3cf3327f7a5" />
